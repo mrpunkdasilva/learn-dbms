@@ -6,3 +6,4 @@ https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubunt
 
 https://www.geeksforgeeks.org/how-to-install-and-configure-mongodb-in-ubuntu/
 
+https://www.geeksforgeeks.org/mongodb-tutorial/
