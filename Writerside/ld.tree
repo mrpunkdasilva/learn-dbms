@@ -4,7 +4,10 @@
 
 <instance-profile id="ld"
                  name="Learn DBMS"
-                 start-page="starter.md">
+                 start-page="Starter.md">
 
-    <toc-element topic="starter.md"/>
+    <toc-element topic="Starter.md"/>
+    <toc-element toc-title="Domus 2"/>
+    <toc-element topic="Mongo.md"/>
+    <toc-element topic="Refêrencias.md"/>
 </instance-profile>
