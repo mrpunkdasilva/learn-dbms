@@ -1,0 +1,24 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en-US" data-preset="contrast" data-primary-color="#E8488B"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="robots" content="noindex"><meta name="built-on" content="2025-03-25T11:53:56.984219886"><title>3. READ - Consultar Dados (FIND) | Learn DBMS</title><script type="application/json" id="virtual-toc-data">[{"id":"buscar-todos-os-documentos","level":0,"title":"Buscar Todos os Documentos","anchor":"#buscar-todos-os-documentos"},{"id":"buscar-com-filtro","level":0,"title":"Buscar com Filtro","anchor":"#buscar-com-filtro"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b725/app.css" rel="stylesheet"><link href="static/custom.css" rel="stylesheet"><link rel="icon" type="image/svg" sizes="16x16" href="images/logo-primary.svg"><meta name="image" content=""><!-- Open Graph --><meta property="og:title" content="3. READ - Consultar Dados (FIND) | Learn DBMS"><meta property="og:description" content=""><meta property="og:image" content=""><meta property="og:site_name" content="Learn DBMS Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="writerside-documentation/3.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content=""><meta name="twitter:title" content="3. READ - Consultar Dados (FIND) | Learn DBMS"><meta name="twitter:description" content=""><meta name="twitter:creator" content=""><meta name="twitter:image:src" content=""><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    "@id": "writerside-documentation/3.html#webpage",
+    "url": "writerside-documentation/3.html",
+    "name": "3. READ - Consultar Dados (FIND) | Learn DBMS",
+    "description": "",
+    "image": "",
+    "inLanguage":"en-US"
+}</script><!-- End Schema.org --><!-- Schema.org WebSite --><script type="application/ld+json">{
+    "@type": "WebSite",
+    "@id": "writerside-documentation/#website",
+    "url": "writerside-documentation/",
+    "name": "Learn DBMS Help"
+}</script><!-- End Schema.org --></head><body data-id="3" data-main-title="3. READ - Consultar Dados (FIND)" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs="Domus NoSQL///Mongo.md|MongoDB///Sectio CRUD no shell"><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>Learn DBMS  Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="3" id="3.md">3. READ - Consultar Dados (FIND)</h1><section class="chapter"><h2 id="buscar-todos-os-documentos" data-toc="buscar-todos-os-documentos">Buscar Todos os Documentos</h2><div class="code-block" data-lang="javascript">
+db.clientes.find()
+</div><figure id="x20tve_6"><img alt="Exemplo de consulta de todos os documentos na cole&ccedil;&atilde;o clientes" src="images/1742910123603.png" title="Exemplo de consulta de todos os documentos na cole&ccedil;&atilde;o clientes" width="523" height="673"></figure></section><section class="chapter"><h2 id="buscar-com-filtro" data-toc="buscar-com-filtro">Buscar com Filtro</h2><div class="code-block" data-lang="javascript">
+// Buscar por nome
+db.clientes.find({ nome: &quot;João Silva&quot; })
+
+// Buscar clientes com idade &gt; 30
+db.clientes.find({ idade: { $gt: 30 } })
+</div><figure id="x20tve_8"><img alt="Exemplos de consulta de documentos com base em filtros espec&iacute;ficos" src="images/1742910158897.png" title="Exemplos de consulta de documentos com base em filtros espec&iacute;ficos" width="552" height="420"></figure></section><div class="last-modified">Last modified: 25 março 2025</div><div data-feedback-placeholder="true"></div><div class="navigation-links _bottom"><a href="atividade-2.html" class="navigation-links__prev">2. CREATE - Criar Banco, Cole&ccedil;&atilde;o e Documentos</a><a href="4.html" class="navigation-links__next">4. UPDATE - Atualizar Documentos</a></div></article><div id="disqus_thread"></div></div></section></main></div><script src="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b725/app.js"></script></body></html>

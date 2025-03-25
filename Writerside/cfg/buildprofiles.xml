@@ -8,13 +8,18 @@
      <variables>
         <header-logo>logo-primary.svg</header-logo>
         <custom-favicons>logo-primary.svg</custom-favicons>
+         <custom-css>custom.css</custom-css>
+
     </variables>
 
     <build-profile instance="ld">
         <variables>
+            <primary-color>strawberry</primary-color>
             <noindex-content>true</noindex-content>
         </variables>
     </build-profile>
+
+    <llms-txt single-file="true"/>
 
      <footer>
         <copyright>PunkDomus 2025</copyright>

@@ -1,0 +1,499 @@
+# Sistemas de Gerenciamento de Banco de Dados (DBMS)
+
+Um Sistema de Gerenciamento de Banco de Dados (DBMS) é a espinha dorsal de qualquer aplicação que lida com dados estruturados. Assim como no Minecraft, onde cada bloco, entidade e mecanismo de redstone segue regras precisas para criar um mundo funcional, um DBMS fornece a estrutura e os mecanismos necessários para armazenar, recuperar, gerenciar e proteger dados de forma eficiente.
+
+## 
+
+Por que DBMS é como o Minecraft?
+
+1. Organização Estrutural
+
+* No Minecraft, você organiza seus itens em baús, categorizando recursos para acesso rápido.
+
+* Em um DBMS, tabelas funcionam como baús, linhas são os itens armazenados, e colunas definem os atributos (ex.: tipo de bloco, durabilidade, quantidade).
+
+2. Mecanismos de Busca e Consulta
+
+* Assim como usar `/give` ou procurar um diamante em cavernas, um DBMS permite consultas SQL (`SELECT`, `WHERE`, `JOIN`) para extrair dados exatos sob demanda.
+
+3. Escalabilidade e Performance
+
+* Um mundo de Minecraft mal otimizado trava com muitas entidades.
+
+* Um DBMS usa indexação (como chunk loading eficiente) e otimização de consultas para evitar lentidão.
+
+4. Segurança e Integridade
+
+* Assim como proteger sua base contra creepers com paredes e tochas, um DBMS implementa: * Controle de Acesso (ACL) – Quem pode ler/escrever dados? * Transações ACID – Garantia de que operações críticas (ex.: troca de itens entre jogadores) não falhem no meio do caminho.
+
+5. Backup e Recuperação
+
+* Assim como copiar seu mundo para evitar perdas, um DBMS oferece: * Backups automáticos * Recuperação pontual (Point-in-Time Recovery)
+
+## 
+
+Mapa Mental: DBMS em Analogia com Minecraft
+
+```MERMAID
+mindmap
+  root(("DBMS ⇄ Minecraft"))
+    %% Arquitetura
+    Arquitetura
+      Mundo Minecraft: Banco de Dados
+      Chunks: Partições de Dados
+    
+    %% Operações
+    Operações
+      /give: INSERT
+      Quebrar bloco: DELETE
+      Crafting: JOIN entre tabelas
+    
+    %% Otimização
+    Otimização
+      Ordenar baús: Índices
+      Redstone eficiente: Cache de Consultas
+    
+    %% Segurança
+    Segurança
+      Portas com senha: Autenticação SQL
+      Proteção contra grief: Permissões baseadas em roles
+    
+    %% Resiliência
+    Resiliência
+      Backup do mundo: Replicação e Snapshots
+      Rollback: Transações COMMIT/ROLLBACK
+```
+
+## 
+
+Por que Aprender DBMS?
+
+Dominar bancos de dados é como dominar os princípios da redstone: permite construir sistemas complexos, escaláveis e confiáveis. Seja para jogos, aplicações web ou análise de dados, um DBMS bem projetado é a diferença entre uma estrutura frágil de madeira e uma fortaleza de netherite.
+
+
+
+# MongoDB
+
+MongoDB é um banco de dados NoSQL de código aberto, popular, que oferece alto desempenho, alta disponibilidade e fácil escalabilidade. Ele é projetado para armazenar e gerenciar grandes volumes de dados não estruturados ou semiestruturados.
+
+## Por que escolher MongoDB?
+
+1. Schema Flexível: MongoDB usa um modelo baseado em documentos, permitindo schemas dinâmicos e flexíveis. Isso é particularmente útil para aplicações com requisitos de dados em evolução.
+
+2. Escalabilidade: Suporta escalabilidade horizontal através de sharding, facilitando o gerenciamento de grandes quantidades de dados e altas cargas de tráfego.
+
+3. Desempenho: MongoDB oferece persistência de dados de alto desempenho, especialmente para aplicações que requerem processamento de dados em tempo real.
+
+4. Linguagem de Consulta Rica: Apesar de ser um banco de dados NoSQL, MongoDB fornece uma poderosa linguagem de consulta que suporta consultas complexas e agregações.
+
+5. Amigável para Desenvolvedores: Com drivers para a maioria das linguagens de programação e uma API intuitiva, MongoDB é fácil para os desenvolvedores trabalharem.
+
+## Arquitetura do MongoDB
+
+O MongoDB é construído em uma arquitetura distribuída, composta por vários componentes-chave:
+
+1. Documentos: A unidade básica de dados no MongoDB. São estruturas semelhantes a JSON chamadas BSON (Binary JSON).
+
+2. Coleções: Grupos de documentos, análogos às tabelas em bancos de dados relacionais.
+
+3. Bancos de dados: Contêineres para coleções.
+
+4. Shards: Partições de dados distribuídas em vários servidores para suportar implantações de big data.
+
+5. Réplicas: Cópias redundantes de dados para garantir alta disponibilidade e recuperação de desastres.
+
+## Tipos de Dados no MongoDB
+
+MongoDB suporta uma variedade de tipos de dados, incluindo:
+
+* Strings
+
+* Números (inteiros, floats, doubles)
+
+* Booleanos
+
+* Arrays
+
+* Objetos (documentos aninhados)
+
+* Null
+
+* Data
+
+* ObjectId (identificador único)
+
+* Binary data
+
+* Code (JavaScript)
+
+## Instalando com Docker
+
+Baixando a imagem do MongoDB do Docker Hub:
+![Comando Docker para baixar a imagem do MongoDB](images/1742218962587.png)
+
+Executando o container do MongoDB:
+![Comando Docker para executar o container do MongoDB](images/1742219010788.png)
+
+Verificando se o container do MongoDB está em execução:
+![Comando Docker para verificar containers em execução](images/image.png)
+
+Conectando-se ao MongoDB usando o DataGrip:
+![Configurações de conexão do DataGrip para MongoDB](images/1742219409952.png)
+
+## Trabalhando com MongoDB
+
+Uma vez que você tenha o MongoDB configurado, você pode começar a trabalhar com coleções e documentos. Aqui estão algumas operações básicas:
+
+1. Criar um banco de dados: Use o comando `use` para criar ou mudar para um banco de dados.
+
+2. Criar uma coleção: As coleções são criadas automaticamente quando você insere documentos.
+
+3. Inserir documentos: Use `insertOne()` ou `insertMany()` para adicionar documentos a uma coleção.
+
+4. Consultar documentos: Use o método `find()` para recuperar documentos de uma coleção.
+
+5. Atualizar documentos: Use `updateOne()` ou `updateMany()` para modificar documentos existentes.
+
+6. Excluir documentos: Use `deleteOne()` ou `deleteMany()` para remover documentos de uma coleção.
+
+### Exemplos Práticos
+
+Aqui estão alguns exemplos de operações comuns no MongoDB:
+
+```JAVASCRIPT
+// Inserir um documento
+db.usuarios.insertOne({
+  nome: "João Silva",
+  idade: 30,
+  email: "joao@exemplo.com",
+  interesses: ["esportes", "música", "tecnologia"]
+})
+
+// Consultar documentos
+db.usuarios.find({ idade: { $gt: 25 } })
+
+// Atualizar um documento
+db.usuarios.updateOne(
+  { nome: "João Silva" },
+  { $set: { idade: 31 } }
+)
+
+// Excluir um documento
+db.usuarios.deleteOne({ email: "joao@exemplo.com" })
+```
+
+## Índices no MongoDB
+
+Os índices são cruciais para melhorar o desempenho das consultas. MongoDB suporta vários tipos de índices:
+
+1. Índices de campo único
+
+2. Índices compostos
+
+3. Índices multikey (para arrays)
+
+4. Índices geoespaciais
+
+5. Índices de texto
+
+Para criar um índice:
+
+```JAVASCRIPT
+db.usuarios.createIndex({ email: 1 })
+```
+
+## Agregações
+
+O framework de agregação do MongoDB permite operações avançadas de processamento de dados:
+
+```JAVASCRIPT
+db.vendas.aggregate([
+  { $match: { data: { $gte: new Date("2023-01-01") } } },
+  { $group: { _id: "$produto", total: { $sum: "$quantidade" } } },
+  { $sort: { total: -1 } }
+])
+```
+
+## Conclusão
+
+MongoDB é uma excelente escolha para projetos que requerem flexibilidade, escalabilidade e desempenho. Seu modelo baseado em documentos o torna particularmente adequado para aplicações com estruturas de dados complexas e hierárquicas. Ao usar o Docker para instalação, você pode configurar rapidamente um ambiente MongoDB para desenvolvimento ou testes.
+
+À medida que você continua explorando o MongoDB, descobrirá seu rico conjunto de recursos, incluindo suporte para transações ACID, consultas geoespaciais, e integrações com big data e ferramentas de análise. Com sua capacidade de lidar com grandes volumes de dados e consultas complexas, o MongoDB se estabeleceu como uma solução robusta para uma ampla gama de casos de uso, desde aplicações web e mobile até análise de big data e IoT.
+
+
+
+# Operações CRUD no MongoDB
+
+## 
+
+Objetivo
+
+Realizar operações básicas de CRUD (Create, Read, Update, Delete), além de Indexação e Agregações no MongoDB utilizando o Mongo Shell.
+
+## 
+
+Pré-requisitos
+
+* MongoDB instalado e em execução.
+
+* Acesso ao Mongo Shell (terminal do MongoDB).
+
+### 
+
+1. Iniciando o MongoDB Shell
+
+Abra o terminal e execute:
+
+```BASH
+mongosh
+```
+
+![Exemplo de início do Mongo Shell](images/1742909917066.png)
+Tip:
+
+Isso conectará ao MongoDB local na porta padrão (`27017`)
+
+Note:
+
+Observação Final:
+
+* Para sair do Mongo Shell, execute:
+
+```BASH
+exit
+```
+
+
+
+# 2. CREATE - Criar Banco, Coleção e Documentos
+
+## 
+
+Criar um Banco de Dados
+
+```JAVASCRIPT
+use lab_crud
+```
+
+![Exemplo de criação de um banco de dados chamado "lab_crud"](images/1742909967039.png)
+Note:
+
+O MongoDB cria o banco quando o primeiro documento é inserido.
+
+## 
+
+Criar uma Coleção
+
+```JAVASCRIPT
+db.createCollection("clientes")
+```
+
+![Exemplo de criação de uma coleção chamada "clientes"](images/1742909993962.png)
+Note:
+
+Se não existir, o MongoDB cria automaticamente ao inserir dados.
+
+## Inserir Documentos (INSERT)
+
+```JAVASCRIPT
+// Inserir um documento
+db.clientes.insertOne({
+  nome: "João Silva",
+  idade: 30,
+  email: "joao@email.com",
+  cidade: "São Paulo"
+})
+
+// Inserir múltiplos documentos
+db.clientes.insertMany([
+  { nome: "Maria Souza", idade: 25, email: "maria@email.com", cidade: "Rio de Janeiro" },
+  { nome: "Carlos Oliveira", idade: 35, email: "carlos@email.com", cidade: "Belo Horizonte" }
+])
+```
+
+![Exemplos de inserção de documentos na coleção "clientes"](images/1742910045471.png)
+
+
+
+# 3. READ - Consultar Dados (FIND)
+
+## Buscar Todos os Documentos
+
+```JAVASCRIPT
+db.clientes.find()
+```
+
+![Exemplo de consulta de todos os documentos na coleção clientes](images/1742910123603.png)
+
+## Buscar com Filtro
+
+```JAVASCRIPT
+// Buscar por nome
+db.clientes.find({ nome: "João Silva" })
+
+// Buscar clientes com idade > 30
+db.clientes.find({ idade: { $gt: 30 } })
+```
+
+![Exemplos de consulta de documentos com base em filtros específicos](images/1742910158897.png)
+
+
+
+# 4. UPDATE - Atualizar Documentos
+
+## 
+
+Atualizar um Documento
+
+```JAVASCRIPT
+// Atualizar o email do João Silva
+db.clientes.updateOne(
+  { nome: "João Silva" },
+  { $set: { email: "joao.novo@email.com" } }
+)
+```
+
+![Exemplo de atualização de um único documento com base no nome "João Silva" para alterar o email](images/1742910218366.png)
+
+## 
+
+Atualizar Múltiplos Documentos
+
+```JAVASCRIPT
+// Adicionar um campo "ativo" para todos os clientes
+db.clientes.updateMany(
+  {},
+  { $set: { ativo: true } }
+)
+```
+
+![Exemplo de atualização de múltiplos documentos para adicionar um campo "ativo" com valor true](images/1742910264625.png)
+
+
+
+# 5. DELETE - Remover Documentos
+
+## 
+
+Remover um Documento
+
+```JAVASCRIPT
+db.clientes.deleteOne({ nome: "Carlos Oliveira" })
+```
+
+![Exemplo de remoção de um único documento com base no nome "Carlos Oliveira"](images/1742910356843.png)
+
+## 
+
+Remover Múltiplos Documentos
+
+```JAVASCRIPT
+// Remover todos os clientes inativos
+db.clientes.deleteMany({ ativo: false })
+```
+
+![Exemplo de remoção de múltiplos documentos com base no campo "ativo" sendo falso](images/1742910381477.png)
+
+
+
+# 6. INDEX - Criar Índices para Melhorar Consultas
+
+## 
+
+Criar Índice Simples
+
+```JAVASCRIPT
+db.clientes.createIndex({ email: 1 })  // 1 = ordem ascendente
+```
+
+![Resultado da criação de um índice simples no campo email](images/1742910441702.png)
+
+## 
+
+Criar Índice Composto
+
+```JAVASCRIPT
+db.clientes.createIndex({ cidade: 1, idade: -1 })  // -1 = ordem descendente
+```
+
+![Resultado da criação de um índice composto nos campos cidade e idade](images/1742910472185.png)
+
+## 
+
+Ver Índices da Coleção
+
+```JAVASCRIPT
+db.clientes.getIndexes()
+```
+
+![Lista de índices existentes na coleção clientes](images/1742910492610.png)
+
+
+
+# 7. AGREGAÇÕES - Processamento de Dados
+
+## 
+
+Agregação Simples (Contar Clientes por Cidade)
+
+```JAVASCRIPT
+db.clientes.aggregate([
+  { $group: { _id: "$cidade", total: { $sum: 1 } } }
+])
+```
+
+![Resultado da agregação simples mostrando o total de clientes por cidade](images/1742910511613.png)
+
+## 
+
+Agregação com Filtro (Média de Idade por Cidade)
+
+```JAVASCRIPT
+db.clientes.aggregate([
+  { $match: { ativo: true } },  // Filtra clientes ativos
+  { $group: { _id: "$cidade", mediaIdade: { $avg: "$idade" } } }
+])
+```
+
+![Resultado da agregação com filtro exibindo a média de idade por cidade para clientes ativos](images/1742910527603.png)
+
+
+
+# Refêrencias
+
+https://www.mongodb.com/docs/manual/tutorial/install-mongodb-community-with-docker/
+
+https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-20-04
+
+https://www.geeksforgeeks.org/how-to-install-and-configure-mongodb-in-ubuntu/
+
+https://www.geeksforgeeks.org/mongodb-tutorial/
+
+
+
+# Conclusão
+
+Este laboratório permitiu a exploração prática das operações fundamentais de manipulação de dados no MongoDB, um dos principais bancos de dados NoSQL atualmente em uso. Através da execução de comandos no Mongo Shell, foi possível compreender na prática como:
+
+1. Estruturar dados de forma flexível, aproveitando a natureza schema-less do MongoDB para criar coleções e inserir documentos com diferentes estruturas.
+
+2. Manipular informações eficientemente, utilizando operações CRUD básicas (Create, Read, Update, Delete) para gerenciar registros de forma dinâmica.
+
+3. Otimizar consultas através da criação de índices simples e compostos, demonstrando como estratégias de indexação podem melhorar significativamente o desempenho em buscas.
+
+4. Processar dados complexos utilizando pipelines de agregação, que permitem filtrar, agrupar e calcular métricas de forma avançada - uma funcionalidade essencial para análise de dados em aplicações reais.
+
+## 
+
+Aprendizados Principais
+
+* A sintaxe do MongoDB difere significativamente de bancos relacionais, mas oferece maior flexibilidade para modelos de dados variáveis.
+
+* Operações de atualização e exclusão podem ser precisas graças aos operadores como `$set`, `$gt`, e filtros complexos.
+
+* Agregações abrem possibilidades para tratamento de dados similar a consultas SQL avançadas, porém com uma abordagem mais programática.
+
+Este laboratório serviu como base sólida para trabalhos mais avançados com MongoDB, incluindo integração com drivers de programação (ex: Python, Node.js) e implementação em ambientes distribuídos.
+
+
+
