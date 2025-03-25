@@ -4,8 +4,22 @@
 
 <instance-profile id="ld"
                  name="Learn DBMS"
-                 start-page="Mongo.md">
+                 start-page="Learn-DBMS.md">
 
-    <toc-element topic="Mongo.md"/>
-    <toc-element topic="Refêrencias.md"/>
+    <toc-element topic="Learn-DBMS.md"/>
+    <toc-element toc-title="Domus NoSQL">
+        <toc-element topic="Mongo.md">
+            <toc-element toc-title="Sectio CRUD no shell">
+                <toc-element topic="Atividade-1.md"/>
+                <toc-element topic="Atividade-2.md"/>
+                <toc-element topic="3.md"/>
+                <toc-element topic="4.md"/>
+                <toc-element topic="5.md"/>
+                <toc-element topic="6.md"/>
+                <toc-element topic="7.md"/>
+                <toc-element topic="Refêrencias.md"/>
+                <toc-element topic="Conclusão.md"/>
+            </toc-element>
+        </toc-element>
+    </toc-element>
 </instance-profile>
