@@ -1,3 +1,0 @@
-# Starter
-
-Start typing here...

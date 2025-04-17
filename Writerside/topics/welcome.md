@@ -59,29 +59,20 @@
 
 ## Sequência de Inicialização
 
-1. [Fundamentos da Matrix](null)
+1. [Fundamentos da Matrix](theoretical-foundations.md)
+   - Conceitos Core
+   - Arquitetura Base
+   - Protocolos Primários
 
-* Conceitos Core
+2. [Laboratório Virtual](virtual-lab.md)
+   - Simulações Práticas
+   - Testes de Conceito
+   - Debug Sessions
 
-* Arquitetura Base
-
-* Protocolos Primários
-
-2. [Laboratório Virtual](null)
-
-* Simulações Práticas
-
-* Testes de Conceito
-
-* Debug Sessions
-
-3. [Zona de Desenvolvimento](null)
-
-* Projetos Práticos
-
-* Code Reviews
-
-* Performance Tuning
+3. [Zona de Desenvolvimento](dev-zone.md)
+   - Projetos Práticos
+   - Code Reviews
+   - Performance Tuning
 
 ## Aviso de Segurança
 
@@ -98,12 +89,12 @@
 ## Status da Conexão
 
 ```
-┌─────────────────────────────┐
-│    CONEXÃO ESTABELECIDA    │
-│    MATRIZ SINCRONIZADA     │
-│    REALIDADE CARREGADA     │
-│    SISTEMAS OPERACIONAIS   │
-└─────────────────────────────┘
+     ┌─────────────────────────────┐
+     │    CONEXÃO ESTABELECIDA    │
+     │    MATRIZ SINCRONIZADA     │
+     │    REALIDADE CARREGADA     │
+     │    SISTEMAS OPERACIONAIS   │
+     └─────────────────────────────┘
 ```
 
 ```
@@ -111,6 +102,3 @@
 ║     "Codifique como se cada query fosse sua última transação"         ║
 ╚═══════════════════════════════════════════════════════════════════════╝
 ```
-
-
-

@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE vars SYSTEM "https://resources.jetbrains.com/writerside/1.0/vars.dtd">
 <vars>
-    <var name="product" value="Writerside"/>
+    <var name="product" value="Learn DBMS"/>
+    <var name="version" value="2024.1"/>
+    <var name="team" value="PunkDomus"/>
+    <var name="release-date" value="2024"/>
+    <var name="database-version" value="Latest"/>
+    <var name="postgresql-version" value="16"/>
+    <var name="mongodb-version" value="7.0"/>
+    <var name="redis-version" value="7.2"/>
+    <var name="mysql-version" value="8.0"/>
 </vars>

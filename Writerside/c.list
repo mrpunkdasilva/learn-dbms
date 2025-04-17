@@ -2,5 +2,12 @@
 <!DOCTYPE categories
         SYSTEM "https://resources.jetbrains.com/writerside/1.0/categories.dtd">
 <categories>
-    <category id="wrs" name="Writerside documentation" order="1"/>
+    <category id="dbms" name="Database Management Systems" order="1"/>
+    <category id="relational" name="Relational Databases" order="2"/>
+    <category id="nosql" name="NoSQL Databases" order="3"/>
+    <category id="distributed" name="Distributed Systems" order="4"/>
+    <category id="security" name="Database Security" order="5"/>
+    <category id="performance" name="Performance & Optimization" order="6"/>
+    <category id="backup" name="Backup & Recovery" order="7"/>
+    <category id="architecture" name="Database Architecture" order="8"/>
 </categories>

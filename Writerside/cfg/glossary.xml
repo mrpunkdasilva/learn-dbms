@@ -1,7 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE terms SYSTEM "https://resources.jetbrains.com/writerside/1.0/glossary.dtd">
 <terms>
-    <term name="foo">
-        Description of what "foo" is.
+    <term name="ACID">
+        Acrônimo para Atomicidade, Consistência, Isolamento e Durabilidade - as propriedades fundamentais que garantem a confiabilidade das transações em um banco de dados.
+    </term>
+    
+    <term name="BASE">
+        Acrônimo para Basically Available, Soft state, Eventually consistent - um modelo alternativo ao ACID usado principalmente em sistemas NoSQL.
+    </term>
+    
+    <term name="CAP">
+        Teorema que afirma que um sistema distribuído não pode fornecer simultaneamente mais do que duas das três garantias: Consistência, Disponibilidade (Availability) e Tolerância a Partição.
+    </term>
+    
+    <term name="DDL">
+        Data Definition Language - Linguagem de Definição de Dados, usada para definir e modificar a estrutura do banco de dados.
+    </term>
+    
+    <term name="DML">
+        Data Manipulation Language - Linguagem de Manipulação de Dados, usada para realizar operações CRUD no banco de dados.
+    </term>
+    
+    <term name="Index">
+        Estrutura de dados que melhora a velocidade de recuperação de dados, como um índice em um livro digital do submundo.
+    </term>
+    
+    <term name="MVCC">
+        Multi-Version Concurrency Control - Sistema que permite múltiplas versões de um dado coexistirem, como realidades paralelas em uma matrix de dados.
+    </term>
+    
+    <term name="ORM">
+        Object-Relational Mapping - Técnica de programação para converter dados entre sistemas de tipos incompatíveis, como um tradutor universal de dados.
+    </term>
+    
+    <term name="Sharding">
+        Técnica de particionamento horizontal de dados que divide e distribui um banco de dados em múltiplos nós, como fragmentos de uma realidade distribuída.
+    </term>
+    
+    <term name="Transaction">
+        Unidade de trabalho que deve ser executada de forma atômica, como um pacote de dados inviolável no fluxo digital.
+    </term>
+    
+    <term name="Deadlock">
+        Situação onde dois ou mais processos ficam bloqueados eternamente, esperando uns pelos outros, como um loop temporal no tecido da matrix.
+    </term>
+    
+    <term name="Query">
+        Consulta ou solicitação feita ao banco de dados, como um comando neural enviado através da rede de dados.
+    </term>
+    
+    <term name="Schema">
+        Estrutura que define a organização dos dados, como a arquitetura base de uma realidade digital.
+    </term>
+    
+    <term name="Backup">
+        Cópia de segurança dos dados, como um snapshot de uma realidade que pode ser restaurada.
+    </term>
+    
+    <term name="Cluster">
+        Grupo de servidores que trabalham juntos, como uma colmeia digital de processamento de dados.
     </term>
 </terms>

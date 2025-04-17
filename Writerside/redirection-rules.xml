@@ -10,4 +10,105 @@
         <description>Created after removal of "Starter" from Learn DBMS</description>
         <accepts>Starter.html</accepts>
     </rule>
+    <rule id="7762ed3">
+        <description>Created after removal of "Intro" from Learn DBMS</description>
+        <accepts>Intro.html</accepts>
+    </rule>
+    <rule id="551ef360">
+        <description>Created after removal of "MongoDB" from Learn DBMS</description>
+        <accepts>Mongo.html</accepts>
+    </rule>
+    <rule id="5328bfb8">
+        <description>Created after removal of "Operações CRUD no MongoDB" from Learn DBMS</description>
+        <accepts>Atividade-1.html</accepts>
+    </rule>
+    <rule id="6bc81958">
+        <description>Created after removal of "2. CREATE - Criar Banco, Coleção e Documentos" from Learn DBMS
+        </description>
+        <accepts>Atividade-2.html</accepts>
+    </rule>
+    <rule id="605c5c10">
+        <description>Created after removal of "3. READ - Consultar Dados (FIND)" from Learn DBMS</description>
+        <accepts>3.html</accepts>
+    </rule>
+    <rule id="2676a2dc">
+        <description>Created after removal of "4. UPDATE - Atualizar Documentos" from Learn DBMS</description>
+        <accepts>4.html</accepts>
+    </rule>
+    <rule id="658b60aa">
+        <description>Created after removal of "5. DELETE - Remover Documentos" from Learn DBMS</description>
+        <accepts>5.html</accepts>
+    </rule>
+    <rule id="19752ea4">
+        <description>Created after removal of "6. INDEX - Criar Índices para Melhorar Consultas" from Learn DBMS
+        </description>
+        <accepts>6.html</accepts>
+    </rule>
+    <rule id="145078af">
+        <description>Created after removal of "7. AGREGAÇÕES - Processamento de Dados" from Learn DBMS</description>
+        <accepts>7.html</accepts>
+    </rule>
+    <rule id="5fc22b1d">
+        <description>Created after removal of "Refêrencias" from Learn DBMS</description>
+        <accepts>Refêrencias.html</accepts>
+    </rule>
+    <rule id="7ea1761a">
+        <description>Created after removal of "Conclusão" from Learn DBMS</description>
+        <accepts>Conclusão.html</accepts>
+    </rule>
+    <rule id="79a90535">
+        <description>Created after removal of "introduction-to-world" from Learn DBMS</description>
+        <accepts>introduction-to-world.html</accepts>
+    </rule>
+    <rule id="17a36904">
+        <description>Created after removal of "Intro" from Learn DBMS</description>
+        <accepts>Intro.html</accepts>
+    </rule>
+    <rule id="fa404a9">
+        <description>Created after removal of "MongoDB" from Learn DBMS</description>
+        <accepts>Mongo.html</accepts>
+    </rule>
+    <rule id="4084b8d3">
+        <description>Created after removal of "Operações CRUD no MongoDB" from Learn DBMS</description>
+        <accepts>Atividade-1.html</accepts>
+    </rule>
+    <rule id="5be9f600">
+        <description>Created after removal of "2. CREATE - Criar Banco, Coleção e Documentos" from Learn DBMS
+        </description>
+        <accepts>Atividade-2.html</accepts>
+    </rule>
+    <rule id="325d82ee">
+        <description>Created after removal of "3. READ - Consultar Dados (FIND)" from Learn DBMS</description>
+        <accepts>3.html</accepts>
+    </rule>
+    <rule id="33eb37c0">
+        <description>Created after removal of "4. UPDATE - Atualizar Documentos" from Learn DBMS</description>
+        <accepts>4.html</accepts>
+    </rule>
+    <rule id="3f7f0037">
+        <description>Created after removal of "5. DELETE - Remover Documentos" from Learn DBMS</description>
+        <accepts>5.html</accepts>
+    </rule>
+    <rule id="669c9b80">
+        <description>Created after removal of "6. INDEX - Criar Índices para Melhorar Consultas" from Learn DBMS
+        </description>
+        <accepts>6.html</accepts>
+    </rule>
+    <rule id="363edbda">
+        <description>Created after removal of "7. AGREGAÇÕES - Processamento de Dados" from Learn DBMS</description>
+        <accepts>7.html</accepts>
+    </rule>
+    <rule id="2c049bf9">
+        <description>Created after removal of "Refêrencias" from Learn DBMS</description>
+        <accepts>Refêrencias.html</accepts>
+    </rule>
+    <rule id="4b684c9c">
+        <description>Created after removal of "Conclusão" from Learn DBMS</description>
+        <accepts>Conclusão.html</accepts>
+    </rule>
+    <rule id="1b6ba2d">
+        <description>Created after removal of "Sistemas de Gerenciamento de Banco de Dados (DBMS)" from Learn DBMS
+        </description>
+        <accepts>Learn-DBMS.html</accepts>
+    </rule>
 </rules>
