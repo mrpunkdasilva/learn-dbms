@@ -73,10 +73,10 @@ Um agradecimento especial a todos os contribuidores e à comunidade que ajuda a 
 ╔════════════════════════════════════════════════════════════════════╗
 ║ "Mergulhe no submundo dos dados. Sobreviva. Aprenda. Evolua."     ║
 ╚════════════════════════════════════════════════════════════════════╝
+```
 
 ## Status do Projeto
 
-```
 ╔══════════════════════════════════╗
 ║ SYSTEM.STATUS                    ║
 ╠══════════════════════════════════╣

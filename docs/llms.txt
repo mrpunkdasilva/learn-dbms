@@ -114,3 +114,537 @@
 
 
 
+# Sobre o Curso DBMS.MATRIX
+
+```
+╔═══════════════════════════════════════════════════════════════════════╗
+║                         COURSE.MANIFEST                               ║
+║              "Hackeando a Matrix dos Bancos de Dados"                ║
+╚═══════════════════════════════════════════════════════════════════════╝
+```
+
+## Especificações do Sistema
+
+```
+┌────────────────────────────────┐
+│ COURSE.SPECS                   │
+├────────────────────────────────┤
+│ Versão    >> 2.0.1            │
+│ Duração   >> 160h/Matrix      │
+│ Nível     >> NEURAL.ENHANCED  │
+│ Formato   >> HYBRID.REALITY   │
+└────────────────────────────────┘
+```
+
+## Requisitos do Sistema
+
+```
+╔════════════════════════════════════════════════╗
+║ PREREQUISITES.CHECK                            ║
+╠════════════════════════════════════════════════╣
+║ ► Lógica de Programação [LEVEL: ADVANCED]     ║
+║ ► Estruturas de Dados  [LEVEL: INTERMEDIATE]  ║
+║ ► Sistemas Operacionais[LEVEL: INTERMEDIATE]  ║
+║ ► Redes de Computadores[LEVEL: BASIC]         ║
+║ ► Vontade de Hackear   [LEVEL: UNLIMITED]     ║
+╚════════════════════════════════════════════════╝
+```
+
+## Metodologia Neural
+
+* Imersão Total: Conexão direta com a Matrix dos Dados
+
+* Hands-On: Labs práticos em ambiente simulado
+
+* Debug Sessions: Análise profunda de casos reais
+
+* Neural Sync: Mentoria direta com os Guardiões
+
+* Reality Checks: Projetos baseados em cenários reais
+
+## Stack Tecnológica
+
+```
+┌────────────────────────────────┐
+│ TECH.STACK                     │
+├────────────────────────────────┤
+│ ◉ SQL.MASTERY                 │
+│ ◉ NOSQL.EXPERTISE            │
+│ ◉ DISTRIBUTED.SYSTEMS        │
+│ ◉ SECURITY.PROTOCOLS         │
+│ ◉ PERFORMANCE.TUNING         │
+└────────────────────────────────┘
+```
+
+## Avaliação e Certificação
+
+```
+╔════════════════════════════════════════════════╗
+║ CERTIFICATION.PROCESS                          ║
+╠════════════════════════════════════════════════╣
+║ ► Projetos Práticos   [40% WEIGHT]            ║
+║ ► Desafios Técnicos   [30% WEIGHT]            ║
+║ ► Hackathons          [20% WEIGHT]            ║
+║ ► Neural Sync Score   [10% WEIGHT]            ║
+╚════════════════════════════════════════════════╝
+```
+
+## Suporte e Recursos
+
+* Neural Help Desk: Suporte 24/7
+
+* Knowledge Base: Documentação extensa
+
+* Community Hub: Rede de alunos e mentores
+
+* Resource Center: Material complementar
+
+* Debug Arena: Ambiente de testes
+
+## Avisos Importantes
+
+```
+╔════════════════════════════════════════════════╗
+║ CRITICAL.WARNINGS                              ║
+╠════════════════════════════════════════════════╣
+║ ► Backups mentais regulares recomendados      ║
+║ ► Sobrecarga neural pode ocorrer              ║
+║ ► Vício em dados é comum                      ║
+║ ► Sonhar com queries é normal                 ║
+╚════════════════════════════════════════════════╝
+```
+
+## Compromisso Matrix
+
+```
+     /█████████████████████████████████\
+    /  ┌──────────────────────────┐     \
+   /   │   VOCÊ ESTÁ PREPARADO    │      \
+  /    │   PARA MERGULHAR NA      │       \
+ /     │   MATRIX DOS DADOS?      │        \
+/      └──────────────────────────┘         \
+```
+
+```
+╔═══════════════════════════════════════════════════════════════════════╗
+║ "Todo dado tem uma história. Aprenda a ler nas entrelinhas do código" ║
+╚═══════════════════════════════════════════════════════════════════════╝
+```
+
+
+
+# Conheça a Equipe DBMS.GUIDES
+
+```
+╔═══════════════════════════════════════════════════════════════════════╗
+║                    DBMS.GUIDES >> CORE_TEAM                           ║
+║              "Os últimos guardiões da sanidade dos dados"            ║
+╚═══════════════════════════════════════════════════════════════════════╝
+```
+
+## TEAM_OVERVIEW
+
+Um grupo disfuncional de especialistas em dados que, por algum milagre da
+computação, conseguem manter os sistemas funcionando enquanto lutam contra
+seus próprios demônios digitais.
+
+## CORE_MEMBERS
+
+### 
+
+[01] >> ACID_QUEEN (Luna "Transaction" Patel)
+
+```
+╭─────────────────╮
+│ ACID_QUEEN.LOG  │
+╰─────────────────╯
+```
+
+CARACTERÍSTICAS:
+
+* Idade: 34
+
+* Background: PhD em Sistemas Distribuídos (abandonado após O Incidente™)
+
+* Workspace: 6 monitores, 2 para logs de transação, 1 só para monitorar heartbeats
+
+* Vestuário: Jaqueta de couro preta com patches de comandos SQL, colar com pendrive de backup
+
+* Trauma: Perdeu 1M em transações devido a um bug de concorrência em 2019
+
+* Vícios: Café preto, monitoramento compulsivo de logs, paranoia com consistência
+
+* Hobbies: Coleciona logs de erros famosos, pratica meditação extrema durante deployments
+
+CITAÇÕES TÍPICAS:
+
+Tip:
+
+"Consistência eventual é como relacionamento aberto: alguém sempre sai machucado."
+"Durabilidade não é garantia, é uma prece aos deuses dos dados."
+"Prefiro perder um braço a perder consistência transacional."
+
+### 
+
+[02] >> NOSQL_PUNK (Jack "Document" Thompson)
+
+```
+╭──────────────────╮
+│ NOSQL_PUNK.JSON  │
+╰──────────────────╯
+```
+
+CARACTERÍSTICAS:
+
+* Idade: 29
+
+* Background: Dropout de Ciência da Computação, guru de startups
+
+* Workspace: Laptop coberto de stickers anti-SQL, rodando exclusivamente em modo escuro
+
+* Vestuário: Moletom rasgado com "DROP TABLE rules;" estampado, múltiplos piercings USB
+
+* Trauma: Foi forçado a usar stored procedures em seu primeiro emprego
+
+* Vícios: Energy drinks, JavaScript, schemas dinâmicos
+
+* Hobbies: Criar manifestos contra normalização, converter DBs relacionais para NoSQL
+
+CITAÇÕES TÍPICAS:
+
+Tip:
+
+"Schema é só uma construção social."
+"Se seu documento tem menos de 16MB, você não está vivendo o suficiente."
+"ACID? Prefiro BASE - Basically Available, Soft state, Eventually consistent."
+
+### 
+
+[03] >> SECURITY_PHANTOM (Ghost "Zero Trust" Zhang)
+
+```
+╭────────────────────────╮
+│ SECURITY_PHANTOM.CRYPT │
+╰────────────────────────╯
+```
+
+CARACTERÍSTICAS:
+
+* Idade: [REDACTED]
+
+* Background: Ex-black hat, 10 anos em agência governamental não especificada
+
+* Workspace: Ar-gapped laptop, 3 VPNs simultâneas, teclado com fingerprint
+
+* Vestuário: Sobretudo com Faraday cage embutida, óculos anti-reconhecimento facial
+
+* Trauma: Descobriu backdoors em todos os sistemas que já auditou
+
+* Vícios: Criptografia, autenticação multi-fator, paranoia
+
+* Hobbies: Criar CTFs impossíveis, auditar código open source por diversão
+
+CITAÇÕES TÍPICAS:
+
+Tip:
+
+"Sua senha forte é minha senha fraca."
+"Confie em todos os usuários... em verificar duas vezes."
+"Se você pode acessar, eles também podem."
+
+### 
+
+[04] >> BACKUP_PRIESTESS (Maria "Recovery Point" Santos)
+
+```
+╭──────────────────────╮
+│ BACKUP_PRIESTESS.BAK │
+╰──────────────────────╯
+```
+
+CARACTERÍSTICAS:
+
+* Idade: 41
+
+* Background: Veterana de múltiplos desastres de recuperação
+
+* Workspace: Sala repleta de HDs externos, rituais de backup escritos nas paredes
+
+* Vestuário: Colete tático cheio de SSDs, colar de USBs bootáveis
+
+* Trauma: Perdeu TCC por não ter backup (2003, nunca esquecerá)
+
+* Vícios: Comprar storage, criar scripts de backup, testar disaster recovery
+
+* Hobbies: Colecionar mídias antigas, realizar rituais de backup à meia-noite
+
+CITAÇÕES TÍPICAS:
+
+Tip:
+
+"Um backup é nenhum backup. Três backups é um começo."
+"Seu sistema não está realmente em produção até ter falhado e recuperado."
+"Snapshot é para os fracos. Eu quero full backup com prova de vida."
+
+### 
+
+[05] >> TIME_LORD (Dr. Eve "Timestamp" Williams)
+
+```
+╭───────────────────╮
+│ TIME_LORD.CHRONO  │
+╰───────────────────╯
+```
+
+CARACTERÍSTICAS:
+
+* Idade: Depende do timezone
+
+* Background: Doutorado em Física Quântica reconvertida para DBA
+
+* Workspace: Múltiplos relógios mostrando diferentes timezones, calendário juliano na parede
+
+* Vestuário: Roupa com padrão de timestamps, relógio em cada pulso (UTC e local)
+
+* Trauma: Sistema caiu durante mudança de horário de verão
+
+* Vícios: Sincronização de tempo, debates sobre ISO 8601
+
+* Hobbies: Debugar race conditions, colecionar relógios atômicos
+
+CITAÇÕES TÍPICAS:
+
+Tip:
+
+"Tempo é relativo, mas timestamp é absoluto."
+"Em qual timeline você quer fazer backup?"
+"Não me fale de datas sem me dizer o timezone."
+
+## TEAM_DYNAMICS
+
+* ACID_QUEEN e NOSQL_PUNK mantêm uma rivalidade profissional histórica
+
+* SECURITY_PHANTOM não confia em ninguém, mas respeita BACKUP_PRIESTESS
+
+* TIME_LORD frequentemente entra em conflito temporal com todos
+
+* BACKUP_PRIESTESS é a paz-maker do grupo, principalmente porque tem backups de todos
+
+## COLLECTIVE_STATS
+
+```
+╔════════════════════════════════════════════════╗
+║ TEAM.METRICS                                   ║
+╠════════════════════════════════════════════════╣
+║ ► Café consumido/dia: 42 xícaras              ║
+║ ► Paranoias compartilhadas: 73                ║
+║ ► Sistemas legados mantidos: ∞                ║
+║ ► Uptime médio: 99.99999%                     ║
+║ ► Sanidade coletiva: DEPRECATED               ║
+╚════════════════════════════════════════════════╝
+```
+
+```
+╔════════════════════════════════════════════════════════════════════╗
+║ "Porque todo sistema precisa de um pouco de caos controlado"       ║
+╚════════════════════════════════════════════════════════════════════╝
+```
+
+
+
+# Guia de Sobrevivência DBMS.MATRIX
+
+```
+╔═══════════════════════════════════════════════════════════════════════╗
+║                         SURVIVAL.GUIDE                                 ║
+║                "Regras para não ser deletado da matrix"               ║
+╚═══════════════════════════════════════════════════════════════════════╝
+```
+
+## REGRAS_FUNDAMENTAIS
+
+### 
+
+[REGRA 01] >> Backup é Vida
+
+```
+╭──────────────────────────╮
+│ BACKUP_PRIESTESS.ALERTA  │
+├──────────────────────────┤
+│ "Faça backup antes que   │
+│  o backup faça você."    │
+╰──────────────────────────╯
+```
+
+* Mantenha backups atualizados de TODO o seu trabalho
+
+* Configure auto-save em seus editores
+
+* Use controle de versão para TUDO
+
+* Nunca confie em um único ponto de armazenamento
+
+### 
+
+[REGRA 02] >> Segurança Primeiro
+
+```
+╭──────────────────────────╮
+│ SECURITY_PHANTOM.AVISO   │
+├──────────────────────────┤
+│ "Paranoia é apenas bom   │
+│  senso no nível 11."     │
+╰──────────────────────────╯
+```
+
+* Use senhas fortes e gerenciador de senhas
+
+* Ative autenticação de dois fatores
+
+* Mantenha seu sistema atualizado
+
+* Criptografe dados sensíveis
+
+### 
+
+[REGRA 03] >> Consistência é Chave
+
+```
+╭──────────────────────────╮
+│ ACID_QUEEN.MANDAMENTO    │
+├──────────────────────────┤
+│ "Seja ACID ou não seja." │
+╰──────────────────────────╯
+```
+
+* Mantenha seus ambientes sincronizados
+
+* Use versionamento semântico
+
+* Documente todas as alterações
+
+* Teste antes de qualquer commit
+
+### 
+
+[REGRA 04] >> Flexibilidade Controlada
+
+```
+╭──────────────────────────╮
+│ NOSQL_PUNK.MANIFESTO     │
+├──────────────────────────┤
+│ "Schema é sugestão,      │
+│  caos é liberdade."      │
+╰──────────────────────────╯
+```
+
+* Adapte-se às mudanças, mas mantenha o controle
+
+* Use as ferramentas certas para cada problema
+
+* Não se prenda a um único paradigma
+
+* Mantenha a mente aberta para novas soluções
+
+### 
+
+[REGRA 05] >> Tempo é Crítico
+
+```
+╭──────────────────────────╮
+│ TIME_LORD.DECRETO        │
+├──────────────────────────┤
+│ "UTC ou nada feito."     │
+╰──────────────────────────╯
+```
+
+* Sempre use UTC para timestamps
+
+* Documente fusos horários explicitamente
+
+* Considere aspectos temporais no design
+
+* Planeje para mudanças de horário de verão
+
+## KIT_SOBREVIVÊNCIA
+
+### Ferramentas Essenciais
+
+```
+╔════════════════════════════════╗
+║ TOOLS.REQUIRED                 ║
+╠════════════════════════════════╣
+║ ► Editor de código confiável   ║
+║ ► Cliente SQL robusto          ║
+║ ► Ferramentas de modelagem     ║
+║ ► Software de virtualização    ║
+║ ► Gerenciador de versão        ║
+╚════════════════════════════════╝
+```
+
+### Práticas de Sobrevivência
+
+```
+╔════════════════════════════════╗
+║ SURVIVAL.PRACTICES             ║
+╠════════════════════════════════╣
+║ ► Commits frequentes           ║
+║ ► Testes automatizados         ║
+║ ► Documentação atualizada      ║
+║ ► Monitoramento constante      ║
+║ ► Backup redundante            ║
+╚════════════════════════════════╝
+```
+
+## PROTOCOLOS_EMERGÊNCIA
+
+### Em Caso de Falha
+
+1. NÃO ENTRE EM PÂNICO
+
+2. Consulte os logs
+
+3. Isole o problema
+
+4. Documente o ocorrido
+
+5. Implemente correção
+
+6. Atualize documentação
+
+### Em Caso de Perda de Dados
+
+1. MANTENHA A CALMA
+
+2. Pare todas as operações
+
+3. Acesse backups
+
+4. Inicie recuperação
+
+5. Valide integridade
+
+6. Documente processo
+
+## MANTRAS_DIÁRIOS
+
+```
+╔════════════════════════════════════════════════════════════════════╗
+║ "Sempre há um backup do backup do backup."                         ║
+║ "Paranoia é prevenção."                                           ║
+║ "ACID é um estilo de vida."                                       ║
+║ "Schema é apenas o começo."                                       ║
+║ "UTC é a única verdade."                                          ║
+╚════════════════════════════════════════════════════════════════════╝
+```
+
+## CONSIDERAÇÕES_FINAIS
+
+```
+╔════════════════════════════════════════════════════════════════════╗
+║ "Na matrix dos dados, sobrevive quem está preparado."             ║
+╚════════════════════════════════════════════════════════════════════╝
+```
+
+
+
