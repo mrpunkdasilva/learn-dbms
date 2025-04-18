@@ -1991,3 +1991,614 @@ Componentes da Regra:
 
 
 
+# Álgebra Relacional
+
+```
+╔═══════════════════════════════════════════════════════════════════════╗
+║                    RELATIONAL.ALGEBRA                                 ║
+║             "A linguagem matemática dos bancos de dados"             ║
+╚═══════════════════════════════════════════════════════════════════════╝
+```
+
+## INTRODUÇÃO
+
+A álgebra relacional é como um conjunto de regras matemáticas que nos permite manipular dados em bancos de dados relacionais. Pense nela como um conjunto de LEGO®: cada peça (operador) tem uma função específica, e podemos combiná-las para construir consultas complexas.
+
+### Por que é importante?
+
+* É a base teórica do SQL
+
+* Permite entender como os dados são manipulados
+
+* Ajuda a otimizar consultas
+
+* É fundamental para o design de bancos de dados
+
+## MAPA MENTAL
+
+```MERMAID
+mindmap
+  root((ÁLGEBRA RELACIONAL))
+    OPERADORES BÁSICOS
+      Seleção σ
+      Projeção π
+      Join Natural ⋈
+    OPERADORES SET
+      União ∪
+      Interseção ∩
+      Diferença -
+    JOINS ESPECIAIS
+      Left Join ⟕
+      Right Join ⟖
+      Full Join ⟗
+    AGREGAÇÕES
+      Count
+      Sum
+      Avg
+    OPERADORES EXTRAS
+      Renomeação ρ
+      Divisão ÷
+      Produto ×
+    COMPOSIÇÃO
+      Subconsultas
+      Aninhamentos
+      Combinações
+```
+
+## CHEAT SHEET - TABELA DOS PREGUIÇOSOS
+
+| OPERADOR |SÍMBOLO |NOME SQL |O QUE FAZ |EXEMPLO SQL |
+-------------------------------------------------------
+| Seleção |σ |WHERE |Filtra linhas |SELECT * FROM tabela |
+|   |  |  |  |WHERE condição; |
+| Projeção |π |SELECT |Seleciona colunas |SELECT coluna1, coluna2 |
+|   |  |  |  |FROM tabela; |
+| Join Natural |⋈ |NATURAL JOIN |Junta tabelas |SELECT * FROM tabela1 |
+|   |  |  |  |NATURAL JOIN tabela2; |
+| União |∪ |UNION |Combina resultados |SELECT * FROM tabela1 |
+|   |  |  |  |UNION |
+|   |  |  |  |SELECT * FROM tabela2; |
+| Diferença |- |EXCEPT |Remove resultados |SELECT * FROM tabela1 |
+|   |  |  |  |EXCEPT |
+|   |  |  |  |SELECT * FROM tabela2; |
+
+## OPERADORES BÁSICOS COM SQL
+
+| Operador |Símbolo |Nome SQL |O que faz |Exemplo SQL |
+-------------------------------------------------------
+| Seleção |σ |WHERE |Filtra linhas |`SELECT * FROM tabela WHERE condição;` |
+| Projeção |π |SELECT |Seleciona colunas |`SELECT coluna1, coluna2 FROM tabela;` |
+| Join Natural |⋈ |NATURAL JOIN |Junta tabelas |`SELECT * FROM tabela1 NATURAL JOIN tabela2;` |
+| União |∪ |UNION |Combina resultados |`SELECT * FROM tabela1 UNION SELECT * FROM tabela2;` |
+| Diferença |- |EXCEPT |Remove resultados |`SELECT * FROM tabela1 EXCEPT SELECT * FROM tabela2;` |
+
+## CONCEITOS.BÁSICOS
+
+### O que é uma Relação?
+
+Uma relação é basicamente uma tabela com:
+
+* Linhas (registros/tuplas)
+
+* Colunas (atributos)
+
+Exemplo:
+
+```
+┌────────────────────────────────────────────┐
+│ CLIENTES                                  │
+├─────────┬──────────────┬─────────────────┤
+│   ID    │    Nome      │    Idade        │
+├─────────┼──────────────┼─────────────────┤
+│   1     │    João      │     25          │
+│   2     │    Maria     │     30          │
+│   3     │    Pedro     │     28          │
+└────────────────────────────────────────────┘
+```
+
+## OPERADORES.FUNDAMENTAIS
+
+### 1. Seleção (σ - Sigma)
+
+```
+┌────────────────────────────────────────────┐
+│ SELEÇÃO (σ)                               │
+├────────────────────────────────────────────┤
+│ O que faz: Filtra linhas                  │
+│ Como se lê: "Sigma"                       │
+│ Exemplo: σidade>25(Clientes)               │
+│ Significado: "Selecione clientes com      │
+│              idade maior que 25"          │
+└────────────────────────────────────────────┘
+```
+
+Em SQL seria:
+
+```SQL
+SELECT * 
+FROM Clientes 
+WHERE idade > 25;
+```
+
+### 2. Projeção (π - Pi)
+
+```
+┌────────────────────────────────────────────┐
+│ PROJEÇÃO (π)                              │
+├────────────────────────────────────────────┤
+│ O que faz: Seleciona colunas              │
+│ Como se lê: "Pi"                          │
+│ Exemplo: πnome,idade(Clientes)             │
+│ Significado: "Mostre apenas nome e idade  │
+│              dos clientes"                │
+└────────────────────────────────────────────┘
+```
+
+Em SQL seria:
+
+```SQL
+SELECT nome, idade 
+FROM Clientes;
+```
+
+### 3. Join Natural (⋈)
+
+```
+┌────────────────────────────────────────────┐
+│ JOIN NATURAL (⋈)                          │
+├────────────────────────────────────────────┤
+│ O que faz: Combina duas tabelas           │
+│ Como se lê: "Join"                        │
+│ Exemplo: Clientes ⋈ Pedidos              │
+│ Significado: "Junte clientes com seus     │
+│              respectivos pedidos"         │
+└────────────────────────────────────────────┘
+```
+
+Em SQL seria:
+
+```SQL
+SELECT * 
+FROM Clientes 
+NATURAL JOIN Pedidos;
+```
+
+## OPERAÇÕES.BÁSICAS
+
+### Seleção (σ)
+
+```SQL
+-- Exemplo: σidade>18(Clientes)
+SELECT * FROM Clientes WHERE idade > 18;
+```
+
+### Projeção (π)
+
+```SQL
+-- Exemplo: πnome,email(Usuarios)
+SELECT nome, email FROM Usuarios;
+```
+
+### Join Natural (⋈)
+
+```SQL
+-- Exemplo: Pedidos ⋈ Clientes
+SELECT * FROM Pedidos 
+NATURAL JOIN Clientes;
+```
+
+## OPERAÇÕES.AVANÇADAS
+
+### Join Theta (⋈θ)
+
+```
+┌────────────────────────────────────────────┐
+│ THETA.JOIN                                │
+├────────────────────────────────────────────┤
+│ R ⋈θ S, onde θ é a condição de junção    │
+│ Como se lê: "R join S onde theta"         │
+└────────────────────────────────────────────┘
+```
+
+### Division (÷)
+
+```
+┌────────────────────────────────────────────┐
+│ DIVISION.OPERATOR                         │
+├────────────────────────────────────────────┤
+│ R ÷ S                                     │
+│ Como se lê: "R dividido por S"            │
+└────────────────────────────────────────────┘
+```
+
+### Agregação (γ)
+
+```
+┌────────────────────────────────────────────┐
+│ AGGREGATION.OPERATOR                      │
+├────────────────────────────────────────────┤
+│ γgrupo,função(R)                           │
+│ Como se lê: "Gamma grupo,função de R"     │
+└────────────────────────────────────────────┘
+```
+
+## EXEMPLOS.PRÁTICOS.DETALHADOS
+
+### Exemplo 1: Encontrar Clientes VIP
+
+Queremos encontrar o nome e email dos clientes que gastaram mais de 1000.
+
+```
+┌────────────────────────────────────────────┐
+│ PASSO A PASSO                             │
+├────────────────────────────────────────────┤
+│ 1. Juntar Clientes com Vendas             │
+│ 2. Filtrar vendas > 1000                  │
+│ 3. Mostrar apenas nome e email            │
+└────────────────────────────────────────────┘
+```
+
+Em álgebra relacional:
+
+```
+πnome,email(σtotal>1000(Clientes ⋈ Vendas))
+```
+
+Como ler:
+
+1. Comece de dentro dos parênteses
+
+2. Junte (`⋈`) Clientes com Vendas
+
+3. Filtre (`σ`) onde total > 1000
+
+4. Projete (`π`) apenas nome e email
+
+Em SQL:
+
+```SQL
+SELECT c.nome, c.email
+FROM Clientes c
+JOIN Vendas v ON c.id = v.cliente_id
+WHERE v.total > 1000;
+```
+
+### Exemplo 2: Agrupamento
+
+Queremos contar quantos pedidos cada cliente fez.
+
+```
+┌────────────────────────────────────────────┐
+│ AGREGAÇÃO                                 │
+├────────────────────────────────────────────┤
+│ γcliente_id,COUNT(*)(Pedidos)              │
+├────────────────────────────────────────────┤
+│ Como ler:                                 │
+│ "Agrupe por cliente_id e conte            │
+│  o total de pedidos para cada um"         │
+└────────────────────────────────────────────┘
+```
+
+Em SQL:
+
+```SQL
+SELECT cliente_id, COUNT(*) as total_pedidos
+FROM Pedidos
+GROUP BY cliente_id;
+```
+
+## DICAS.PRÁTICAS
+
+### Como Construir Consultas
+
+1. Identifique o que você quer ver (Projeção - π)
+
+2. Identifique de onde vêm os dados (Joins - ⋈)
+
+3. Defina as condições (Seleção - σ)
+
+4. Se precisar agrupar, use agregação (γ)
+
+### Exemplo de Construção
+
+Problema: "Liste o nome dos clientes que fizeram mais de 5 pedidos em 2023"
+
+Passo a passo:
+
+```
+┌────────────────────────────────────────────┐
+│ 1. Juntar Clientes e Pedidos              │
+│ 2. Filtrar pedidos de 2023                │
+│ 3. Agrupar por cliente                    │
+│ 4. Contar pedidos                         │
+│ 5. Filtrar > 5 pedidos                    │
+│ 6. Mostrar apenas nomes                   │
+└────────────────────────────────────────────┘
+```
+
+Em álgebra relacional:
+
+```
+πnome(σcontagem>5(γcliente_id,COUNT(*)->contagem(
+    σano=2023(Clientes ⋈ Pedidos)
+)))
+```
+
+Em SQL:
+
+```SQL
+SELECT c.nome
+FROM Clientes c
+JOIN Pedidos p ON c.id = p.cliente_id
+WHERE YEAR(p.data) = 2023
+GROUP BY c.id, c.nome
+HAVING COUNT(*) > 5;
+```
+
+## EXERCÍCIOS.INICIANTES
+
+1. Básico: Selecione todos os clientes com idade > 18
+
+```
+Álgebra: σidade>18(Clientes)
+SQL: SELECT * FROM Clientes WHERE idade > 18;
+```
+
+1. Intermediário: Nome e email dos clientes do Rio de Janeiro
+
+```
+Álgebra: πnome,email(σcidade='Rio de Janeiro'(Clientes))
+SQL: SELECT nome, email FROM Clientes WHERE cidade = 'Rio de Janeiro';
+```
+
+## RECURSOS.PARA.APRENDER
+
+### Ferramentas Online
+
+* RelaX: Pratique álgebra relacional online
+
+* SQLFiddle: Teste suas conversões para SQL
+
+* DB-MAIN: Visualize suas operações
+
+### Dicas de Estudo
+
+1. Comece com operadores básicos
+
+2. Pratique a conversão para SQL
+
+3. Construa consultas gradualmente
+
+4. Use diagramas para visualizar joins
+
+```
+╔════════════════════════════════════════════════════════════════════╗
+║ "Entender álgebra relacional é como aprender a gramática de uma   ║
+║  nova língua - no início parece difícil, mas depois tudo faz      ║
+║  sentido!"                                                        ║
+╚════════════════════════════════════════════════════════════════════╝
+```
+
+
+
+# Cálculo de Tuplas:
+
+## Mapa Mental
+
+```MERMAID
+mindmap
+  root((Cálculo de Tuplas))
+    Componentes Básicos
+      Variáveis de Tupla
+        t, s, r
+        Representação Individual
+      Expressões Atômicas
+        Comparações
+        Operadores Relacionais
+      Conectivos Lógicos
+        AND ∧
+        OR ∨
+        NOT ¬
+        IMPLICA →
+        EQUIVALE ↔
+      Quantificadores
+        Existencial ∃
+        Universal ∀
+    Sintaxe
+      Forma Geral
+      Predicados
+      Expressões Compostas
+    Operações
+      Junções
+      Subconsultas
+      Agregações
+    Aplicações
+      Consultas Complexas
+      Análise de Dados
+      Validação
+```
+
+```
+╔═══════════════════════════════════════════════════╗
+║ "Onde a lógica encontra dados, e sua sanidade    ║
+║  mental encontra seu fim."                       ║
+╚═══════════════════════════════════════════════════╝
+```
+
+## Fundamentos Teóricos
+
+O cálculo de tuplas é uma linguagem declarativa baseada em lógica de predicados que permite expressar consultas em bancos de dados relacionais. Diferentemente da álgebra relacional, que nos diz COMO obter os dados, o cálculo de tuplas especifica O QUE queremos obter.
+
+### Componentes Fundamentais
+
+1. Variáveis de Tupla
+
+* Representam tuplas individuais em uma relação
+
+* Notação: t, s, r (convencionalmente)
+
+* Exemplo: t ∈ Employees (t é uma tupla na relação Employees)
+
+2. Expressões Atômicas
+
+* Comparações básicas entre atributos ou valores
+
+* Operadores: =, ≠, <, >, ≤, ≥
+
+* Exemplo: t.salary > 50000
+
+3. Conectivos Lógicos
+
+* ∧ (AND): Conjunção
+
+* ∨ (OR): Disjunção
+
+* ¬ (NOT): Negação
+
+* → (IMPLICA): Implicação
+
+* ↔ (EQUIVALE): Equivalência
+
+4. Quantificadores
+
+* ∃ (Existencial): Existe pelo menos um
+
+* ∀ (Universal): Para todo
+
+* Exemplo: ∃e (e.department = t.department)
+
+## Sintaxe Formal
+
+### Forma Geral de uma Consulta
+
+```
+{ t | P(t) }
+```
+
+Onde:
+
+* t é uma variável de tupla
+
+* P(t) é um predicado envolvendo t
+
+### Exemplos Práticos
+
+1. Consulta Básica
+
+```
+{ t | t ∈ Employees ∧ t.salary > 100000 }
+```
+
+Tradução: "Encontre todos os funcionários com salário superior a 100000"
+
+1. Consulta com Quantificador Existencial
+
+```
+{ t | t ∈ Departments ∧ 
+    ∃e (e ∈ Employees ∧ 
+        e.dept_id = t.id ∧ 
+        e.salary > 150000) }
+```
+
+Tradução: "Departamentos que têm pelo menos um funcionário com salário > 150000"
+
+1. Consulta com Quantificador Universal
+
+```
+{ t | t ∈ Projects ∧ 
+    ∀e (e ∈ Employees ∧ 
+        e.project_id = t.id → 
+        e.skill_level = 'senior') }
+```
+
+Tradução: "Projetos onde todos os funcionários são seniores"
+
+## Operações Avançadas
+
+### 1. Junções Implícitas
+
+```
+{ t | ∃d ∈ Departments 
+    (t.dept_id = d.id ∧ 
+     d.location = 'NYC') }
+```
+
+### 2. Subconsultas Correlacionadas
+
+```
+{ t | t ∈ Employees ∧ 
+    t.salary > (∃avg ∈ (
+        { a | a = AVG(s.salary) ∧ 
+              s ∈ Employees ∧ 
+              s.dept_id = t.dept_id }
+    )) }
+```
+
+### 3. Agregações
+
+```
+{ t | t ∈ Departments ∧ 
+    COUNT({ e | e ∈ Employees ∧ 
+            e.dept_id = t.id }) > 10 }
+```
+
+## Considerações Práticas
+
+### Vantagens
+
+1. Expressividade declarativa
+
+2. Base teórica sólida
+
+3. Independência de implementação
+
+### Limitações
+
+1. Complexidade de expressões aninhadas
+
+2. Curva de aprendizado íngreme
+
+3. Possível ineficiência na execução
+
+## Exercícios Práticos
+
+1. Encontre Anomalias
+
+```
+{ t | t ∈ Transactions ∧ 
+    t.amount > 2 * (
+        SELECT AVG(amount) 
+        FROM Transactions 
+        WHERE date = t.date
+    ) }
+```
+
+1. Detecção de Padrões
+
+```
+{ t | t ∈ LogEntries ∧ 
+    ∃p ∈ Patterns 
+    (p.signature = t.pattern ∧ 
+     p.risk_level = 'HIGH') }
+```
+
+```
+╔═══════════════════════════════════════════════════╗
+║ "A diferença entre teoria e prática é que,       ║
+║  na teoria, não há diferença entre teoria        ║
+║  e prática."                                     ║
+╚═══════════════════════════════════════════════════╝
+```
+
+## Referências Adicionais
+
+1. E.F. Codd's Relational Model
+
+2. Database Theory Fundamentals
+
+3. Query Language Specifications
+
+Nota: Este documento assume familiaridade com lógica de predicados e teoria dos conjuntos. Se esses conceitos não são familiares, recomenda-se revisá-los antes de prosseguir.
+
+
+
