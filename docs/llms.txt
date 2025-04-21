@@ -3840,3 +3840,3225 @@ class HybridAutomaton:
 
 
 
+# Arquitetura de Sistemas de Dados
+
+A arquitetura de sistemas de dados é a estrutura fundamental que define como os dados são armazenados, processados e gerenciados em um sistema de banco de dados. Este capítulo explora os componentes essenciais, padrões arquiteturais e considerações de projeto que formam a base dos sistemas de dados modernos.
+
+```MERMAID
+graph TD
+    A[Sistema de Banco de Dados] --> B[Motor de Armazenamento]
+    A --> C[Gerenciador de Buffer]
+    A --> D[Processador de Consultas]
+    A --> E[Gerenciador de Transações]
+    A --> F[Sistema de Recuperação]
+    
+    B --> B1[Armazenamento Físico]
+    B --> B2[Estruturas de Dados]
+    
+    C --> C1[Cache]
+    C --> C2[Políticas de Substituição]
+    
+    D --> D1[Parser]
+    D --> D2[Otimizador]
+    D --> D3[Executor]
+    
+    E --> E1[Controle de Concorrência]
+    E --> E2[Isolamento]
+    
+    F --> F1[Log]
+    F --> F2[Backup/Restore]
+```
+
+## Componentes Fundamentais
+
+### 1. Motor de Armazenamento
+
+* Gerenciamento de armazenamento físico
+
+* Implementação de estruturas de dados
+
+* Organização de páginas e registros
+
+* Estratégias de compressão e codificação
+
+### 2. Gerenciador de Buffer
+
+* Gerenciamento de memória cache
+
+* Políticas de substituição de páginas
+
+* Otimização de E/S
+
+* Estratégias de pré-carregamento e gravação posterior
+
+### 3. Processador de Consultas
+
+* Analisador e validador de consultas
+
+* Otimizador de consultas
+
+* Executor de planos
+
+* Cache de resultados
+
+### 4. Gerenciador de Transações
+
+* Controle de concorrência
+
+* Isolamento de transações
+
+* Gerenciamento de bloqueios
+
+* Detecção de impasses
+
+### 5. Sistema de Recuperação
+
+* Registro antecipado de alterações
+
+* Gerenciamento de pontos de verificação
+
+* Recuperação após falhas
+
+* Backup e restauração
+
+## Camadas Arquiteturais
+
+```MERMAID
+graph TB
+    subgraph "Camada de Aplicação"
+        A[Aplicações Cliente]
+    end
+    
+    subgraph "Camada de Processamento"
+        B[Motor de Consultas]
+        C[Motor de Execução]
+    end
+    
+    subgraph "Camada de Armazenamento"
+        D[Gerenciamento de Buffer]
+        E[Estruturas de Indexação]
+        F[Gerenciamento de Disco]
+    end
+    
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    D --> F
+```
+
+### Camada de Armazenamento
+
+1. Gerenciamento de Disco
+
+* Alocação de espaço
+
+* Gerenciamento de blocos
+
+* Escalonamento de E/S
+
+* Configurações RAID
+
+2. Estruturas de Indexação
+
+* Árvores B e variantes
+
+* Índices hash
+
+* Índices bitmap
+
+* Índices especializados
+
+3. Gerenciamento de Buffer
+
+* Políticas LRU/MRU
+
+* Rastreamento de páginas sujas
+
+* Substituição de páginas
+
+* Mapeamento de memória
+
+### Camada de Processamento
+
+1. Motor de Consultas
+
+* Análise sintática
+
+* Análise semântica
+
+* Reescrita de consultas
+
+* Otimização baseada em custos
+
+2. Motor de Execução
+
+* Processamento em pipeline
+
+* Execução paralela
+
+* Gerenciamento de recursos
+
+* Otimização em tempo de execução
+
+## Padrões Arquiteturais
+
+```MERMAID
+graph LR
+    subgraph "Arquitetura Monolítica"
+        A[Nó Único] --> B[Todos Componentes]
+    end
+    
+    subgraph "Arquitetura Distribuída"
+        C[Nó 1] --> E[Storage]
+        D[Nó 2] --> F[Processamento]
+        G[Nó 3] --> H[Cache]
+    end
+    
+    subgraph "Arquitetura Híbrida"
+        I[Core Monolítico] --> J[Extensões Distribuídas]
+    end
+```
+
+### 1. Arquitetura Monolítica
+
+* Características * Implantação em nó único * Arquitetura compartilhada * Forte consistência * Simplicidade operacional
+
+* Considerações * Limites de escalabilidade vertical * Ponto único de falha * Manutenção simplificada * Menor complexidade operacional
+
+### 2. Arquitetura Distribuída
+
+* Características * Implantação multi-nó * Arquitetura sem compartilhamento * Escalabilidade horizontal * Alta disponibilidade
+
+* Componentes Específicos * Processador de consultas distribuído * Protocolos de consenso * Gerenciador de replicação * Gerenciador de particionamento
+
+### 3. Arquitetura Híbrida
+
+* Características * Combinação de abordagens * Flexibilidade de implantação * Compromissos personalizáveis * Adaptabilidade contextual
+
+## Considerações de Desempenho
+
+```MERMAID
+mindmap
+    root((Performance))
+        Throughput
+            TPS
+            QPS
+            Taxa de Dados
+        Latência
+            Tempo de Resposta
+            Processamento
+            E/S
+        Recursos
+            CPU
+            Memória
+            Rede
+            Disco
+```
+
+### Métricas Fundamentais
+
+1. Taxa de Transferência
+
+* Transações por segundo (TPS)
+
+* Consultas por segundo (QPS)
+
+* Taxa de transferência de dados
+
+2. Latência
+
+* Tempo de resposta
+
+* Tempo de processamento
+
+* Tempo de espera E/S
+
+3. Utilização de Recursos
+
+* Uso de CPU
+
+* Consumo de memória
+
+* Largura de banda de E/S
+
+* Utilização de rede
+
+### Otimização
+
+1. Otimização de Consultas
+
+* Otimização de plano de execução
+
+* Utilização de índices
+
+* Estratégias de junção
+
+* Visões materializadas
+
+2. Gerenciamento de Recursos
+
+* Pool de conexões
+
+* Gerenciamento de threads
+
+* Alocação de memória
+
+* Escalonamento de E/S
+
+## Considerações de Projeto
+
+```MERMAID
+graph TD
+    A[Considerações de Projeto] --> B[Escalabilidade]
+    A --> C[Disponibilidade]
+    A --> D[Consistência]
+    A --> E[Segurança]
+    
+    B --> B1[Horizontal]
+    B --> B2[Vertical]
+    
+    C --> C1[Redundância]
+    C --> C2[Failover]
+    
+    D --> D1[Modelos]
+    D --> D2[CAP]
+    
+    E --> E1[Autenticação]
+    E --> E2[Autorização]
+```
+
+### 1. Escalabilidade
+
+* Escalabilidade horizontal vs. vertical
+
+* Particionamento de dados
+
+* Replicação
+
+* Balanceamento de carga
+
+### 2. Disponibilidade
+
+* Redundância
+
+* Mecanismos de failover
+
+* Recuperação de desastres
+
+* Estratégias de backup
+
+### 3. Consistência
+
+* Modelos de consistência
+
+* Compromissos CAP
+
+* Níveis de isolamento
+
+* Gerenciamento de atraso de replicação
+
+### 4. Segurança
+
+* Autenticação
+
+* Autorização
+
+* Criptografia
+
+* Registro de auditoria
+
+## Conclusão
+
+A arquitetura de sistemas de dados é um campo complexo que requer um equilíbrio cuidadoso entre diversos requisitos e restrições. O sucesso de uma implementação depende da compreensão profunda destes componentes e suas interações, além da capacidade de fazer escolhas informadas baseadas em requisitos específicos do sistema.
+
+
+
+# Estruturas de Armazenamento
+
+As estruturas de armazenamento são fundamentais para o desempenho e eficiência dos sistemas de banco de dados. Este capítulo explora as diferentes estruturas e técnicas utilizadas para organizar e acessar dados em dispositivos de armazenamento.
+
+```MERMAID
+graph TD
+    A[Estruturas de Armazenamento] --> B[Organização em Disco]
+    A --> C[Gerenciamento de Buffer]
+    A --> D[Mecanismos de Indexação]
+    
+    B --> B1[Páginas]
+    B --> B2[Blocos]
+    B --> B3[Registros]
+    
+    C --> C1[Cache]
+    C --> C2[Políticas LRU/MRU]
+    C --> C3[Write-Ahead Log]
+    
+    D --> D1[Árvores B/B+]
+    D --> D2[Hash Tables]
+    D --> D3[Bitmap]
+```
+
+## Organização Física dos Dados
+
+### 1. Estrutura de Páginas
+
+* Tamanho fixo (tipicamente 4KB-16KB)
+
+* Cabeçalho da página
+
+* Área de dados
+
+* Diretório de slots
+
+* Gestão de espaço livre
+
+```MERMAID
+graph LR
+    subgraph "Estrutura da Página"
+        A[Cabeçalho] --> B[Área de Dados]
+        B --> C[Diretório de Slots]
+    end
+```
+
+### 2. Formatos de Registro
+
+* Registros de tamanho fixo
+
+* Registros de tamanho variável
+
+* Técnicas de compressão
+
+* Gestão de campos nulos
+
+### 3. Organização de Arquivos
+
+* Heap files
+
+* Arquivos sequenciais
+
+* Arquivos hash
+
+* Arquivos clusterizados
+
+## Técnicas de Armazenamento
+
+### 1. Compressão de Dados
+
+* Compressão de página
+
+* Compressão de registro
+
+* Dicionário de dados
+
+* Técnicas específicas por tipo
+
+### 2. Particionamento
+
+* Horizontal
+
+* Vertical
+
+* Por faixa
+
+* Por hash
+
+* Composto
+
+```MERMAID
+graph TB
+    subgraph "Tipos de Particionamento"
+        A[Horizontal] --> D[Por Faixa]
+        A --> E[Por Hash]
+        B[Vertical] --> F[Por Coluna]
+        B --> G[Por Grupo]
+    end
+```
+
+### 3. Estratégias de Alocação
+
+* Alocação contígua
+
+* Alocação encadeada
+
+* Alocação indexada
+
+* Extensible hashing
+
+## Otimização de Acesso
+
+### 1. Organização Física
+
+* Clustering
+
+* Sequenciamento
+
+* Interleaving
+
+* Striping
+
+### 2. Prefetching
+
+* Prefetch sequencial
+
+* Prefetch baseado em padrões
+
+* Prefetch adaptativo
+
+* Gestão de buffer inteligente
+
+```MERMAID
+graph LR
+    A[Acesso ao Disco] --> B[Buffer Pool]
+    B --> C[Cache]
+    B --> D[Prefetch]
+    D --> E[Sequencial]
+    D --> F[Baseado em Padrões]
+    D --> G[Adaptativo]
+```
+
+### 3. Write Optimization
+
+* Write-ahead logging
+
+* Group commit
+
+* Background writing
+
+* Write buffering
+
+## Considerações de Desempenho
+
+### 1. Métricas de Avaliação
+
+* Taxa de acertos no buffer
+
+* Tempo médio de acesso
+
+* Throughput de I/O
+
+* Utilização do espaço
+
+### 2. Trade-offs
+
+* Espaço vs. Velocidade
+
+* Complexidade vs. Flexibilidade
+
+* Consistência vs. Performance
+
+* Redundância vs. Eficiência
+
+```MERMAID
+quadrantChart
+    title Trade-offs em Estruturas de Armazenamento
+    x-axis Baixa Complexidade --> Alta Complexidade
+    y-axis Baixo Desempenho --> Alto Desempenho
+    quadrant-1 Ideal
+    quadrant-2 Complexo
+    quadrant-3 Simples
+    quadrant-4 Ineficiente
+    Heap Files: [0.2, 0.3]
+    B-Trees: [0.7, 0.8]
+    Hash Tables: [0.5, 0.7]
+    Bitmap Indexes: [0.6, 0.6]
+```
+
+## Tendências e Inovações
+
+### 1. Novas Tecnologias
+
+* NVMe e Storage Class Memory
+
+* Armazenamento columnnar
+
+* Estruturas híbridas
+
+* In-memory databases
+
+### 2. Otimizações Modernas
+
+* Compressão adaptativa
+
+* Indexação automática
+
+* Auto-tuning
+
+* Machine learning aplicado
+
+
+
+# Organização em Disco
+
+A organização em disco é um aspecto fundamental dos sistemas de banco de dados que impacta diretamente o desempenho e a eficiência do sistema.
+
+```MERMAID
+graph TD
+    A[Organização em Disco] --> B[Estrutura Física]
+    A --> C[Gerenciamento de Espaço]
+    A --> D[Técnicas de Acesso]
+    
+    B --> B1[Setores]
+    B --> B2[Trilhas]
+    B --> B3[Cilindros]
+    
+    C --> C1[Alocação]
+    C --> C2[Fragmentação]
+    C --> C3[Compactação]
+    
+    D --> D1[Sequencial]
+    D --> D2[Aleatório]
+    D --> D3[Otimizado]
+```
+
+## Anatomia do Disco
+
+### 1. Componentes Físicos
+
+* Pratos (Platters)
+
+* Cabeças de leitura/escrita
+
+* Setores e trilhas
+
+* Cilindros
+
+```MERMAID
+graph TB
+    subgraph "Estrutura do Disco"
+        A[Prato] --> B[Trilhas]
+        B --> C[Setores]
+        D[Cabeça de Leitura/Escrita] --> A
+    end
+```
+
+### 2. Características Operacionais
+
+* Tempo de seek
+
+* Latência rotacional
+
+* Taxa de transferência
+
+* Tempo de acesso médio
+
+## Organização de Dados
+
+### 1. Blocos de Disco
+
+* Tamanho do bloco
+
+* Alinhamento
+
+* Fragmentação
+
+* Overhead
+
+```MERMAID
+graph LR
+    subgraph "Bloco de Disco"
+        A[Header] --> B[Dados]
+        B --> C[Trailer]
+        C --> D[Padding]
+    end
+```
+
+### 2. Estratégias de Alocação
+
+* Contígua
+
+* Linked
+
+* Indexed
+
+* Extents
+
+## Otimizações de Acesso
+
+### 1. Técnicas de Posicionamento
+
+* Zoneamento
+
+* Agrupamento
+
+* Desfragmentação
+
+* Balanceamento
+
+```MERMAID
+graph TD
+    A[Otimizações] --> B[Zoneamento]
+    A --> C[Agrupamento]
+    A --> D[Desfragmentação]
+    
+    B --> B1[Hot Zones]
+    B --> B2[Cold Zones]
+    
+    C --> C1[Por Tabela]
+    C --> C2[Por Índice]
+    
+    D --> D1[Online]
+    D --> D2[Offline]
+```
+
+### 2. Padrões de Acesso
+
+* Sequencial
+
+* Random
+
+* Mixed
+
+* Batch
+
+## Considerações de Performance
+
+### 1. Métricas Importantes
+
+* IOPS (I/O por segundo)
+
+* Throughput
+
+* Latência
+
+* Queue depth
+
+### 2. Gargalos Comuns
+
+* Seek time
+
+* Rotational delay
+
+* Transfer bottlenecks
+
+* Queue congestion
+
+```MERMAID
+xychart-beta
+    title "Impacto das Otimizações"
+    x-axis [Sem Otimização, Com Zoneamento, Com Agrupamento, Totalmente Otimizado]
+    y-axis "Performance (IOPS)" 0 --> 100
+    bar [30, 50, 70, 90]
+```
+
+## Técnicas Avançadas
+
+### 1. RAID
+
+* RAID 0 (Striping)
+
+* RAID 1 (Mirroring)
+
+* RAID 5 (Striping with parity)
+
+* RAID 10 (Striping and mirroring)
+
+```MERMAID
+graph LR
+    subgraph "Configurações RAID"
+        A[RAID 0] --> B[Performance]
+        C[RAID 1] --> D[Redundância]
+        E[RAID 5] --> F[Balanço]
+        G[RAID 10] --> H[Híbrido]
+    end
+```
+
+### 2. Técnicas Modernas
+
+* SSD optimization
+
+* NVMe considerations
+
+* Hybrid storage
+
+* Tiered storage
+
+## Monitoramento e Manutenção
+
+### 1. Ferramentas de Diagnóstico
+
+* I/O stats
+
+* Disk usage
+
+* Performance counters
+
+* Queue metrics
+
+### 2. Manutenção Preventiva
+
+* Desfragmentação regular
+
+* Space monitoring
+
+* Performance tracking
+
+* Health checks
+
+```MERMAID
+timeline
+    title Ciclo de Manutenção
+    section Diário
+        Monitoramento : Verificação de métricas
+        Alertas : Análise de thresholds
+    section Semanal
+        Análise : Review de performance
+        Ajustes : Otimizações menores
+    section Mensal
+        Desfrag : Desfragmentação
+        Cleanup : Limpeza de espaço
+```
+
+## Boas Práticas
+
+1. Dimensionamento adequado
+
+2. Monitoramento contínuo
+
+3. Manutenção preventiva
+
+4. Otimização regular
+
+5. Documentação atualizada
+
+## Conclusão
+
+A organização eficiente em disco é crucial para o desempenho do banco de dados. O entendimento profundo dos conceitos apresentados permite implementar e manter sistemas de alto desempenho.
+
+## Referências
+
+1. "Database System Concepts" - Silberschatz, Korth e Sudarshan
+
+2. "Storage Systems: Organization, Performance, Coding, Reliability" - Bruce Jacob
+
+3. "Hard Drive Performance Characteristics" - StorageReview
+
+4. Documentação técnica de fabricantes de discos
+
+
+
+# Gerenciamento de Buffer
+
+O gerenciamento de buffer é um componente crítico dos sistemas de banco de dados, atuando como intermediário entre a memória principal e o armazenamento em disco.
+
+```MERMAID
+graph TD
+    A[Buffer Manager] --> B[Políticas de Substituição]
+    A --> C[Controle de Concorrência]
+    A --> D[Gestão de Memória]
+    
+    B --> B1[LRU]
+    B --> B2[Clock]
+    B --> B3[MRU]
+    
+    C --> C1[Latching]
+    C --> C2[Pinning]
+    C --> C3[Dirty Pages]
+    
+    D --> D1[Alocação]
+    D --> D2[Particionamento]
+    D --> D3[Monitoramento]
+```
+
+## Arquitetura do Buffer Pool
+
+### 1. Estruturas Principais
+
+* Frame Table
+
+* Page Table
+
+* Hash Table
+
+* Free List
+
+* Dirty List
+
+```MERMAID
+graph TB
+    subgraph "Buffer Pool"
+        A[Frame Table] --> B[Buffer Frames]
+        C[Page Table] --> B
+        D[Hash Table] --> C
+        E[Free List]
+        F[Dirty List]
+    end
+```
+
+### 2. Componentes de Controle
+
+* Descritores de página
+
+* Contadores de pin
+
+* Bits de estado
+
+* Timestamps
+
+## Políticas de Substituição
+
+### 1. Algoritmos Básicos
+
+* LRU (Least Recently Used)
+
+* Clock
+
+* MRU (Most Recently Used)
+
+* Random
+
+```MERMAID
+graph LR
+    subgraph "LRU Implementation"
+        A[Head] --> B[Recent]
+        B --> C[...]
+        C --> D[Oldest]
+        D --> E[Tail]
+    end
+```
+
+### 2. Algoritmos Avançados
+
+* LRU-K
+
+* 2Q
+
+* ARC (Adaptive Replacement Cache)
+
+* CLOCK-Pro
+
+## Otimizações de Performance
+
+### 1. Técnicas de Prefetching
+
+* Sequential
+
+* Index-based
+
+* Pattern-based
+
+* Adaptive
+
+```MERMAID
+graph TD
+    A[Prefetching] --> B[Sequential Scan]
+    A --> C[Index Scan]
+    A --> D[Pattern Detection]
+    
+    B --> B1[Read-Ahead]
+    C --> C1[Index Pages]
+    D --> D1[Learning]
+```
+
+### 2. Write Strategies
+
+* Force/No-Force
+
+* Steal/No-Steal
+
+* Group Commit
+
+* Background Writing
+
+## Controle de Concorrência
+
+### 1. Mecanismos de Latch
+
+* Shared latches
+
+* Exclusive latches
+
+* Latch queuing
+
+* Deadlock prevention
+
+### 2. Buffer Fix
+
+* Pin count
+
+* Fix duration
+
+* Unfix operations
+
+* Reference counting
+
+```MERMAID
+stateDiagram-v2
+    [*] --> Free
+    Free --> Fixed: Fix
+    Fixed --> Dirty: Update
+    Dirty --> Written: Write
+    Written --> Free: Unfix
+    Fixed --> Free: Unfix
+```
+
+## Monitoramento e Diagnóstico
+
+### 1. Métricas Principais
+
+* Hit ratio
+
+* Buffer utilization
+
+* Write frequency
+
+* Eviction rate
+
+```MERMAID
+xychart-beta
+    title "Buffer Pool Performance"
+    x-axis [0, 25, 50, 75, 100]
+    y-axis "Hit Ratio (%)" 0 --> 100
+    line [20, 45, 65, 80, 90]
+```
+
+### 2. Ferramentas de Análise
+
+* Buffer pool statistics
+
+* Page access patterns
+
+* I/O monitoring
+
+* Memory pressure
+
+## Configuração e Tuning
+
+### 1. Parâmetros Críticos
+
+* Buffer pool size
+
+* Page size
+
+* Number of partitions
+
+* Write threshold
+
+### 2. Otimizações Específicas
+
+* Multiple buffer pools
+
+* Page compression
+
+* Memory-mapped I/O
+
+* Direct I/O
+
+```MERMAID
+graph TB
+    subgraph "Buffer Pool Configuration"
+        A[Total Memory] --> B[Buffer Pool Size]
+        B --> C[Multiple Pools]
+        C --> D[Per-Table Pools]
+        C --> E[Per-Index Pools]
+    end
+```
+
+## Recuperação e Consistência
+
+### 1. Recovery Integration
+
+* Checkpoint processing
+
+* Redo logging
+
+* Undo logging
+
+* Recovery actions
+
+### 2. Consistency Management
+
+* Page consistency
+
+* Buffer coherency
+
+* Cache invalidation
+
+* Version control
+
+## Tendências Modernas
+
+### 1. Novas Tecnologias
+
+* Non-volatile memory
+
+* Hardware transactional memory
+
+* RDMA-aware buffering
+
+* Smart storage
+
+### 2. Otimizações Emergentes
+
+* ML-based prediction
+
+* Adaptive algorithms
+
+* Hybrid storage integration
+
+* Cloud-optimized buffering
+
+## Conclusão
+
+O gerenciamento eficiente do buffer é fundamental para o desempenho do banco de dados. A escolha e configuração adequada das políticas e mecanismos apresentados impacta diretamente na eficiência do sistema.
+
+## Referências
+
+1. "Database Management Systems" - Ramakrishnan e Gehrke
+
+2. "Transaction Processing: Concepts and Techniques" - Gray e Reuter
+
+3. "PostgreSQL Buffer Management" - Documentation
+
+4. "MySQL InnoDB Buffer Pool" - Technical Documentation
+
+
+
+# Mecanismos de Indexação
+
+Os mecanismos de indexação são estruturas fundamentais que otimizam o acesso aos dados em sistemas de banco de dados.
+
+```MERMAID
+graph TD
+    A[Mecanismos de Indexação] --> B[Árvores]
+    A --> C[Hash]
+    A --> D[Bitmap]
+    
+    B --> B1[B-Tree]
+    B --> B2[B+ Tree]
+    B --> B3[R-Tree]
+    
+    C --> C1[Static Hash]
+    C --> C2[Dynamic Hash]
+    C --> C3[Extendible Hash]
+    
+    D --> D1[Simple Bitmap]
+    D --> D2[Encoded Bitmap]
+    D --> D3[Compressed Bitmap]
+```
+
+## Fundamentos de Indexação
+
+### 1. Conceitos Básicos
+
+* Chaves de busca
+
+* Registros de índice
+
+* Densidade de índice
+
+* Seletividade
+
+```MERMAID
+graph LR
+    subgraph "Estrutura Básica"
+        A[Chave] --> B[Ponteiro]
+        B --> C[Registro]
+    end
+```
+
+### 2. Classificação
+
+* Primário vs. Secundário
+
+* Denso vs. Esparso
+
+* Clustered vs. Non-clustered
+
+* Single-level vs. Multi-level
+
+## Estruturas de Árvore
+
+### 1. Árvores B
+
+* Propriedades
+
+* Operações básicas
+
+* Balanceamento
+
+* Split e Merge
+
+```MERMAID
+graph TB
+    subgraph "Árvore B"
+        A[Root] --> B[Internal Node 1]
+        A --> C[Internal Node 2]
+        B --> D[Leaf 1]
+        B --> E[Leaf 2]
+        C --> F[Leaf 3]
+        C --> G[Leaf 4]
+    end
+```
+
+### 2. Árvores B+
+
+* Estrutura de folhas
+
+* Sequência de folhas
+
+* Range queries
+
+* Bulk loading
+
+## Estruturas Hash
+
+### 1. Hashing Estático
+
+* Funções hash
+
+* Tratamento de colisões
+
+* Fator de carga
+
+* Overflow chains
+
+```MERMAID
+graph LR
+    subgraph "Hash Table"
+        A[Hash Function] --> B[Bucket 1]
+        A --> C[Bucket 2]
+        A --> D[Bucket 3]
+        B --> E[Overflow]
+    end
+```
+
+### 2. Hashing Dinâmico
+
+* Directory structure
+
+* Split operations
+
+* Merge operations
+
+* Directory management
+
+## Índices Bitmap
+
+### 1. Estrutura Básica
+
+* Vetores de bits
+
+* Operações lógicas
+
+* Compressão
+
+* Atualização
+
+```MERMAID
+graph TD
+    A[Bitmap Index] --> B[Column Values]
+    B --> C[Bit Vectors]
+    C --> D[Compression]
+    D --> E[Operations]
+```
+
+### 2. Otimizações
+
+* Encoding schemes
+
+* Compression techniques
+
+* Cardinality handling
+
+* Update strategies
+
+## Técnicas Avançadas
+
+### 1. Índices Especializados
+
+* Spatial indexes
+
+* Temporal indexes
+
+* Full-text indexes
+
+* JSON indexes
+
+### 2. Estruturas Híbridas
+
+* Hash-tree combination
+
+* Bitmap-tree indexes
+
+* Multi-dimensional indexes
+
+* Adaptive indexes
+
+```MERMAID
+graph TB
+    subgraph "Estruturas Híbridas"
+        A[Index] --> B[Primary Structure]
+        A --> C[Secondary Structure]
+        B --> D[Data Access]
+        C --> D
+    end
+```
+
+## Otimização e Manutenção
+
+### 1. Estratégias de Criação
+
+* Index selection
+
+* Key selection
+
+* Storage allocation
+
+* Build optimization
+
+### 2. Manutenção
+
+* Statistics update
+
+* Reorganization
+
+* Rebuild operations
+
+* Monitoring
+
+```MERMAID
+timeline
+    title Ciclo de Manutenção de Índices
+    section Diário
+        Stats Update : Atualização de estatísticas
+        Monitoring : Verificação de performance
+    section Semanal
+        Analysis : Análise de uso
+        Optimization : Ajustes finos
+    section Mensal
+        Rebuild : Reconstrução
+        Cleanup : Limpeza
+```
+
+## Performance e Trade-offs
+
+### 1. Métricas de Avaliação
+
+* Access time
+
+* Storage overhead
+
+* Maintenance cost
+
+* Query impact
+
+```MERMAID
+quadrantChart
+    title Trade-offs em Indexação
+    x-axis Low Maintenance --> High Maintenance
+    y-axis Low Performance --> High Performance
+    quadrant-1 Ideal
+    quadrant-2 High Cost
+    quadrant-3 Limited Use
+    quadrant-4 Inefficient
+    B-Tree: [0.6, 0.8]
+    Hash: [0.4, 0.7]
+    Bitmap: [0.5, 0.6]
+```
+
+### 2. Considerações Práticas
+
+* Workload analysis
+
+* Storage constraints
+
+* Update frequency
+
+* Query patterns
+
+## Tendências e Inovações
+
+### 1. Novas Tecnologias
+
+* Machine learning indexes
+
+* Learned index structures
+
+* Hardware-aware indexes
+
+* Cloud-optimized indexes
+
+### 2. Otimizações Emergentes
+
+* Auto-indexing
+
+* Adaptive indexing
+
+* Predictive maintenance
+
+* Quantum-resistant structures
+
+
+
+# Implementação de Árvores B
+
+## Estrutura Básica
+
+```MERMAID
+graph TD
+    A[Nó] --> B[Chaves]
+    A --> C[Ponteiros]
+    A --> D[Metadados]
+    
+    B --> B1[Ordenação]
+    B --> B2[Capacidade]
+    
+    C --> C1[Filhos]
+    C --> C2[Dados]
+    
+    D --> D1[Altura]
+    D --> D2[Contadores]
+```
+
+### Definição do Nó
+
+```JAVA
+class BNode {
+    int[] keys;          // array de chaves
+    BNode[] children;    // array de ponteiros
+    int keyCount;        // número de chaves
+    boolean isLeaf;      // flag de folha
+    int minDegree;       // grau mínimo da árvore
+}
+
+class BTree {
+    BNode root;          // raiz da árvore
+    int minDegree;       // grau mínimo da árvore
+    
+    public BTree(int degree) {
+        this.root = null;
+        this.minDegree = degree;
+    }
+}
+```
+
+### Propriedades Fundamentais
+
+* Ordem da árvore (t)
+
+* Número mínimo de chaves (t-1)
+
+* Número máximo de chaves (2t-1)
+
+* Número mínimo de filhos (t)
+
+* Número máximo de filhos (2t)
+
+## Operações Fundamentais
+
+### 1. Busca
+
+#### Algoritmo de Busca
+
+```JAVA
+BNode search(BNode node, int key) {
+    int i = 0;
+    while (i < node.keyCount && key > node.keys[i]) {
+        i++;
+    }
+    
+    if (i < node.keyCount && key == node.keys[i]) {
+        return node;
+    }
+    
+    if (node.isLeaf) {
+        return null;
+    }
+    
+    return search(node.children[i], key);
+}
+```
+
+#### Complexidade
+
+* Melhor caso: O(1)
+
+* Caso médio: O(log n)
+
+* Pior caso: O(log n)
+
+### 2. Inserção
+
+#### Processo de Split
+
+```JAVA
+void splitChild(BNode parent, int index, BNode child) {
+    BNode newNode = new BNode(child.minDegree);
+    newNode.isLeaf = child.isLeaf;
+    newNode.keyCount = minDegree - 1;
+    
+    // Copiar chaves superiores para novo nó
+    for (int j = 0; j < minDegree - 1; j++) {
+        newNode.keys[j] = child.keys[j + minDegree];
+    }
+    
+    // Se não for folha, copiar ponteiros correspondentes
+    if (!child.isLeaf) {
+        for (int j = 0; j < minDegree; j++) {
+            newNode.children[j] = child.children[j + minDegree];
+        }
+    }
+    
+    child.keyCount = minDegree - 1;
+    
+    // Mover ponteiros do pai
+    for (int j = parent.keyCount; j >= index + 1; j--) {
+        parent.children[j + 1] = parent.children[j];
+    }
+    
+    parent.children[index + 1] = newNode;
+    
+    // Mover chaves do pai e inserir chave mediana
+    for (int j = parent.keyCount - 1; j >= index; j--) {
+        parent.keys[j + 1] = parent.keys[j];
+    }
+    parent.keys[index] = child.keys[minDegree - 1];
+    parent.keyCount++;
+}
+```
+
+#### Algoritmo de Inserção
+
+```JAVA
+void insert(int key) {
+    if (root == null) {
+        root = new BNode(minDegree);
+        root.keys[0] = key;
+        root.keyCount = 1;
+        root.isLeaf = true;
+    } else {
+        if (root.keyCount == 2 * minDegree - 1) {
+            BNode newRoot = new BNode(minDegree);
+            newRoot.children[0] = root;
+            splitChild(newRoot, 0, root);
+            insertNonFull(newRoot, key);
+            root = newRoot;
+        } else {
+            insertNonFull(root, key);
+        }
+    }
+}
+```
+
+### 3. Remoção
+
+#### Casos de Remoção
+
+1. Remoção de chave em nó folha
+
+2. Remoção de chave em nó interno
+
+3. Merge de nós
+
+4. Redistribuição de chaves
+
+```JAVA
+void remove(BNode node, int key) {
+    int idx = findKey(node, key);
+    
+    if (idx < node.keyCount && node.keys[idx] == key) {
+        if (node.isLeaf) {
+            removeFromLeaf(node, idx);
+        } else {
+            removeFromNonLeaf(node, idx);
+        }
+    } else {
+        if (node.isLeaf) {
+            return;  // Chave não encontrada
+        }
+        
+        boolean flag = (idx == node.keyCount);
+        
+        if (node.children[idx].keyCount < minDegree) {
+            fill(node, idx);
+        }
+        
+        if (flag && idx > node.keyCount) {
+            remove(node.children[idx - 1], key);
+        } else {
+            remove(node.children[idx], key);
+        }
+    }
+}
+```
+
+## Otimizações Avançadas
+
+### 1. Cache-Conscious
+
+#### Alinhamento de Memória
+
+```JAVA
+class CacheOptimizedNode {
+    private static final int CACHE_LINE_SIZE = 64;
+    private long[] keys;  // Alinhado em 64 bytes
+    private long[] children;
+    
+    public CacheOptimizedNode(int degree) {
+        keys = new long[2 * degree - 1];
+        children = new long[2 * degree];
+    }
+}
+```
+
+#### Técnicas de Prefetching
+
+* Software prefetching
+
+* Hardware prefetching hints
+
+* Cache line padding
+
+### 2. Concorrência
+
+#### Locks Granulares
+
+```JAVA
+class ConcurrentBNode {
+    private ReentrantReadWriteLock lock;
+    private volatile boolean isDeleted;
+    
+    public void acquireReadLock() {
+        lock.readLock().lock();
+    }
+    
+    public void acquireWriteLock() {
+        lock.writeLock().lock();
+    }
+}
+```
+
+#### Versioning
+
+* MVCC (Multi-Version Concurrency Control)
+
+* Version chains
+
+* Garbage collection
+
+## Variantes de Implementação
+
+### 1. Copy-on-Write
+
+```JAVA
+class COWBNode {
+    private final int[] keys;
+    private final BNode[] children;
+    private final AtomicReference<COWBNode> next;
+    
+    public COWBNode copy() {
+        COWBNode newNode = new COWBNode(keys.clone(), 
+                                      children.clone());
+        return newNode;
+    }
+}
+```
+
+### 2. Bulk Loading
+
+#### Algoritmo Bottom-up
+
+```JAVA
+void bulkLoad(int[] sortedKeys) {
+    int leafSize = 2 * minDegree - 1;
+    List<BNode> leaves = new ArrayList<>();
+    
+    // Criar nós folha
+    for (int i = 0; i < sortedKeys.length; i += leafSize) {
+        BNode leaf = new BNode(minDegree);
+        leaf.isLeaf = true;
+        int count = Math.min(leafSize, 
+                           sortedKeys.length - i);
+        System.arraycopy(sortedKeys, i, 
+                        leaf.keys, 0, count);
+        leaf.keyCount = count;
+        leaves.add(leaf);
+    }
+    
+    // Construir níveis superiores
+    buildUpperLevels(leaves);
+}
+```
+
+## Estruturas de Suporte
+
+### 1. Buffer Management
+
+#### Política de Cache
+
+```JAVA
+class BufferPool {
+    private final int capacity;
+    private final Map<Long, BNode> pages;
+    private final LRUCache<Long> lru;
+    
+    public BNode getPage(long pageId) {
+        BNode page = pages.get(pageId);
+        if (page != null) {
+            lru.access(pageId);
+            return page;
+        }
+        return loadFromDisk(pageId);
+    }
+}
+```
+
+### 2. Recovery
+
+#### Write-Ahead Logging
+
+```JAVA
+class LogRecord {
+    enum Type { INSERT, DELETE, SPLIT, MERGE }
+    private final Type type;
+    private final long pageId;
+    private final int key;
+    private final byte[] beforeImage;
+    private final byte[] afterImage;
+}
+```
+
+## Aspectos Práticos
+
+### 1. Monitoramento
+
+#### Métricas Chave
+
+* Altura da árvore
+
+* Fator de ocupação
+
+* Taxa de split/merge
+
+* Latência de operações
+
+### 2. Manutenção
+
+#### Rebalanceamento Adaptativo
+
+```JAVA
+void rebalance(BNode node) {
+    if (node.keyCount < minDegree - 1) {
+        mergeOrRedistribute(node);
+    } else if (node.keyCount > 2 * minDegree - 1) {
+        split(node);
+    }
+    
+    if (!node.isLeaf) {
+        for (int i = 0; i <= node.keyCount; i++) {
+            rebalance(node.children[i]);
+        }
+    }
+}
+```
+
+## Estruturas de Dados Auxiliares
+
+### 1. Iterator
+
+```JAVA
+class BTreeIterator implements Iterator<Integer> {
+    private final Stack<BNode> path;
+    private final Stack<Integer> indices;
+    
+    public boolean hasNext() {
+        return !path.isEmpty();
+    }
+    
+    public Integer next() {
+        BNode current = path.peek();
+        int idx = indices.peek();
+        
+        int key = current.keys[idx];
+        advanceToNext();
+        return key;
+    }
+}
+```
+
+### 2. Range Scan
+
+```JAVA
+List<Integer> rangeSearch(int start, int end) {
+    List<Integer> result = new ArrayList<>();
+    rangeSearchRecursive(root, start, end, result);
+    return result;
+}
+
+void rangeSearchRecursive(BNode node, int start, 
+                         int end, List<Integer> result) {
+    int i = 0;
+    
+    while (i < node.keyCount && node.keys[i] < start) {
+        i++;
+    }
+    
+    while (i < node.keyCount && node.keys[i] <= end) {
+        if (!node.isLeaf) {
+            rangeSearchRecursive(node.children[i], 
+                               start, end, result);
+        }
+        result.add(node.keys[i]);
+        i++;
+    }
+    
+    if (!node.isLeaf && i <= node.keyCount) {
+        rangeSearchRecursive(node.children[i], 
+                           start, end, result);
+    }
+}
+```
+
+
+
+# Estruturas Hash
+
+## Fundamentos
+
+```MERMAID
+graph TD
+    A[Estruturas Hash] --> B[Hash Estático]
+    A --> C[Hash Dinâmico]
+    A --> D[Hash Extensível]
+    
+    B --> B1[Hash Aberto]
+    B --> B2[Hash Fechado]
+    
+    C --> C1[Linear Hashing]
+    C --> C2[Double Hashing]
+    
+    D --> D1[Directory Based]
+    D --> D2[Directory-less]
+```
+
+### 1. Funções Hash
+
+```JAVA
+class HashFunction {
+    // Multiplicação
+    long multiplyHash(String key, int tableSize) {
+        long hash = 0;
+        for (char c : key.toCharArray()) {
+            hash = 31 * hash + c;
+        }
+        return Math.abs(hash % tableSize);
+    }
+    
+    // FNV Hash
+    long fnvHash(byte[] data) {
+        long hash = 0xcbf29ce484222325L;
+        for (byte b : data) {
+            hash *= 0x100000001b3L;
+            hash ^= b;
+        }
+        return hash;
+    }
+}
+```
+
+### 2. Tratamento de Colisões
+
+#### Encadeamento Externo
+
+```JAVA
+class Node<K,V> {
+    K key;
+    V value;
+    Node<K,V> next;
+    
+    Node(K key, V value) {
+        this.key = key;
+        this.value = value;
+    }
+}
+
+class HashTable<K,V> {
+    private Node<K,V>[] table;
+    private int size;
+    
+    @SuppressWarnings("unchecked")
+    public HashTable(int capacity) {
+        table = (Node<K,V>[]) new Node[capacity];
+        size = 0;
+    }
+    
+    public void put(K key, V value) {
+        int index = hash(key);
+        Node<K,V> node = table[index];
+        
+        while (node != null) {
+            if (node.key.equals(key)) {
+                node.value = value;
+                return;
+            }
+            node = node.next;
+        }
+        
+        Node<K,V> newNode = new Node<>(key, value);
+        newNode.next = table[index];
+        table[index] = newNode;
+        size++;
+    }
+}
+```
+
+#### Endereçamento Aberto
+
+```JAVA
+class OpenAddressingHash<K,V> {
+    private Entry<K,V>[] table;
+    private int size;
+    private static final double LOAD_FACTOR = 0.75;
+    
+    private static class Entry<K,V> {
+        K key;
+        V value;
+        boolean isDeleted;
+        
+        Entry(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+    
+    public V get(K key) {
+        int index = findKey(key);
+        return index != -1 ? table[index].value : null;
+    }
+    
+    private int findKey(K key) {
+        int hash = hash(key);
+        int i = 0;
+        
+        while (i < table.length) {
+            int j = (hash + probe(i)) % table.length;
+            
+            if (table[j] == null) return -1;
+            if (!table[j].isDeleted && 
+                table[j].key.equals(key)) {
+                return j;
+            }
+            i++;
+        }
+        return -1;
+    }
+    
+    private int probe(int i) {
+        return i * i;  // Quadratic probing
+    }
+}
+```
+
+## Hash Dinâmico
+
+### 1. Linear Hashing
+
+```JAVA
+class LinearHash<K,V> {
+    private ArrayList<Bucket<K,V>> buckets;
+    private int splitPointer;
+    private int level;
+    private double loadFactor;
+    
+    private static class Bucket<K,V> {
+        Map<K,V> entries;
+        int localDepth;
+        
+        Bucket(int depth) {
+            entries = new HashMap<>();
+            localDepth = depth;
+        }
+    }
+    
+    public void insert(K key, V value) {
+        int bucketIndex = getBucketIndex(key);
+        Bucket<K,V> bucket = buckets.get(bucketIndex);
+        
+        bucket.entries.put(key, value);
+        
+        if (shouldSplit()) {
+            split();
+        }
+    }
+    
+    private void split() {
+        Bucket<K,V> oldBucket = buckets.get(splitPointer);
+        Bucket<K,V> newBucket = new Bucket<>(level);
+        
+        // Redistribuir entradas
+        Map<K,V> oldEntries = oldBucket.entries;
+        oldBucket.entries = new HashMap<>();
+        
+        for (Map.Entry<K,V> entry : oldEntries.entrySet()) {
+            int newIndex = getBucketIndex(entry.getKey());
+            if (newIndex == splitPointer) {
+                oldBucket.entries.put(entry.getKey(), 
+                                    entry.getValue());
+            } else {
+                newBucket.entries.put(entry.getKey(), 
+                                    entry.getValue());
+            }
+        }
+        
+        buckets.add(newBucket);
+        splitPointer++;
+        
+        if (splitPointer == Math.pow(2, level)) {
+            splitPointer = 0;
+            level++;
+        }
+    }
+}
+```
+
+### 2. Extendible Hashing
+
+```JAVA
+class ExtendibleHash<K,V> {
+    private Directory<K,V> directory;
+    private int globalDepth;
+    
+    private static class Directory<K,V> {
+        Bucket<K,V>[] buckets;
+        int size;
+        
+        @SuppressWarnings("unchecked")
+        Directory(int size) {
+            this.size = size;
+            buckets = new Bucket[size];
+        }
+    }
+    
+    private static class Bucket<K,V> {
+        Map<K,V> entries;
+        int localDepth;
+        static final int CAPACITY = 4;
+        
+        Bucket(int depth) {
+            entries = new HashMap<>();
+            localDepth = depth;
+        }
+        
+        boolean isFull() {
+            return entries.size() >= CAPACITY;
+        }
+    }
+    
+    public void insert(K key, V value) {
+        int dirIndex = hash(key) & ((1 << globalDepth) - 1);
+        Bucket<K,V> bucket = directory.buckets[dirIndex];
+        
+        if (bucket.isFull()) {
+            if (bucket.localDepth == globalDepth) {
+                doubleDirectory();
+            }
+            split(dirIndex);
+            insert(key, value);
+        } else {
+            bucket.entries.put(key, value);
+        }
+    }
+    
+    private void split(int bucketIndex) {
+        Bucket<K,V> oldBucket = directory.buckets[bucketIndex];
+        Bucket<K,V> newBucket = new Bucket<>(oldBucket.localDepth + 1);
+        
+        Map<K,V> oldEntries = oldBucket.entries;
+        oldBucket.entries = new HashMap<>();
+        oldBucket.localDepth++;
+        
+        int mask = 1 << (oldBucket.localDepth - 1);
+        for (Map.Entry<K,V> entry : oldEntries.entrySet()) {
+            int newIndex = hash(entry.getKey()) & ((1 << oldBucket.localDepth) - 1);
+            if ((newIndex & mask) == 0) {
+                oldBucket.entries.put(entry.getKey(), entry.getValue());
+            } else {
+                newBucket.entries.put(entry.getKey(), entry.getValue());
+            }
+        }
+        
+        // Atualizar diretório
+        for (int i = 0; i < directory.size; i++) {
+            if (directory.buckets[i] == oldBucket && (i & mask) != 0) {
+                directory.buckets[i] = newBucket;
+            }
+        }
+    }
+}
+```
+
+## Otimizações
+
+### 1. Cache-Conscious Hashing
+
+```JAVA
+class CacheOptimizedHash<K,V> {
+    private static final int CACHE_LINE_SIZE = 64;
+    private static final int ENTRIES_PER_BUCKET = 
+        CACHE_LINE_SIZE / (8 + 8); // key + value ptr
+    
+    private static class Bucket<K,V> {
+        long[] keys;
+        V[] values;
+        int size;
+        
+        @SuppressWarnings("unchecked")
+        Bucket() {
+            keys = new long[ENTRIES_PER_BUCKET];
+            values = (V[]) new Object[ENTRIES_PER_BUCKET];
+        }
+    }
+}
+```
+
+### 2. Concurrent Hashing
+
+```JAVA
+class ConcurrentHash<K,V> {
+    private static final int SHARD_COUNT = 16;
+    private final HashTable<K,V>[] shards;
+    private final ReentrantLock[] locks;
+    
+    @SuppressWarnings("unchecked")
+    public ConcurrentHash() {
+        shards = new HashTable[SHARD_COUNT];
+        locks = new ReentrantLock[SHARD_COUNT];
+        
+        for (int i = 0; i < SHARD_COUNT; i++) {
+            shards[i] = new HashTable<>();
+            locks[i] = new ReentrantLock();
+        }
+    }
+    
+    public V put(K key, V value) {
+        int shardIndex = getShard(key);
+        locks[shardIndex].lock();
+        try {
+            return shards[shardIndex].put(key, value);
+        } finally {
+            locks[shardIndex].unlock();
+        }
+    }
+    
+    private int getShard(K key) {
+        return Math.abs(key.hashCode() % SHARD_COUNT);
+    }
+}
+```
+
+## Estruturas Especializadas
+
+### 1. Bloom Filter
+
+```JAVA
+class BloomFilter<T> {
+    private BitSet bitset;
+    private int size;
+    private int numHashFunctions;
+    private HashFunction[] hashFunctions;
+    
+    public BloomFilter(int size, int numHash) {
+        this.size = size;
+        this.numHashFunctions = numHash;
+        this.bitset = new BitSet(size);
+        this.hashFunctions = new HashFunction[numHash];
+        
+        for (int i = 0; i < numHash; i++) {
+            hashFunctions[i] = new HashFunction(i);
+        }
+    }
+    
+    public void add(T item) {
+        for (HashFunction hf : hashFunctions) {
+            bitset.set(hf.hash(item) % size);
+        }
+    }
+    
+    public boolean mightContain(T item) {
+        for (HashFunction hf : hashFunctions) {
+            if (!bitset.get(hf.hash(item) % size)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+```
+
+### 2. Cuckoo Hashing
+
+```JAVA
+class CuckooHash<K,V> {
+    private static final int MAX_LOOP = 100;
+    private Entry<K,V>[][] tables;
+    private HashFunction[] hashFunctions;
+    
+    private static class Entry<K,V> {
+        K key;
+        V value;
+        
+        Entry(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    public CuckooHash(int capacity) {
+        tables = new Entry[2][capacity];
+        hashFunctions = new HashFunction[]{
+            new HashFunction(0),
+            new HashFunction(1)
+        };
+    }
+    
+    public boolean insert(K key, V value) {
+        Entry<K,V> entry = new Entry<>(key, value);
+        
+        for (int i = 0; i < MAX_LOOP; i++) {
+            for (int j = 0; j < 2; j++) {
+                int pos = hashFunctions[j].hash(key) % tables[j].length;
+                Entry<K,V> temp = tables[j][pos];
+                tables[j][pos] = entry;
+                
+                if (temp == null) return true;
+                entry = temp;
+            }
+        }
+        
+        // Rehash needed
+        return false;
+    }
+}
+```
+
+## Monitoramento e Manutenção
+
+### 1. Métricas
+
+```JAVA
+class HashMetrics {
+    private long collisions;
+    private long resizes;
+    private double loadFactor;
+    private long[] bucketSizes;
+    
+    public void recordCollision() {
+        collisions++;
+    }
+    
+    public void recordResize() {
+        resizes++;
+    }
+    
+    public void updateLoadFactor(int entries, int capacity) {
+        loadFactor = (double) entries / capacity;
+    }
+    
+    public String getStats() {
+        return String.format(
+            "Collisions: %d\nResizes: %d\nLoad Factor: %.2f",
+            collisions, resizes, loadFactor
+        );
+    }
+}
+```
+
+### 2. Auto-tuning
+
+```JAVA
+class AdaptiveHash<K,V> {
+    private static final double RESIZE_THRESHOLD = 0.75;
+    private static final double COLLISION_THRESHOLD = 0.1;
+    
+    private HashTable<K,V> table;
+    private HashMetrics metrics;
+    
+    public void tune() {
+        if (metrics.getLoadFactor() > RESIZE_THRESHOLD) {
+            resize(table.capacity() * 2);
+        }
+        
+        if (metrics.getCollisionRate() > COLLISION_THRESHOLD) {
+            changeHashFunction();
+        }
+    }
+    
+    private void changeHashFunction() {
+        HashFunction[] candidates = {
+            new MultiplyHash(),
+            new FNVHash(),
+            new MurmurHash()
+        };
+        
+        // Avaliar e selecionar a melhor função
+        HashFunction best = evaluateHashFunctions(candidates);
+        table.setHashFunction(best);
+    }
+}
+```
+
+## Considerações Práticas
+
+### 1. Escolha da Estrutura
+
+```MERMAID
+graph TD
+    A[Requisitos] --> B{Volume de Dados}
+    B --> |Pequeno| C[Hash Estático]
+    B --> |Grande| D[Hash Dinâmico]
+    
+    C --> E{Colisões}
+    E --> |Poucas| F[Endereçamento Aberto]
+    E --> |Muitas| G[Encadeamento]
+    
+    D --> H{Distribuição}
+    H --> |Uniforme| I[Linear Hashing]
+    H --> |Não-uniforme| J[Extensible Hashing]
+```
+
+### 2. Trade-offs
+
+* Memória vs. Velocidade
+
+* Complexidade vs. Flexibilidade
+
+* Concorrência vs. Consistência
+
+* Localidade vs. Distribuição
+
+```MERMAID
+quadrantChart
+    title Trade-offs em Estruturas Hash
+    x-axis Baixa Complexidade --> Alta Complexidade
+    y-axis Baixo Desempenho --> Alto Desempenho
+    quadrant-1 Ideal
+    quadrant-2 Complexo
+    quadrant-3 Simples
+    quadrant-4 Ineficiente
+    Static Hash: [0.3, 0.5]
+    Linear Hash: [0.6, 0.7]
+    Extendible Hash: [0.8, 0.8]
+    Cuckoo Hash: [0.7, 0.9]
+```
+
+
+
+# Índices Bitmap
+
+Os índices bitmap são estruturas especializadas que utilizam vetores de bits para representar a presença ou ausência de valores em colunas, sendo particularmente eficientes para colunas com baixa cardinalidade.
+
+```MERMAID
+graph TD
+    A[Índice Bitmap] --> B[Estrutura Básica]
+    A --> C[Operações]
+    A --> D[Otimizações]
+    
+    B --> B1[Vetores de Bits]
+    B --> B2[Dicionário]
+    B --> B3[Compressão]
+    
+    C --> C1[AND/OR]
+    C --> C2[NOT]
+    C --> C3[XOR]
+    
+    D --> D1[Encoding]
+    D --> D2[Compression]
+    D --> D3[Binning]
+```
+
+## Fundamentos
+
+### 1. Estrutura Básica
+
+* Mapeamento valor-bit
+
+* Vetores binários
+
+* Dicionário de valores
+
+* Metadata
+
+```MERMAID
+graph LR
+    subgraph "Estrutura Bitmap"
+        A[Valor] --> B[Dicionário]
+        B --> C[Vetor de Bits]
+        C --> D[Compressão]
+    end
+```
+
+### 2. Tipos de Bitmap
+
+* Simple bitmap
+
+* Encoded bitmap
+
+* Compressed bitmap
+
+* Hierarchical bitmap
+
+## Operações Fundamentais
+
+### 1. Operações Lógicas
+
+* AND (Interseção)
+
+* OR (União)
+
+* NOT (Complemento)
+
+* XOR (Diferença simétrica)
+
+### 2. Manipulação
+
+* Set bit
+
+* Clear bit
+
+* Flip bit
+
+* Count bits
+
+```MERMAID
+graph TB
+    subgraph "Operações Bitmap"
+        A[Operação] --> B[AND]
+        A --> C[OR]
+        A --> D[NOT]
+        
+        B --> E[Result]
+        C --> E
+        D --> E
+    end
+```
+
+## Otimizações
+
+### 1. Técnicas de Compressão
+
+* Run-length encoding
+
+* Word-aligned hybrid
+
+* Roaring bitmap
+
+* EWAH compression
+
+### 2. Estratégias de Encoding
+
+* Range encoding
+
+* Interval encoding
+
+* Equality encoding
+
+* Range-equality encoding
+
+```MERMAID
+graph TD
+    A[Otimizações] --> B[Compressão]
+    A --> C[Encoding]
+    A --> D[Binning]
+    
+    B --> B1[RLE]
+    B --> B2[WAH]
+    B --> B3[Roaring]
+    
+    C --> C1[Range]
+    C --> C2[Interval]
+    C --> C3[Equality]
+    
+    D --> D1[Value]
+    D --> D2[Range]
+    D --> D3[Custom]
+```
+
+## Casos de Uso
+
+### 1. Cenários Ideais
+
+* Baixa cardinalidade
+
+* Consultas analíticas
+
+* Operações em lote
+
+* Data warehousing
+
+### 2. Limitações
+
+* Alta cardinalidade
+
+* Frequentes atualizações
+
+* Restrições de memória
+
+* Overhead de manutenção
+
+```MERMAID
+quadrantChart
+    title Adequação de Índices Bitmap
+    x-axis Baixa Cardinalidade --> Alta Cardinalidade
+    y-axis Baixa Frequência de Updates --> Alta Frequência de Updates
+    quadrant-1 Ideal
+    quadrant-2 Possível
+    quadrant-3 Limitado
+    quadrant-4 Não Recomendado
+    Simple Bitmap: [0.2, 0.3]
+    Encoded Bitmap: [0.4, 0.4]
+    Compressed Bitmap: [0.6, 0.5]
+    Hierarchical Bitmap: [0.7, 0.6]
+```
+
+## Performance e Otimização
+
+### 1. Métricas de Avaliação
+
+* Densidade do bitmap
+
+* Taxa de compressão
+
+* Tempo de resposta
+
+* Overhead de memória
+
+### 2. Estratégias de Otimização
+
+* Binning
+
+* Particionamento
+
+* Caching
+
+* Paralelização
+
+```MERMAID
+timeline
+    title Ciclo de Otimização
+    section Análise
+        Profiling : Métricas base
+        Avaliação : Identificação de gargalos
+    section Implementação
+        Ajustes : Otimizações específicas
+        Testes : Validação de mudanças
+    section Monitoramento
+        Métricas : Coleta contínua
+        Ajustes : Refinamentos
+```
+
+## Implementação Prática
+
+### 1. Considerações de Design
+
+* Estrutura de armazenamento
+
+* Estratégias de atualização
+
+* Gerenciamento de memória
+
+* Concorrência
+
+### 2. Manutenção
+
+* Reconstrução
+
+* Compactação
+
+* Estatísticas
+
+* Monitoramento
+
+```MERMAID
+graph LR
+    subgraph "Ciclo de Vida"
+        A[Design] --> B[Implementação]
+        B --> C[Otimização]
+        C --> D[Manutenção]
+        D --> A
+    end
+```
+
+
+
+# Hierarquia de Memória
+
+A hierarquia de memória é um conceito fundamental em sistemas de banco de dados que organiza diferentes níveis de armazenamento baseados em velocidade, custo e capacidade.
+
+```MERMAID
+graph TD
+    A[Hierarquia de Memória] --> B[Registradores]
+    A --> C[Cache]
+    A --> D[Memória Principal]
+    A --> E[Armazenamento Secundário]
+    
+    B --> B1[L1 Cache]
+    B --> B2[L2 Cache]
+    
+    C --> C1[Buffer Pool]
+    C --> C2[Page Cache]
+    
+    D --> D1[RAM]
+    D --> D2[Memória Virtual]
+    
+    E --> E1[SSD]
+    E --> E2[HDD]
+```
+
+## Níveis de Hierarquia
+
+### 1. Memória Primária
+
+* Registradores * Velocidade: < 1ns * Capacidade: KB * Volatilidade: Sim * Custo: Muito Alto
+
+* Cache * L1/L2/L3 * Latência: 1-10ns * Capacidade: MB * Política de substituição
+
+```MERMAID
+graph LR
+    subgraph "Cache Hierarchy"
+        A[CPU] --> B[L1]
+        B --> C[L2]
+        C --> D[L3]
+        D --> E[RAM]
+    end
+```
+
+### 2. Memória Principal
+
+* RAM * Acesso direto * Latência: ~100ns * Capacidade: GB * Gerenciamento dinâmico
+
+* Memória Virtual * Paginação * Swapping * Page tables * TLB (Translation Lookaside Buffer)
+
+### 3. Armazenamento Secundário
+
+* SSD * Flash storage * Latência: µs * Wear leveling * TRIM support
+
+* HDD * Discos magnéticos * Latência: ms * Fragmentação * Seek time
+
+## Estratégias de Gerenciamento
+
+### 1. Políticas de Cache
+
+* LRU (Least Recently Used)
+
+* MRU (Most Recently Used)
+
+* CLOCK
+
+* ARC (Adaptive Replacement Cache)
+
+```MERMAID
+graph TB
+    subgraph "Cache Management"
+        A[Request] --> B[Cache Hit?]
+        B -->|Yes| C[Serve from Cache]
+        B -->|No| D[Load from Lower Level]
+        D --> E[Update Cache]
+    end
+```
+
+### 2. Buffer Management
+
+* Políticas de Substituição * Page replacement * Dirty page handling * Prefetching * Write-back/Write-through
+
+* Otimizações * Sequential prefetch * Random prefetch * Buffer pool partitioning * Multiple buffer pools
+
+## Otimização de Performance
+
+### 1. Técnicas de Otimização
+
+* Locality of Reference * Temporal locality * Spatial locality * Sequential access * Random access
+
+```MERMAID
+graph LR
+    subgraph "Access Patterns"
+        A[Sequential] --> B[High Performance]
+        C[Random] --> D[Lower Performance]
+    end
+```
+
+### 2. Monitoramento e Tuning
+
+* Métricas Chave * Hit ratio * Miss ratio * Response time * Throughput
+
+* Ferramentas * Performance counters * Memory profilers * I/O statistics * Cache analytics
+
+## Considerações Práticas
+
+### 1. Design Considerations
+
+* Workload Analysis * Read/write patterns * Access frequency * Data volume * Concurrency requirements
+
+```MERMAID
+mindmap
+    root((Memory Design))
+        Workload
+            Read Pattern
+            Write Pattern
+            Access Frequency
+        Hardware
+            Cache Size
+            Memory Type
+            Storage Media
+        Performance
+            Latency
+            Throughput
+            Reliability
+```
+
+### 2. Implementation Guidelines
+
+* Best Practices * Memory alignment * Cache-conscious data structures * Memory barriers * NUMA awareness
+
+* Common Pitfalls * Cache thrashing * Memory leaks * False sharing * Fragmentation
+
+## Tendências e Inovações
+
+### 1. Emerging Technologies
+
+* Persistent Memory * NVDIMM * Intel Optane * Storage Class Memory
+
+* New Architectures * In-memory databases * Hybrid memory systems * Disaggregated memory
+
+```MERMAID
+timeline
+    title Evolução da Hierarquia de Memória
+    section Passado
+        HDD : Armazenamento magnético
+        RAM : Memória volátil
+    section Presente
+        SSD : Flash storage
+        NVMe : Alta velocidade
+    section Futuro
+        SCM : Storage Class Memory
+        PM : Persistent Memory
+```
+
+
+
+# Sistemas de Cache
+
+Os sistemas de cache são componentes críticos que otimizam o acesso a dados, reduzindo a latência e melhorando o desempenho geral do sistema de banco de dados.
+
+```MERMAID
+graph TD
+    A[Sistemas de Cache] --> B[Cache de Dados]
+    A --> C[Cache de Consultas]
+    A --> D[Cache de Resultados]
+    
+    B --> B1[Buffer Pool]
+    B --> B2[Page Cache]
+    
+    C --> C1[Parse Tree]
+    C --> C2[Execution Plan]
+    
+    D --> D1[Result Sets]
+    D --> D2[Materialized Views]
+```
+
+## Arquitetura de Cache
+
+### 1. Níveis de Cache
+
+* Cache L1/L2/L3 * Hierarquia * Latência * Capacidade * Políticas
+
+```MERMAID
+graph LR
+    subgraph "Hierarquia de Cache"
+        A[CPU] --> B[L1 Cache]
+        B --> C[L2 Cache]
+        C --> D[L3 Cache]
+        D --> E[Memória Principal]
+    end
+```
+
+### 2. Buffer Pool
+
+* Estrutura interna
+
+* Gestão de páginas
+
+* Dirty pages
+
+* Clean pages
+
+## Políticas de Cache
+
+### 1. Algoritmos de Substituição
+
+* LRU (Least Recently Used)
+
+```JAVA
+class LRUCache<K,V> {
+    private final int capacity;
+    private LinkedHashMap<K,V> cache;
+    
+    public LRUCache(int capacity) {
+        this.capacity = capacity;
+        this.cache = new LinkedHashMap<K,V>(capacity, 0.75f, true) {
+            protected boolean removeEldestEntry(Map.Entry<K,V> eldest) {
+                return size() > capacity;
+            }
+        };
+    }
+}
+```
+
+* Clock Algorithm
+
+```JAVA
+class ClockCache {
+    private Page[] buffer;
+    private int hand = 0;
+    
+    public Page findVictim() {
+        while (true) {
+            if (buffer[hand].referenceBit == 0) {
+                return buffer[hand];
+            }
+            buffer[hand].referenceBit = 0;
+            hand = (hand + 1) % buffer.length;
+        }
+    }
+}
+```
+
+### 2. Estratégias de Prefetching
+
+* Sequential prefetch
+
+* Index-based prefetch
+
+* Pattern-based prefetch
+
+* Adaptive prefetch
+
+```MERMAID
+graph TB
+    subgraph "Prefetching Strategy"
+        A[Request] --> B[Analyze Pattern]
+        B --> C[Predict Next]
+        C --> D[Prefetch Data]
+        D --> E[Cache Storage]
+    end
+```
+
+## Otimizações
+
+### 1. Cache-Conscious Design
+
+* Estruturas de Dados * Alinhamento de memória * Localidade espacial * Localidade temporal * Cache line padding
+
+```JAVA
+class CacheAlignedStruct {
+    private static final int CACHE_LINE = 64;
+    
+    @Align(CACHE_LINE)
+    private long[] data;
+    
+    private int pad; // Ensure alignment
+}
+```
+
+### 2. Técnicas Avançadas
+
+* Particionamento
+
+```MERMAID
+graph TD
+    A[Buffer Pool] --> B[Hot Pages]
+    A --> C[Warm Pages]
+    A --> D[Cold Pages]
+    
+    B --> B1[Frequently Accessed]
+    C --> C1[Moderately Accessed]
+    D --> D1[Rarely Accessed]
+```
+
+## Monitoramento e Diagnóstico
+
+### 1. Métricas de Performance
+
+* Indicadores Chave * Hit ratio * Miss ratio * Eviction rate * Response time
+
+```MERMAID
+graph LR
+    subgraph "Cache Metrics"
+        A[Request] --> B{Cache Hit?}
+        B -->|Yes| C[Hit Counter++]
+        B -->|No| D[Miss Counter++]
+        D --> E[Load from Storage]
+    end
+```
+
+### 2. Ferramentas de Análise
+
+* Cache profilers
+
+* Memory analyzers
+
+* Performance counters
+
+* Monitoring tools
+
+## Implementação Prática
+
+### 1. Cache Distribuído
+
+```JAVA
+interface DistributedCache {
+    void put(String key, Object value);
+    Object get(String key);
+    void invalidate(String key);
+    void clear();
+}
+
+class RedisCache implements DistributedCache {
+    private RedisClient client;
+    
+    public void put(String key, Object value) {
+        client.set(key, serialize(value));
+    }
+    
+    public Object get(String key) {
+        byte[] data = client.get(key);
+        return deserialize(data);
+    }
+}
+```
+
+### 2. Consistência e Sincronização
+
+* Write-through vs Write-back
+
+* Cache coherence
+
+* Invalidation strategies
+
+* Replication
+
+```MERMAID
+sequenceDiagram
+    participant Client
+    participant Cache
+    participant Database
+    
+    Client->>Cache: Write Request
+    Cache->>Database: Write-through
+    Database-->>Cache: Acknowledge
+    Cache-->>Client: Complete
+```
+
+## Considerações de Design
+
+### 1. Trade-offs
+
+* Tamanho vs Performance
+
+* Consistência vs Latência
+
+* Complexidade vs Flexibilidade
+
+* Custo vs Benefício
+
+```MERMAID
+quadrantChart
+    title Cache Design Trade-offs
+    x-axis Baixa Complexidade --> Alta Complexidade
+    y-axis Baixo Desempenho --> Alto Desempenho
+    quadrant-1 Ideal
+    quadrant-2 Complexo
+    quadrant-3 Simples
+    quadrant-4 Ineficiente
+    Local Cache: [0.3, 0.5]
+    Distributed Cache: [0.7, 0.8]
+    Hybrid Cache: [0.6, 0.7]
+```
+
+### 2. Best Practices
+
+* Cache warming
+
+* Eviction policies
+
+* Error handling
+
+* Monitoring setup
+
+## Tendências e Inovações
+
+### 1. Tecnologias Emergentes
+
+* AI/ML para cache prediction
+
+* Hardware-assisted caching
+
+* Persistent memory caching
+
+* Smart prefetching
+
+### 2. Futuras Direções
+
+* Cache automation
+
+* Self-tuning systems
+
+* Intelligent prefetching
+
+* Hybrid architectures
+
+```MERMAID
+timeline
+    title Evolução dos Sistemas de Cache
+    section Passado
+        Simple : Cache simples
+        Basic : Políticas básicas
+    section Presente
+        Distributed : Cache distribuído
+        Smart : Cache inteligente
+    section Futuro
+        AI-Driven : Cache com IA
+        Autonomous : Auto-otimização
+```
+
+
+
+# Memória Virtual
+
+A memória virtual é um componente essencial dos sistemas modernos de banco de dados, fornecendo uma abstração entre a memória física e o espaço de endereçamento utilizado pelos processos.
+
+```MERMAID
+graph TD
+    A[Memória Virtual] --> B[Paginação]
+    A --> C[Segmentação]
+    A --> D[TLB]
+    
+    B --> B1[Page Tables]
+    B --> B2[Page Faults]
+    
+    C --> C1[Segmentos]
+    C --> C2[Protection]
+    
+    D --> D1[Translation]
+    D --> D2[Cache]
+```
+
+## Conceitos Fundamentais
+
+### 1. Espaço de Endereçamento
+
+* Endereçamento Virtual * Espaço linear * Independência de hardware * Isolamento de processos * Proteção de memória
+
+```MERMAID
+graph LR
+    subgraph "Address Translation"
+        A[Virtual Address] --> B[MMU]
+        B --> C[Physical Address]
+        B --> D[Page Fault]
+    end
+```
+
+### 2. Paginação
+
+* Estrutura * Tamanho de página * Page frames * Page tables * Page directory
+
+```JAVA
+class PageTable {
+    private static final int PAGE_SIZE = 4096;
+    private PageEntry[] entries;
+    
+    class PageEntry {
+        long physicalAddress;
+        boolean present;
+        boolean dirty;
+        boolean referenced;
+        int protection;
+    }
+}
+```
+
+## Mecanismos de Tradução
+
+### 1. TLB (Translation Lookaside Buffer)
+
+* Características * Cache de traduções * Hit rate * Miss penalty * Flush operations
+
+```MERMAID
+graph TB
+    subgraph "TLB Operation"
+        A[Virtual Address] --> B{TLB Hit?}
+        B -->|Yes| C[Return Physical Address]
+        B -->|No| D[Page Table Walk]
+        D --> E[Update TLB]
+        E --> C
+    end
+```
+
+### 2. Page Fault Handling
+
+```JAVA
+class PageFaultHandler {
+    void handlePageFault(long virtualAddress) {
+        // 1. Localizar página no disco
+        Page page = findPageOnDisk(virtualAddress);
+        
+        // 2. Encontrar frame livre
+        PhysicalFrame frame = findFreeFrame();
+        
+        // 3. Carregar página
+        loadPage(page, frame);
+        
+        // 4. Atualizar page table
+        updatePageTable(virtualAddress, frame);
+    }
+}
+```
+
+## Otimizações
+
+### 1. Técnicas de Gerenciamento
+
+* Swapping * Políticas de substituição * Priorização de páginas * Working set * Thrashing prevention
+
+```MERMAID
+graph TD
+    A[Memory Manager] --> B[Page Selection]
+    B --> C[Eviction]
+    C --> D[Disk Write]
+    D --> E[Page Table Update]
+```
+
+### 2. Performance Tuning
+
+* Estratégias * Page size optimization * TLB coverage * Huge pages * Transparent huge pages
+
+## Monitoramento
+
+### 1. Métricas Importantes
+
+* Indicadores * Page fault rate * TLB miss rate * Swap usage * Memory pressure
+
+```MERMAID
+graph LR
+    subgraph "Performance Metrics"
+        A[System] --> B[Page Faults]
+        A --> C[TLB Misses]
+        A --> D[Swap I/O]
+        A --> E[Memory Usage]
+    end
+```
+
+### 2. Ferramentas de Análise
+
+```JAVA
+class MemoryMonitor {
+    private MetricsCollector collector;
+    
+    public MemoryStats getStats() {
+        return new MemoryStats(
+            collector.getPageFaults(),
+            collector.getTlbMisses(),
+            collector.getSwapUsage(),
+            collector.getMemoryPressure()
+        );
+    }
+}
+```
+
+## Considerações de Design
+
+### 1. Trade-offs
+
+* Balanceamento * Tamanho de página * TLB coverage * Memory footprint * I/O overhead
+
+```MERMAID
+quadrantChart
+    title Memory Management Trade-offs
+    x-axis Baixo Overhead --> Alto Overhead
+    y-axis Baixa Performance --> Alta Performance
+    quadrant-1 Ideal
+    quadrant-2 Custoso
+    quadrant-3 Limitado
+    quadrant-4 Ineficiente
+    Small Pages: [0.3, 0.4]
+    Large Pages: [0.6, 0.8]
+    Huge Pages: [0.8, 0.9]
+```
+
+### 2. Best Practices
+
+* Memory alignment
+
+* Page coloring
+
+* NUMA awareness
+
+* Transparent huge pages
+
+## Integração com DBMS
+
+### 1. Buffer Pool Management
+
+* Coordenação * Page replacement * Buffer invalidation * Memory pressure handling * I/O scheduling
+
+```MERMAID
+graph TB
+    subgraph "DBMS Memory Integration"
+        A[Buffer Pool] --> B[Virtual Memory]
+        B --> C[Physical Memory]
+        B --> D[Swap Space]
+    end
+```
+
+### 2. Otimizações Específicas
+
+```JAVA
+class DBMemoryManager {
+    private BufferPool bufferPool;
+    private VirtualMemoryManager vmManager;
+    
+    public void optimizeMemory() {
+        // Ajusta buffer pool baseado em pressão de memória
+        long memoryPressure = vmManager.getMemoryPressure();
+        if (memoryPressure > threshold) {
+            bufferPool.shrink();
+        }
+    }
+}
+```
+
+## Tendências Futuras
+
+### 1. Inovações
+
+* Tecnologias Emergentes * Non-volatile memory * Disaggregated memory * Memory compression * Smart paging
+
+```MERMAID
+timeline
+    title Evolução da Memória Virtual
+    section Passado
+        Simple : Paginação básica
+        Basic : Swap simples
+    section Presente
+        Advanced : THP & NUMA
+        Smart : Memory tiering
+    section Futuro
+        NVM : Non-volatile memory
+        AI : Paging inteligente
+```
+
+### 2. Direções Futuras
+
+* AI/ML para predição de acesso
+
+* Gerenciamento autônomo
+
+* Integração com persistent memory
+
+* Otimização dinâmica
+
+## Conclusão
+
+A memória virtual continua sendo um componente crítico em sistemas de banco de dados modernos, evoluindo constantemente para atender às demandas crescentes de performance e eficiência.
+
+
+
