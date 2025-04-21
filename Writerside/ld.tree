@@ -2,7 +2,7 @@
 <!DOCTYPE instance-profile
         SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
 
-<instance-profile id="ld" name="Database Management Systems: A Complete Guide" start-page="welcome">
+<instance-profile id="ld" name="Database Management Systems: A Complete Guide" start-page="welcome.md">
 
       <!-- SEÇÃO 0: INTRODUÇÃO AO SUBMUNDO DOS DADOS -->
     <toc-element topic="welcome.md">
