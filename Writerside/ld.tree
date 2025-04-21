@@ -4,15 +4,14 @@
 
 <instance-profile id="ld" name="Database Management Systems: A Complete Guide" start-page="welcome.md">
 
-      <!-- SEÇÃO 0: INTRODUÇÃO AO SUBMUNDO DOS DADOS -->
+    <!-- SEÇÃO 0: INTRODUÇÃO AO SUBMUNDO DOS DADOS -->
     <toc-element topic="welcome.md">
         <toc-element topic="about-course.md"/>
         <toc-element topic="meet-the-team.md"/>
         <toc-element topic="survival-guide.md"/>
     </toc-element>
 
-
-    <!-- SEÇÃO 0: FUNDAMENTAÇÃO TEÓRICA -->
+    <!-- SEÇÃO 1: FUNDAMENTAÇÃO TEÓRICA -->
     <toc-element topic="theoretical-foundations.md">
         <toc-element topic="mathematical-foundations.md">
             <toc-element topic="set-theory.md"/>
@@ -27,7 +26,7 @@
         </toc-element>
     </toc-element>
 
-    <!-- SEÇÃO 1: ARQUITETURA DE SISTEMAS DE DADOS -->
+    <!-- SEÇÃO 2: ARQUITETURA DE SISTEMAS DE DADOS -->
     <toc-element topic="data-architecture.md">
         <toc-element topic="storage-structures.md">
             <toc-element topic="disk-organization.md"/>
@@ -45,6 +44,90 @@
         </toc-element>
     </toc-element>
 
+    <!-- SEÇÃO 3: MODELAGEM DE DADOS -->
+    <toc-element topic="data-modeling.md">
+        <toc-element topic="conceptual-modeling.md">
+            <toc-element topic="entity-relationship.md"/>
+            <toc-element topic="enhanced-er.md"/>
+            <toc-element topic="uml-class-diagrams.md"/>
+        </toc-element>
+        <toc-element topic="logical-modeling.md">
+            <toc-element topic="relational-model.md"/>
+            <toc-element topic="normalization.md">
+                <toc-element topic="first-normal-form.md"/>
+                <toc-element topic="second-normal-form.md"/>
+                <toc-element topic="third-normal-form.md"/>
+                <toc-element topic="bcnf.md"/>
+                <toc-element topic="fourth-normal-form.md"/>
+                <toc-element topic="fifth-normal-form.md"/>
+            </toc-element>
+            <toc-element topic="denormalization.md"/>
+        </toc-element>
+        <toc-element topic="physical-modeling.md">
+            <toc-element topic="storage-design.md"/>
+            <toc-element topic="index-design.md"/>
+            <toc-element topic="partition-design.md"/>
+        </toc-element>
+        <toc-element topic="dimensional-modeling.md">
+            <toc-element topic="star-schema.md"/>
+            <toc-element topic="snowflake-schema.md"/>
+            <toc-element topic="fact-tables.md"/>
+            <toc-element topic="dimension-tables.md"/>
+        </toc-element>
+        <toc-element topic="data-modeling-patterns.md">
+            <toc-element topic="inheritance-patterns.md"/>
+            <toc-element topic="association-patterns.md"/>
+            <toc-element topic="temporal-patterns.md"/>
+            <toc-element topic="audit-patterns.md"/>
+        </toc-element>
+    </toc-element>
 
+    <!-- SEÇÃO 4: SQL - STRUCTURED QUERY LANGUAGE -->
+    <toc-element topic="sql-fundamentals.md">
+        <toc-element topic="sql-ddl.md">
+            <toc-element topic="create-statements.md"/>
+            <toc-element topic="alter-statements.md"/>
+            <toc-element topic="drop-statements.md"/>
+            <toc-element topic="truncate-statements.md"/>
+        </toc-element>
+        <toc-element topic="sql-dml.md">
+            <toc-element topic="select-statements.md"/>
+            <toc-element topic="insert-statements.md"/>
+            <toc-element topic="update-statements.md"/>
+            <toc-element topic="delete-statements.md"/>
+            <toc-element topic="merge-statements.md"/>
+        </toc-element>
+        <toc-element topic="sql-dcl.md">
+            <toc-element topic="grant-statements.md"/>
+            <toc-element topic="revoke-statements.md"/>
+            <toc-element topic="role-management.md"/>
+        </toc-element>
+        <toc-element topic="sql-tcl.md">
+            <toc-element topic="transaction-basics.md"/>
+            <toc-element topic="commit-rollback.md"/>
+            <toc-element topic="savepoint-management.md"/>
+        </toc-element>
+        <toc-element topic="advanced-sql.md">
+            <toc-element topic="joins-advanced.md"/>
+            <toc-element topic="subqueries.md"/>
+            <toc-element topic="window-functions.md"/>
+            <toc-element topic="common-table-expressions.md"/>
+            <toc-element topic="stored-procedures.md"/>
+            <toc-element topic="triggers.md"/>
+            <toc-element topic="views.md"/>
+            <toc-element topic="indexes-sql.md"/>
+        </toc-element>
+        <toc-element topic="sql-optimization.md">
+            <toc-element topic="query-planning.md"/>
+            <toc-element topic="execution-plans.md"/>
+            <toc-element topic="performance-tuning.md"/>
+            <toc-element topic="index-optimization.md"/>
+        </toc-element>
+        <toc-element topic="sql-patterns.md">
+            <toc-element topic="design-patterns.md"/>
+            <toc-element topic="anti-patterns.md"/>
+            <toc-element topic="best-practices.md"/>
+        </toc-element>
+    </toc-element>
 
 </instance-profile>
