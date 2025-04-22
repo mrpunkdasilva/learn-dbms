@@ -47,7 +47,39 @@
     <!-- SEÇÃO 3: MODELAGEM DE DADOS -->
     <toc-element topic="data-modeling.md">
         <toc-element topic="conceptual-modeling.md">
-            <toc-element topic="entity-relationship.md"/>
+            <toc-element topic="entity-relationship.md">
+                <toc-element topic="er-concepts.md">
+                    <toc-element topic="entities.md"/>
+                    <toc-element topic="relationships.md"/>
+                    <toc-element topic="attributes.md"/>
+                    <toc-element topic="cardinality.md"/>
+                </toc-element>
+                <toc-element topic="er-constraints.md">
+                    <toc-element topic="key-constraints.md"/>
+                    <toc-element topic="participation-constraints.md"/>
+                    <toc-element topic="overlap-constraints.md"/>
+                </toc-element>
+                <toc-element topic="er-notation.md">
+                    <toc-element topic="chen-notation.md"/>
+                    <toc-element topic="crows-foot-notation.md"/>
+                    <toc-element topic="min-max-notation.md"/>
+                </toc-element>
+                <toc-element topic="er-design.md">
+                    <toc-element topic="design-principles.md"/>
+                    <toc-element topic="common-patterns.md"/>
+                    <toc-element topic="anti-patterns.md"/>
+                </toc-element>
+                <toc-element topic="er-mapping.md">
+                    <toc-element topic="mapping-entities.md"/>
+                    <toc-element topic="mapping-relationships.md"/>
+                    <toc-element topic="mapping-inheritance.md"/>
+                </toc-element>
+                <toc-element topic="er-tools.md">
+                    <toc-element topic="drawing-tools.md"/>
+                    <toc-element topic="case-tools.md"/>
+                    <toc-element topic="code-generators.md"/>
+                </toc-element>
+            </toc-element>
             <toc-element topic="enhanced-er.md"/>
             <toc-element topic="uml-class-diagrams.md"/>
         </toc-element>
@@ -90,44 +122,44 @@
             <toc-element topic="drop-statements.md"/>
             <toc-element topic="truncate-statements.md"/>
         </toc-element>
-        <toc-element topic="sql-dml.md">
-            <toc-element topic="select-statements.md"/>
-            <toc-element topic="insert-statements.md"/>
-            <toc-element topic="update-statements.md"/>
-            <toc-element topic="delete-statements.md"/>
-            <toc-element topic="merge-statements.md"/>
-        </toc-element>
-        <toc-element topic="sql-dcl.md">
-            <toc-element topic="grant-statements.md"/>
-            <toc-element topic="revoke-statements.md"/>
-            <toc-element topic="role-management.md"/>
-        </toc-element>
-        <toc-element topic="sql-tcl.md">
-            <toc-element topic="transaction-basics.md"/>
-            <toc-element topic="commit-rollback.md"/>
-            <toc-element topic="savepoint-management.md"/>
-        </toc-element>
-        <toc-element topic="advanced-sql.md">
-            <toc-element topic="joins-advanced.md"/>
-            <toc-element topic="subqueries.md"/>
-            <toc-element topic="window-functions.md"/>
-            <toc-element topic="common-table-expressions.md"/>
-            <toc-element topic="stored-procedures.md"/>
-            <toc-element topic="triggers.md"/>
-            <toc-element topic="views.md"/>
-            <toc-element topic="indexes-sql.md"/>
-        </toc-element>
-        <toc-element topic="sql-optimization.md">
-            <toc-element topic="query-planning.md"/>
-            <toc-element topic="execution-plans.md"/>
-            <toc-element topic="performance-tuning.md"/>
-            <toc-element topic="index-optimization.md"/>
-        </toc-element>
-        <toc-element topic="sql-patterns.md">
-            <toc-element topic="design-patterns.md"/>
-            <toc-element topic="anti-patterns.md"/>
-            <toc-element topic="best-practices.md"/>
-        </toc-element>
+<!--        <toc-element topic="sql-dml.md">-->
+<!--            <toc-element topic="select-statements.md"/>-->
+<!--            <toc-element topic="insert-statements.md"/>-->
+<!--            <toc-element topic="update-statements.md"/>-->
+<!--            <toc-element topic="delete-statements.md"/>-->
+<!--            <toc-element topic="merge-statements.md"/>-->
+<!--        </toc-element>-->
+<!--        <toc-element topic="sql-dcl.md">-->
+<!--            <toc-element topic="grant-statements.md"/>-->
+<!--            <toc-element topic="revoke-statements.md"/>-->
+<!--            <toc-element topic="role-management.md"/>-->
+<!--        </toc-element>-->
+<!--        <toc-element topic="sql-tcl.md">-->
+<!--            <toc-element topic="transaction-basics.md"/>-->
+<!--            <toc-element topic="commit-rollback.md"/>-->
+<!--            <toc-element topic="savepoint-management.md"/>-->
+<!--        </toc-element>-->
+<!--        <toc-element topic="advanced-sql.md">-->
+<!--            <toc-element topic="joins-advanced.md"/>-->
+<!--            <toc-element topic="subqueries.md"/>-->
+<!--            <toc-element topic="window-functions.md"/>-->
+<!--            <toc-element topic="common-table-expressions.md"/>-->
+<!--            <toc-element topic="stored-procedures.md"/>-->
+<!--            <toc-element topic="triggers.md"/>-->
+<!--            <toc-element topic="views.md"/>-->
+<!--            <toc-element topic="indexes-sql.md"/>-->
+<!--        </toc-element>-->
+<!--        <toc-element topic="sql-optimization.md">-->
+<!--            <toc-element topic="query-planning.md"/>-->
+<!--            <toc-element topic="execution-plans.md"/>-->
+<!--            <toc-element topic="performance-tuning.md"/>-->
+<!--            <toc-element topic="index-optimization.md"/>-->
+<!--        </toc-element>-->
+<!--        <toc-element topic="sql-patterns.md">-->
+<!--            <toc-element topic="design-patterns.md"/>-->
+<!--            <toc-element topic="anti-patterns.md"/>-->
+<!--            <toc-element topic="best-practices.md"/>-->
+<!--        </toc-element>-->
     </toc-element>
 
 </instance-profile>
