@@ -1,4 +1,4 @@
-# TEORIA DA COMPUTAÇÃO
+# Teoria da Computaçao
 
 ```ascii
 ╔══════════════════════════════════════════════════════════════╗

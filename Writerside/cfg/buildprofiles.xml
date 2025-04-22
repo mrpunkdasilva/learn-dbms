@@ -5,17 +5,17 @@
 
     <sitemap priority="0.35" change-frequency="monthly"/>
 
-     <variables>
+    <variables>
         <header-logo>logo-primary.svg</header-logo>
         <custom-favicons>logo-primary.svg</custom-favicons>
-         <custom-css>custom.css</custom-css>
-
+        <custom-css>custom.css</custom-css>
+        <search-scope>project</search-scope>
     </variables>
 
     <build-profile instance="ld">
         <variables>
             <primary-color>strawberry</primary-color>
-            <noindex-content>true</noindex-content>
+            <noindex-content>false</noindex-content>
         </variables>
     </build-profile>
 

@@ -65,15 +65,6 @@ Contribuições são bem-vindas! Por favor, leia nosso [Guia de Contribução](C
 
 Este projeto está licenciado sob a [MIT License](LICENSE).
 
-## Agradecimentos
-
-Um agradecimento especial a todos os contribuidores e à comunidade que ajuda a manter este projeto vivo.
-
-```
-╔════════════════════════════════════════════════════════════════════╗
-║ "Mergulhe no submundo dos dados. Sobreviva. Aprenda. Evolua."     ║
-╚════════════════════════════════════════════════════════════════════╝
-```
 
 ## Status do Projeto
 
