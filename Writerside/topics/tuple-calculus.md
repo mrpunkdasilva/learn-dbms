@@ -1,4 +1,4 @@
-# Cálculo de Tuplas: 
+# Cálculo de Tuplas
 
 ## Mapa Mental 
 

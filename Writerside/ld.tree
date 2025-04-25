@@ -12,19 +12,19 @@
     </toc-element>
 
     <!-- SEÇÃO 1: FUNDAMENTAÇÃO TEÓRICA -->
-    <toc-element topic="theoretical-foundations.md">
-        <toc-element topic="mathematical-foundations.md">
-            <toc-element topic="set-theory.md"/>
-            <toc-element topic="predicate-logic.md"/>
-            <toc-element topic="relational-algebra.md"/>
-            <toc-element topic="tuple-calculus.md"/>
-        </toc-element>
-        <toc-element topic="computational-theory.md">
-            <toc-element topic="complexity-analysis.md"/>
-            <toc-element topic="computational-models.md"/>
-            <toc-element topic="automata-theory.md"/>
-        </toc-element>
-    </toc-element>
+<!--    <toc-element topic="theoretical-foundations.md">-->
+<!--        <toc-element topic="mathematical-foundations.md">-->
+<!--            <toc-element topic="set-theory.md"/>-->
+<!--            <toc-element topic="predicate-logic.md"/>-->
+<!--            <toc-element topic="relational-algebra.md"/>-->
+<!--            <toc-element topic="tuple-calculus.md"/>-->
+<!--        </toc-element>-->
+<!--        <toc-element topic="computational-theory.md">-->
+<!--            <toc-element topic="complexity-analysis.md"/>-->
+<!--            <toc-element topic="computational-models.md"/>-->
+<!--            <toc-element topic="automata-theory.md"/>-->
+<!--        </toc-element>-->
+<!--    </toc-element>-->
 
     <!-- SEÇÃO 2: ARQUITETURA DE SISTEMAS DE DADOS -->
     <toc-element topic="data-architecture.md">
@@ -84,7 +84,27 @@
             <toc-element topic="uml-class-diagrams.md"/>
         </toc-element>
         <toc-element topic="logical-modeling.md">
-            <toc-element topic="relational-model.md"/>
+            <toc-element topic="relational-model.md">
+                <toc-element topic="relational-concepts.md">
+                    <toc-element topic="relations-tuples.md"/>
+                    <toc-element topic="attributes-domains.md"/>
+                    <toc-element topic="keys-constraints.md"/>
+                    <toc-element topic="referential-integrity.md"/>
+                </toc-element>
+                <toc-element topic="er-to-relational.md">
+                    <toc-element topic="er-mapping-entities.md"/>
+                    <toc-element topic="er-mapping-relationships.md"/>
+                    <toc-element topic="er-mapping-attributes.md"/>
+                    <toc-element topic="er-mapping-inheritance.md"/>
+                    <toc-element topic="er-mapping-constraints.md"/>
+                </toc-element>
+                <toc-element topic="relational-design.md">
+                    <toc-element topic="schema-design.md"/>
+                    <toc-element topic="normal-forms.md"/>
+                    <toc-element topic="desnormalization.md"/>
+                    <toc-element topic="performance-optimization.md"/>
+                </toc-element>
+            </toc-element>
             <toc-element topic="normalization.md">
                 <toc-element topic="first-normal-form.md"/>
                 <toc-element topic="second-normal-form.md"/>
@@ -93,7 +113,7 @@
                 <toc-element topic="fourth-normal-form.md"/>
                 <toc-element topic="fifth-normal-form.md"/>
             </toc-element>
-            <toc-element topic="denormalization.md"/>
+            <toc-element topic="complete-learn-desnormalization.md"/>
         </toc-element>
         <toc-element topic="physical-modeling.md">
             <toc-element topic="storage-design.md"/>
