@@ -18756,3 +18756,4026 @@ GROUP BY ROLLUP(l.continente, l.pais, l.regiao);
 
 
 
+# Padrões de Modelagem de Dados
+
+## Visão Geral
+
+```MERMAID
+mindmap
+    root((Padrões de Modelagem))
+        Herança
+            Single Table
+            Class Table
+            Concrete Table
+        Associação
+            One-to-One
+            One-to-Many
+            Many-to-Many
+        Temporal
+            Histórico
+            Versionamento
+            Auditoria
+        Auditoria
+            Logs
+            Trilhas
+            Snapshots
+```
+
+## Categorias de Padrões
+
+### 1. Padrões de Herança
+
+* Mapeamento de hierarquias
+
+* Polimorfismo em dados
+
+* Reutilização de estruturas
+
+### 2. Padrões de Associação
+
+* Relacionamentos complexos
+
+* Cardinalidades
+
+* Agregações
+
+### 3. Padrões Temporais
+
+* Histórico de mudanças
+
+* Versionamento
+
+* Dados temporais
+
+### 4. Padrões de Auditoria
+
+* Rastreamento
+
+* Segurança
+
+* Conformidade
+
+## Seleção de Padrões
+
+### Critérios
+
+1. Requisitos Funcionais
+
+* Funcionalidades necessárias
+
+* Regras de negócio
+
+* Casos de uso
+
+2. Requisitos Não-Funcionais
+
+* Performance
+
+* Manutenibilidade
+
+* Escalabilidade
+
+3. Contexto
+
+* Tecnologia
+
+* Equipe
+
+* Restrições
+
+
+
+# Padrões de Herança
+
+## Single Table Inheritance
+
+```MERMAID
+erDiagram
+    PESSOA {
+        int id PK
+        string nome
+        string tipo
+        float salario
+        float limite_credito
+    }
+```
+
+### Implementação
+
+```SQL
+CREATE TABLE pessoa (
+    id INT PRIMARY KEY,
+    nome VARCHAR(100),
+    tipo VARCHAR(20),
+    salario DECIMAL(10,2) NULL,
+    limite_credito DECIMAL(10,2) NULL
+);
+```
+
+## Class Table Inheritance
+
+```MERMAID
+erDiagram
+    PESSOA ||--o| FUNCIONARIO : "é um"
+    PESSOA ||--o| CLIENTE : "é um"
+    
+    PESSOA {
+        int id PK
+        string nome
+    }
+    
+    FUNCIONARIO {
+        int pessoa_id FK
+        float salario
+    }
+    
+    CLIENTE {
+        int pessoa_id FK
+        float limite_credito
+    }
+```
+
+### Implementação
+
+```SQL
+CREATE TABLE pessoa (
+    id INT PRIMARY KEY,
+    nome VARCHAR(100)
+);
+
+CREATE TABLE funcionario (
+    pessoa_id INT PRIMARY KEY,
+    salario DECIMAL(10,2),
+    FOREIGN KEY (pessoa_id) REFERENCES pessoa(id)
+);
+
+CREATE TABLE cliente (
+    pessoa_id INT PRIMARY KEY,
+    limite_credito DECIMAL(10,2),
+    FOREIGN KEY (pessoa_id) REFERENCES pessoa(id)
+);
+```
+
+## Concrete Table Inheritance
+
+```MERMAID
+erDiagram
+    FUNCIONARIO {
+        int id PK
+        string nome
+        float salario
+    }
+    
+    CLIENTE {
+        int id PK
+        string nome
+        float limite_credito
+    }
+```
+
+### Implementação
+
+```SQL
+CREATE TABLE funcionario (
+    id INT PRIMARY KEY,
+    nome VARCHAR(100),
+    salario DECIMAL(10,2)
+);
+
+CREATE TABLE cliente (
+    id INT PRIMARY KEY,
+    nome VARCHAR(100),
+    limite_credito DECIMAL(10,2)
+);
+```
+
+
+
+# Padrões de Associação
+
+## One-to-One
+
+```MERMAID
+erDiagram
+    USUARIO ||--|| PERFIL : possui
+    
+    USUARIO {
+        int id PK
+        string username
+        string email
+    }
+    
+    PERFIL {
+        int usuario_id FK
+        string bio
+        string avatar
+    }
+```
+
+### Implementação
+
+```SQL
+CREATE TABLE usuario (
+    id INT PRIMARY KEY,
+    username VARCHAR(50),
+    email VARCHAR(100)
+);
+
+CREATE TABLE perfil (
+    usuario_id INT PRIMARY KEY,
+    bio TEXT,
+    avatar VARCHAR(200),
+    FOREIGN KEY (usuario_id) REFERENCES usuario(id)
+);
+```
+
+## One-to-Many
+
+```MERMAID
+erDiagram
+    PEDIDO ||--|{ ITEM : contém
+    
+    PEDIDO {
+        int id PK
+        date data
+        float total
+    }
+    
+    ITEM {
+        int id PK
+        int pedido_id FK
+        string produto
+        int quantidade
+    }
+```
+
+### Implementação
+
+```SQL
+CREATE TABLE pedido (
+    id INT PRIMARY KEY,
+    data DATE,
+    total DECIMAL(10,2)
+);
+
+CREATE TABLE item (
+    id INT PRIMARY KEY,
+    pedido_id INT,
+    produto VARCHAR(100),
+    quantidade INT,
+    FOREIGN KEY (pedido_id) REFERENCES pedido(id)
+);
+```
+
+## Many-to-Many
+
+```MERMAID
+erDiagram
+    PRODUTO }|--|{ CATEGORIA : pertence
+    
+    PRODUTO {
+        int id PK
+        string nome
+        float preco
+    }
+    
+    PRODUTO_CATEGORIA {
+        int produto_id FK
+        int categoria_id FK
+    }
+    
+    CATEGORIA {
+        int id PK
+        string nome
+        string descricao
+    }
+```
+
+### Implementação
+
+```SQL
+CREATE TABLE produto (
+    id INT PRIMARY KEY,
+    nome VARCHAR(100),
+    preco DECIMAL(10,2)
+);
+
+CREATE TABLE categoria (
+    id INT PRIMARY KEY,
+    nome VARCHAR(50),
+    descricao TEXT
+);
+
+CREATE TABLE produto_categoria (
+    produto_id INT,
+    categoria_id INT,
+    PRIMARY KEY (produto_id, categoria_id),
+    FOREIGN KEY (produto_id) REFERENCES produto(id),
+    FOREIGN KEY (categoria_id) REFERENCES categoria(id)
+);
+```
+
+
+
+# Padrões Temporais
+
+## Histórico de Mudanças
+
+```MERMAID
+erDiagram
+    PRODUTO ||--o{ PRODUTO_HISTORICO : registra
+    
+    PRODUTO {
+        int id PK
+        string nome
+        float preco_atual
+    }
+    
+    PRODUTO_HISTORICO {
+        int id PK
+        int produto_id FK
+        float preco
+        date data_inicio
+        date data_fim
+    }
+```
+
+### Implementação
+
+```SQL
+CREATE TABLE produto (
+    id INT PRIMARY KEY,
+    nome VARCHAR(100),
+    preco_atual DECIMAL(10,2)
+);
+
+CREATE TABLE produto_historico (
+    id INT PRIMARY KEY,
+    produto_id INT,
+    preco DECIMAL(10,2),
+    data_inicio DATE,
+    data_fim DATE,
+    FOREIGN KEY (produto_id) REFERENCES produto(id)
+);
+```
+
+## Versionamento
+
+```MERMAID
+erDiagram
+    DOCUMENTO ||--o{ VERSAO : possui
+    
+    DOCUMENTO {
+        int id PK
+        string titulo
+        int versao_atual
+    }
+    
+    VERSAO {
+        int id PK
+        int documento_id FK
+        int numero
+        text conteudo
+        timestamp data_criacao
+    }
+```
+
+### Implementação
+
+```SQL
+CREATE TABLE documento (
+    id INT PRIMARY KEY,
+    titulo VARCHAR(200),
+    versao_atual INT
+);
+
+CREATE TABLE versao (
+    id INT PRIMARY KEY,
+    documento_id INT,
+    numero INT,
+    conteudo TEXT,
+    data_criacao TIMESTAMP,
+    FOREIGN KEY (documento_id) REFERENCES documento(id)
+);
+```
+
+## Dados Temporais
+
+```MERMAID
+erDiagram
+    CONTRATO {
+        int id PK
+        date data_inicio
+        date data_fim
+        string status
+        float valor
+    }
+```
+
+### Implementação
+
+```SQL
+CREATE TABLE contrato (
+    id INT PRIMARY KEY,
+    data_inicio DATE,
+    data_fim DATE,
+    status VARCHAR(20),
+    valor DECIMAL(10,2)
+);
+
+-- Índices para consultas temporais
+CREATE INDEX idx_contrato_periodo 
+ON contrato(data_inicio, data_fim);
+```
+
+
+
+# Padrões de Auditoria
+
+## Log de Alterações
+
+```MERMAID
+erDiagram
+    ENTIDADE ||--o{ LOG_ALTERACAO : registra
+    
+    ENTIDADE {
+        int id PK
+        string nome
+        string status
+    }
+    
+    LOG_ALTERACAO {
+        int id PK
+        string tabela
+        int registro_id
+        string campo
+        string valor_anterior
+        string valor_novo
+        timestamp data_alteracao
+        string usuario
+    }
+```
+
+### Implementação
+
+```SQL
+CREATE TABLE log_alteracao (
+    id INT PRIMARY KEY,
+    tabela VARCHAR(50),
+    registro_id INT,
+    campo VARCHAR(50),
+    valor_anterior TEXT,
+    valor_novo TEXT,
+    data_alteracao TIMESTAMP,
+    usuario VARCHAR(50)
+);
+
+-- Trigger de exemplo
+CREATE TRIGGER tr_audit_entidade
+AFTER UPDATE ON entidade
+FOR EACH ROW
+INSERT INTO log_alteracao (
+    tabela, registro_id, campo, 
+    valor_anterior, valor_novo, 
+    data_alteracao, usuario
+) VALUES (
+    'entidade', NEW.id, 'status',
+    OLD.status, NEW.status,
+    CURRENT_TIMESTAMP, CURRENT_USER
+);
+```
+
+## Trilha de Auditoria
+
+```MERMAID
+erDiagram
+    PEDIDO ||--o{ EVENTO_PEDIDO : registra
+    
+    PEDIDO {
+        int id PK
+        float valor
+        string status
+    }
+    
+    EVENTO_PEDIDO {
+        int id PK
+        int pedido_id FK
+        string tipo_evento
+        string descricao
+        timestamp data_evento
+        string usuario
+    }
+```
+
+### Implementação
+
+```SQL
+CREATE TABLE evento_pedido (
+    id INT PRIMARY KEY,
+    pedido_id INT,
+    tipo_evento VARCHAR(50),
+    descricao TEXT,
+    data_evento TIMESTAMP,
+    usuario VARCHAR(50),
+    FOREIGN KEY (pedido_id) REFERENCES pedido(id)
+);
+```
+
+## Snapshot
+
+```MERMAID
+erDiagram
+    CONTA ||--o{ SNAPSHOT_CONTA : registra
+    
+    CONTA {
+        int id PK
+        float saldo_atual
+        string status
+    }
+    
+    SNAPSHOT_CONTA {
+        int id PK
+        int conta_id FK
+        float saldo
+        string status
+        date data_snapshot
+    }
+```
+
+### Implementação
+
+```SQL
+CREATE TABLE snapshot_conta (
+    id INT PRIMARY KEY,
+    conta_id INT,
+    saldo DECIMAL(10,2),
+    status VARCHAR(20),
+    data_snapshot DATE,
+    FOREIGN KEY (conta_id) REFERENCES conta(id)
+);
+
+-- Procedure para criar snapshot
+CREATE PROCEDURE criar_snapshot_diario()
+BEGIN
+    INSERT INTO snapshot_conta (
+        conta_id, saldo, status, data_snapshot
+    )
+    SELECT 
+        id, saldo_atual, status, CURRENT_DATE
+    FROM conta;
+END;
+```
+
+
+
+# Fundamentos SQL
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║  NEURAL.MATRIX >> SQL.FUNDAMENTOS                           ║
+║  STATUS: ATIVO                                             ║
+║  SEGURANÇA: CRIPTOGRAFADO                                  ║
+║  ACESSO: CONHECIMENTO_PROFUNDO                             ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+## ACID_QUEEN.PERSPECTIVA: Visão Geral
+
+```
+┌────────────────────────────┐
+│ CONCEITOS.CORE            │
+├────────────────────────────┤
+│ ► DDL                    │
+│ ► DML                    │
+│ ► DCL                    │
+│ ► TCL                    │
+└────────────────────────────┘
+```
+
+## ARQUITETURA.SQL
+
+```MERMAID
+graph TD
+    A[Comandos SQL] --> B[DDL]
+    A --> C[DML]
+    A --> D[DCL]
+    A --> E[TCL]
+    B --> F[CREATE]
+    B --> G[ALTER]
+    B --> H[DROP]
+    C --> I[SELECT]
+    C --> J[INSERT]
+    C --> K[UPDATE]
+    C --> L[DELETE]
+```
+
+## NOSQL_PUNK.ALERTA: Conceitos Fundamentais
+
+### 1. DDL (Linguagem de Definição de Dados)
+
+* Manipulação de esquema
+
+* Criação/modificação de objetos
+
+* Controle da estrutura do banco
+
+### 2. DML (Linguagem de Manipulação de Dados)
+
+* Operações com dados
+
+* Funções CRUD
+
+* Execução de consultas
+
+### 3. DCL (Linguagem de Controle de Dados)
+
+* Controle de acesso
+
+* Gerenciamento de permissões
+
+* Implementação de segurança
+
+### 4. TCL (Linguagem de Controle de Transação)
+
+* Gerenciamento de transações
+
+* Consistência de dados
+
+* Propriedades ACID
+
+## SEC_PHANTOM.DIRETRIZES: Boas Práticas
+
+```
+┌─────────────────────────────────┐
+│ PROTOCOLOS.SEGURANÇA           │
+├─────────────────────────────────┤
+│ ► Use prepared statements      │
+│ ► Valide todas as entradas    │
+│ ► Configure acessos           │
+│ ► Monitore performance        │
+└─────────────────────────────────┘
+```
+
+## TIME_LORD.EXERCÍCIOS: Treinamento Prático
+
+### Operações Básicas
+
+```SQL
+-- Create table
+CREATE TABLE hackers (
+    id INT PRIMARY KEY,
+    codename VARCHAR(50),
+    skill_level INT,
+    last_hack TIMESTAMP
+);
+
+-- Insert data
+INSERT INTO hackers (id, codename, skill_level)
+VALUES (1, 'GHOST_PROTOCOL', 9);
+
+-- Query data
+SELECT * FROM hackers 
+WHERE skill_level > 7;
+
+-- Update records
+UPDATE hackers 
+SET last_hack = CURRENT_TIMESTAMP 
+WHERE id = 1;
+```
+
+## BACKUP_PRIEST.SABEDORIA: Armadilhas Comuns
+
+### Fique Atento A
+
+* Vulnerabilidades de injeção SQL
+
+* Gargalos de performance
+
+* Deadlocks de transação
+
+* Vazamentos de conexão
+
+### Soluções
+
+* Use queries parametrizadas
+
+* Implemente indexação adequada
+
+* Monitore timeout de transações
+
+* Implemente pool de conexões
+
+```
+╔════════════════════════════════════╗
+║  FIM.DA.TRANSMISSÃO              ║
+║  STATUS: COMPLETO                ║
+║  PRÓXIMO.MÓDULO: SQL.DDL         ║
+╚════════════════════════════════════╝
+```
+
+
+
+# DDL - Linguagem de Definição de Dados
+
+A Linguagem de Definição de Dados (DDL) é um componente fundamental do SQL usado para definir e modificar a estrutura do banco de dados. Com ela, podemos criar, alterar e excluir objetos como tabelas, índices, views e outros elementos estruturais.
+
+## Principais Comandos DDL
+
+O DDL possui quatro comandos principais que formam a base para gerenciamento de estruturas de banco de dados:
+
+### CREATE
+
+O comando CREATE é usado para criar novos objetos no banco de dados. É o comando mais básico e essencial do DDL.
+
+Exemplos práticos:
+
+```SQL
+-- Criação de banco de dados
+CREATE DATABASE loja;
+
+-- Criação de tabela com diferentes tipos de dados e constraints
+CREATE TABLE produtos (
+    id INT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    preco DECIMAL(10,2),
+    categoria_id INT,
+    FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+);
+```
+
+### ALTER
+
+O ALTER permite modificar a estrutura de objetos existentes. É crucial para evolução do schema do banco de dados.
+
+Exemplos comuns:
+
+```SQL
+-- Adicionando uma nova coluna
+ALTER TABLE produtos
+ADD COLUMN descricao TEXT;
+
+-- Modificando o tipo de uma coluna
+ALTER TABLE produtos
+ALTER COLUMN preco TYPE NUMERIC(12,2);
+```
+
+### DROP
+
+Usado para remover objetos do banco de dados. Deve ser usado com extrema cautela pois é irreversível.
+
+Exemplo de uso:
+
+```SQL
+-- Removendo uma tabela
+DROP TABLE IF EXISTS produtos_antigos;
+```
+
+### TRUNCATE
+
+Remove todos os registros de uma tabela, mas mantém sua estrutura. É mais eficiente que DELETE para limpeza completa.
+
+```SQL
+TRUNCATE TABLE logs_temporarios;
+```
+
+## Boas Práticas de DDL
+
+### 1. Segurança em Primeiro Lugar
+
+* Sempre faça backup antes de operações DDL
+
+* Teste comandos em ambiente de desenvolvimento
+
+* Mantenha scripts de rollback preparados
+
+### 2. Planejamento
+
+* Documente todas as alterações estruturais
+
+* Avalie impactos em aplicações existentes
+
+* Considere volumes de dados nas operações
+
+### 3. Versionamento
+
+* Mantenha controle de versão dos schemas
+
+* Use migrations para alterações estruturais
+
+* Documente a evolução do banco de dados
+
+## Considerações de Performance
+
+### Impacto das Operações
+
+* Operações DDL podem bloquear tabelas
+
+* Alterações em tabelas grandes requerem planejamento
+
+* Considere janelas de manutenção para operações críticas
+
+### Otimizações
+
+* Use índices adequadamente
+
+* Planeje particionamento quando necessário
+
+* Considere clustering quando apropriado
+
+## Exercício Prático
+
+Vamos criar uma estrutura básica para um sistema de vendas:
+
+```SQL
+-- Schema do sistema
+CREATE SCHEMA vendas;
+
+-- Tabela de produtos
+CREATE TABLE vendas.produtos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    preco DECIMAL(10,2) CHECK (preco > 0),
+    estoque INT DEFAULT 0
+);
+
+-- Adicionando índice para busca por nome
+CREATE INDEX idx_produtos_nome 
+ON vendas.produtos(nome);
+```
+
+## Conclusão
+
+O DDL é fundamental para o gerenciamento de bancos de dados, permitindo criar e manter estruturas de dados de forma eficiente. O domínio desses comandos, junto com boas práticas de uso, é essencial para qualquer desenvolvedor ou DBA.
+
+Tip:
+
+Dica de Segurança: Sempre mantenha backups atualizados e teste suas operações DDL em ambiente de desenvolvimento antes de aplicar em produção.
+
+
+
+# CREATE Statements: Construindo Estruturas de Dados
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║  NEURAL.MATRIX >> SQL.CREATE                                ║
+║  INSTRUTOR: DATA_ARCHITECT_SAGE                            ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+## Introdução ao CREATE
+
+O comando CREATE é a base para construção de estruturas em bancos de dados. Ele permite criar diversos objetos como databases, tabelas, índices, views e outros elementos essenciais.
+
+## CREATE DATABASE
+
+O DATA_ARCHITECT_SAGE explica: "Começamos sempre pelo início - a criação do banco de dados. É como construir a fundação de uma casa."
+
+```SQL
+CREATE DATABASE ecommerce
+    WITH 
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'pt_BR.UTF-8'
+    LC_CTYPE = 'pt_BR.UTF-8'
+    TEMPLATE = template0;
+```
+
+Por que estes parâmetros?
+
+* `ENCODING`: Garante suporte a caracteres especiais
+
+* `LC_COLLATE` e `LC_CTYPE`: Configurações para português brasileiro
+
+* `TEMPLATE`: Base limpa para novo banco
+
+## CREATE TABLE
+
+SCHEMA_MASTER diz: "As tabelas são o coração do seu banco de dados. Vamos criar uma estrutura robusta para um e-commerce."
+
+### Exemplo Básico
+
+```SQL
+CREATE TABLE produtos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    preco DECIMAL(10,2) NOT NULL CHECK (preco >= 0),
+    descricao TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### Exemplo Avançado com Relacionamentos
+
+```SQL
+CREATE TABLE pedidos (
+    id SERIAL PRIMARY KEY,
+    cliente_id INTEGER NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    valor_total DECIMAL(10,2) NOT NULL,
+    data_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    CONSTRAINT fk_cliente 
+        FOREIGN KEY (cliente_id) 
+        REFERENCES clientes(id)
+        ON DELETE RESTRICT,
+        
+    CONSTRAINT chk_status 
+        CHECK (status IN ('pendente', 'aprovado', 'cancelado')),
+        
+    CONSTRAINT chk_valor 
+        CHECK (valor_total > 0)
+);
+```
+
+SECURITY_GUARDIAN acrescenta: "Observe as constraints - são fundamentais para integridade dos dados!"
+
+## CREATE INDEX
+
+INDEX_MASTER compartilha: "Índices são como o índice de um livro - essenciais para encontrar informações rapidamente."
+
+### Tipos de Índices
+
+```SQL
+-- Índice básico
+CREATE INDEX idx_produtos_nome ON produtos(nome);
+
+-- Índice único
+CREATE UNIQUE INDEX idx_usuarios_email ON usuarios(email);
+
+-- Índice composto
+CREATE INDEX idx_pedidos_cliente_data ON pedidos(cliente_id, data_pedido);
+
+-- Índice parcial
+CREATE INDEX idx_produtos_ativos ON produtos(nome) 
+WHERE status = 'ativo';
+```
+
+## CREATE VIEW
+
+QUERY_MASTER explica: "Views são consultas pré-definidas que simplificam o acesso aos dados."
+
+```SQL
+CREATE VIEW vw_pedidos_detalhados AS
+SELECT 
+    p.id as pedido_id,
+    c.nome as cliente_nome,
+    p.valor_total,
+    p.status,
+    COUNT(i.id) as total_itens
+FROM pedidos p
+JOIN clientes c ON p.cliente_id = c.id
+JOIN itens_pedido i ON p.id = i.pedido_id
+GROUP BY p.id, c.nome, p.valor_total, p.status;
+```
+
+## CREATE SEQUENCE
+
+DB_WIZARD diz: "Sequences são úteis para gerar números únicos de forma automática."
+
+```SQL
+CREATE SEQUENCE seq_codigo_produto
+    INCREMENT BY 1
+    START WITH 1000
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+```
+
+## Exercícios Práticos
+
+TRAINING_MASTER propõe: "Vamos praticar com um cenário real!"
+
+### Sistema de Blog
+
+```SQL
+-- Criando tabela de autores
+CREATE TABLE autores (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    bio TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Criando tabela de posts
+CREATE TABLE posts (
+    id SERIAL PRIMARY KEY,
+    titulo VARCHAR(200) NOT NULL,
+    conteudo TEXT NOT NULL,
+    autor_id INTEGER NOT NULL,
+    status VARCHAR(20) DEFAULT 'rascunho',
+    publicado_em TIMESTAMP,
+    
+    CONSTRAINT fk_autor
+        FOREIGN KEY (autor_id)
+        REFERENCES autores(id),
+        
+    CONSTRAINT chk_status
+        CHECK (status IN ('rascunho', 'publicado', 'arquivado'))
+);
+
+-- Criando índices estratégicos
+CREATE INDEX idx_posts_autor ON posts(autor_id);
+CREATE INDEX idx_posts_status ON posts(status);
+CREATE INDEX idx_posts_publicacao ON posts(publicado_em DESC);
+
+-- Criando view para posts publicados
+CREATE VIEW vw_posts_publicados AS
+SELECT 
+    p.id,
+    p.titulo,
+    a.nome as autor_nome,
+    p.publicado_em
+FROM posts p
+JOIN autores a ON p.autor_id = a.id
+WHERE p.status = 'publicado'
+ORDER BY p.publicado_em DESC;
+```
+
+## Boas Práticas
+
+BEST_PRACTICES_GURU compartilha dicas essenciais:
+
+1. Nomenclatura
+
+* Use nomes descritivos
+
+* Siga um padrão consistente
+
+* Prefira minúsculas para objetos
+
+* Use underscores para separar palavras
+
+2. Constraints
+
+* Nomeie todas as constraints importantes
+
+* Use CHECK para validações de domínio
+
+* Implemente FKs com cuidado
+
+* Considere ON DELETE/UPDATE actions
+
+3. Índices
+
+* Crie índices com propósito
+
+* Evite índices redundantes
+
+* Nomeie índices de forma descritiva
+
+* Considere o impacto na escrita
+
+```
+╔════════════════════════════════════╗
+║  LEMBRE-SE:                       ║
+║  - Teste antes em desenvolvimento ║
+║  - Mantenha documentação         ║
+║  - Faça backup antes de criar    ║
+║  - Planeje crescimento           ║
+╚════════════════════════════════════╝
+```
+
+
+
+# ALTER Statements: Modificando Estruturas de Dados
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║  SCHEMA_EVOLUTION_MASTER >> Modificações Estruturais        ║
+║  INSTRUTOR: DATABASE_ARCHITECT                             ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+## Fundamentos do ALTER
+
+DATABASE_ARCHITECT explica: "O comando ALTER é sua ferramenta para evolução do banco de dados. Com ele, você pode modificar estruturas existentes sem perder dados."
+
+## ALTER TABLE
+
+SCHEMA_MASTER apresenta: "Vamos explorar as principais operações de alteração de tabelas."
+
+### 1. Adicionando Colunas
+
+```SQL
+-- Adicionando uma coluna simples
+ALTER TABLE produtos
+ADD COLUMN descricao TEXT;
+
+-- Adicionando múltiplas colunas
+ALTER TABLE usuarios
+ADD COLUMN ultimo_acesso TIMESTAMP,
+ADD COLUMN tentativas_login INTEGER DEFAULT 0,
+ADD COLUMN bloqueado BOOLEAN DEFAULT FALSE;
+
+-- Adicionando coluna com constraint
+ALTER TABLE pedidos
+ADD COLUMN valor_total DECIMAL(10,2) NOT NULL DEFAULT 0.0
+CHECK (valor_total >= 0);
+```
+
+### 2. Modificando Colunas
+
+MIGRATION_SPECIALIST adverte: "Cuidado ao modificar tipos de dados - certifique-se da compatibilidade!"
+
+```SQL
+-- Alterando tipo de dados
+ALTER TABLE produtos
+ALTER COLUMN preco TYPE NUMERIC(12,2);
+
+-- Modificando valor default
+ALTER TABLE usuarios
+ALTER COLUMN status SET DEFAULT 'ativo';
+
+-- Removendo valor default
+ALTER TABLE logs
+ALTER COLUMN nivel DROP DEFAULT;
+
+-- Tornando coluna NOT NULL
+ALTER TABLE clientes
+ALTER COLUMN email SET NOT NULL;
+```
+
+### 3. Constraints
+
+INTEGRITY_GUARDIAN compartilha: "Constraints garantem a qualidade dos seus dados."
+
+```SQL
+-- Adicionando Primary Key
+ALTER TABLE produtos
+ADD CONSTRAINT pk_produtos PRIMARY KEY (id);
+
+-- Adicionando Foreign Key
+ALTER TABLE pedidos
+ADD CONSTRAINT fk_cliente 
+FOREIGN KEY (cliente_id) 
+REFERENCES clientes(id)
+ON DELETE RESTRICT;
+
+-- Adicionando Unique Constraint
+ALTER TABLE usuarios
+ADD CONSTRAINT uq_email UNIQUE (email);
+
+-- Adicionando Check Constraint
+ALTER TABLE produtos
+ADD CONSTRAINT chk_preco 
+CHECK (preco_venda > preco_custo);
+```
+
+### 4. Renomeando Objetos
+
+REFACTORING_MASTER diz: "Às vezes precisamos reorganizar nossa estrutura."
+
+```SQL
+-- Renomeando tabela
+ALTER TABLE usuarios
+RENAME TO users;
+
+-- Renomeando coluna
+ALTER TABLE produtos
+RENAME COLUMN descricao TO detalhes;
+
+-- Renomeando constraint
+ALTER TABLE pedidos
+RENAME CONSTRAINT fk_cliente TO fk_pedidos_cliente;
+```
+
+## ALTER INDEX
+
+INDEX_WIZARD explica: "Índices também precisam de manutenção."
+
+```SQL
+-- Renomeando índice
+ALTER INDEX idx_old_name 
+RENAME TO idx_new_name;
+
+-- Modificando configurações do índice
+ALTER INDEX idx_produtos 
+SET (fillfactor = 90);
+```
+
+## ALTER SEQUENCE
+
+SEQUENCE_MASTER compartilha: "Ajuste suas sequences conforme necessário."
+
+```SQL
+-- Modificando sequence
+ALTER SEQUENCE seq_pedidos
+INCREMENT BY 10
+MAXVALUE 999999
+CYCLE;
+```
+
+## Cenários Práticos
+
+PRACTICAL_GURU apresenta: "Vamos ver alguns cenários comuns do mundo real!"
+
+### Evolução de Sistema de E-commerce
+
+```SQL
+-- Adicionando suporte a múltiplos endereços
+ALTER TABLE clientes
+ADD COLUMN endereco_entrega JSONB,
+ADD COLUMN endereco_cobranca JSONB;
+
+-- Implementando soft delete
+ALTER TABLE produtos
+ADD COLUMN deleted_at TIMESTAMP,
+ADD COLUMN active BOOLEAN DEFAULT TRUE;
+
+-- Adicionando auditoria
+ALTER TABLE pedidos
+ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN updated_at TIMESTAMP,
+ADD COLUMN created_by INTEGER,
+ADD COLUMN updated_by INTEGER;
+
+-- Adicionando constraints de auditoria
+ALTER TABLE pedidos
+ADD CONSTRAINT fk_created_by 
+    FOREIGN KEY (created_by) REFERENCES usuarios(id),
+ADD CONSTRAINT fk_updated_by 
+    FOREIGN KEY (updated_by) REFERENCES usuarios(id);
+```
+
+## Boas Práticas
+
+BEST_PRACTICES_SAGE compartilha diretrizes essenciais:
+
+### 1. Segurança
+
+* Faça backup antes de alterações
+
+* Teste em ambiente de desenvolvimento
+
+* Planeje janelas de manutenção
+
+* Prepare scripts de rollback
+
+### 2. Performance
+
+* Considere o impacto em tabelas grandes
+
+* Avalie bloqueios necessários
+
+* Use transações apropriadamente
+
+* Monitore uso de recursos
+
+### 3. Manutenção
+
+* Documente todas as alterações
+
+* Mantenha scripts de migração
+
+* Use controle de versão
+
+* Comunique mudanças à equipe
+
+```
+╔════════════════════════════════════════════╗
+║  CHECKLIST DE ALTERAÇÕES:                 ║
+║  □ Backup realizado?                      ║
+║  □ Testado em desenvolvimento?            ║
+║  □ Script de rollback preparado?          ║
+║  □ Impacto analisado?                     ║
+║  □ Equipe notificada?                     ║
+║  □ Janela de manutenção agendada?        ║
+╚════════════════════════════════════════════╝
+```
+
+## Troubleshooting Comum
+
+ERROR_HANDLER apresenta soluções para problemas frequentes:
+
+1. Erro de Dependência
+
+```SQL
+-- Verificando dependências
+SELECT * FROM pg_depend 
+WHERE objid = 'sua_tabela'::regclass;
+
+-- Removendo dependências com cautela
+DROP VIEW IF EXISTS view_dependente CASCADE;
+```
+
+1. Problemas de Bloqueio
+
+```SQL
+-- Verificando bloqueios
+SELECT * FROM pg_locks 
+WHERE relation = 'sua_tabela'::regclass;
+
+-- Finalizando sessões bloqueantes (com cautela!)
+SELECT pg_terminate_backend(pid);
+```
+
+## Conclusão
+
+DATABASE_ARCHITECT conclui: "O ALTER é poderoso, mas requer responsabilidade. Sempre planeje suas alterações e siga as boas práticas para manter seu banco de dados saudável e evolutivo."
+
+Tip:
+
+Dica Final: Mantenha um histórico de todas as alterações estruturais em seu banco de dados. Isso será valioso para troubleshooting futuro e para entender a evolução do sistema.
+
+
+
+# DROP Statements: Removendo Objetos do Banco de Dados
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║  CLEANUP_MASTER >> Remoção de Objetos                      ║
+║  INSTRUTOR: DATABASE_CLEANER                              ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+## Fundamentos do DROP
+
+DATABASE_CLEANER alerta: "O comando DROP é poderoso e irreversível. Use com extrema cautela!"
+
+## DROP TABLE
+
+SCHEMA_CLEANER apresenta: "Vamos explorar como remover tabelas de forma segura."
+
+```SQL
+-- Remoção simples
+DROP TABLE IF EXISTS produtos;
+
+-- Remoção com CASCADE
+DROP TABLE clientes CASCADE;
+
+-- Remoção múltipla
+DROP TABLE IF EXISTS 
+    temp_logs, 
+    old_backups, 
+    test_data;
+```
+
+## DROP DATABASE
+
+DATABASE_MASTER adverte: "Este é o comando mais perigoso - use com extrema cautela!"
+
+```SQL
+-- Removendo banco de dados
+DROP DATABASE IF EXISTS test_db;
+
+-- Forçando desconexão de usuários
+SELECT pg_terminate_backend(pid) 
+FROM pg_stat_activity 
+WHERE datname = 'test_db';
+```
+
+## DROP INDEX
+
+INDEX_MASTER explica: "Índices desnecessários podem prejudicar a performance."
+
+```SQL
+-- Removendo índice
+DROP INDEX IF EXISTS idx_produtos_nome;
+
+-- Removendo múltiplos índices
+DROP INDEX idx_temp1, idx_temp2;
+
+-- Removendo índice concorrentemente
+DROP INDEX CONCURRENTLY idx_logs;
+```
+
+## DROP CONSTRAINT
+
+CONSTRAINT_GUARDIAN orienta: "Remova constraints com cuidado para manter a integridade."
+
+```SQL
+-- Removendo constraint
+ALTER TABLE pedidos
+DROP CONSTRAINT fk_cliente;
+
+-- Removendo PRIMARY KEY
+ALTER TABLE produtos
+DROP CONSTRAINT produtos_pkey;
+
+-- Removendo UNIQUE constraint
+ALTER TABLE usuarios
+DROP CONSTRAINT uq_email;
+```
+
+## Cenários Práticos
+
+PRACTICAL_MASTER apresenta: "Vamos ver situações reais de limpeza de banco."
+
+### Limpeza de Ambiente de Teste
+
+```SQL
+-- Removendo objetos temporários
+DROP TABLE IF EXISTS temp_import;
+DROP INDEX IF EXISTS idx_temp_search;
+DROP VIEW IF EXISTS vw_test_report;
+
+-- Removendo schema de teste
+DROP SCHEMA test_env CASCADE;
+```
+
+### Refatoração de Sistema
+
+```SQL
+-- Removendo estruturas antigas
+DROP TABLE IF EXISTS legacy_customers CASCADE;
+DROP VIEW IF EXISTS old_reports;
+DROP TRIGGER audit_trigger ON transactions;
+```
+
+## Boas Práticas
+
+SAFETY_GUARDIAN compartilha diretrizes essenciais:
+
+### 1. Segurança
+
+* Sempre faça backup antes
+
+* Use IF EXISTS para evitar erros
+
+* Verifique dependências
+
+* Documente todas as remoções
+
+### 2. Performance
+
+* Considere o momento adequado
+
+* Avalie impacto em outros objetos
+
+* Use CONCURRENTLY quando possível
+
+* Monitore locks e conexões
+
+### 3. Manutenção
+
+* Mantenha scripts de recreação
+
+* Atualize documentação
+
+* Comunique alterações
+
+* Mantenha histórico de mudanças
+
+```
+╔════════════════════════════════════════════╗
+║  CHECKLIST DE REMOÇÃO:                    ║
+║  □ Backup realizado?                      ║
+║  □ Dependências verificadas?              ║
+║  □ Scripts de recreação prontos?          ║
+║  □ Equipe notificada?                     ║
+║  □ Janela de manutenção definida?        ║
+║  □ Impacto analisado?                     ║
+╚════════════════════════════════════════════╝
+```
+
+## Troubleshooting
+
+ERROR_HANDLER apresenta soluções para problemas comuns:
+
+### 1. Objetos com Dependências
+
+```SQL
+-- Verificando dependências
+SELECT DISTINCT dependent_ns.nspname as dependent_schema,
+                dependent_view.relname as dependent_view
+FROM pg_depend 
+JOIN pg_class dependent_view ON dependent_view.oid = pg_depend.objid
+JOIN pg_namespace dependent_ns ON dependent_ns.oid = dependent_view.relnamespace
+WHERE refobjid = 'sua_tabela'::regclass;
+```
+
+### 2. Objetos Bloqueados
+
+```SQL
+-- Identificando bloqueios
+SELECT blocked_locks.pid AS blocked_pid,
+       blocking_locks.pid AS blocking_pid
+FROM pg_catalog.pg_locks blocked_locks
+JOIN pg_catalog.pg_locks blocking_locks ON blocking_locks.locktype = blocked_locks.locktype
+WHERE NOT blocked_locks.granted;
+```
+
+## Conclusão
+
+DATABASE_CLEANER conclui: "O DROP é uma ferramenta poderosa para manutenção do banco de dados, mas deve ser usado com responsabilidade e planejamento adequado."
+
+Tip:
+
+Dica Final: Sempre mantenha scripts de recriação para objetos importantes que precisam ser removidos. Em caso de necessidade, você poderá restaurá-los facilmente.
+
+
+
+# TRUNCATE: Limpeza Rápida de Dados
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║  DATA_CLEANER >> Limpeza Eficiente de Dados               ║
+║  INSTRUTOR: TRUNCATE_SPECIALIST                           ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+## Fundamentos do TRUNCATE
+
+TRUNCATE_SPECIALIST explica: "TRUNCATE é a forma mais rápida de remover todos os dados de uma tabela!"
+
+```SQL
+-- Sintaxe básica
+TRUNCATE TABLE logs;
+
+-- Múltiplas tabelas
+TRUNCATE TABLE 
+    temp_data, 
+    staging_area, 
+    import_buffer;
+
+-- Com RESTART IDENTITY
+TRUNCATE TABLE produtos RESTART IDENTITY;
+
+-- Com CASCADE
+TRUNCATE TABLE clientes CASCADE;
+```
+
+## TRUNCATE vs DELETE
+
+PERFORMANCE_GURU compara: "Entenda quando usar cada um!"
+
+| TRUNCATE |DELETE |
+--------------------
+| Mais rápido |Mais flexível |
+| Não é transacional* |Transacional |
+| Reseta sequências |Mantém sequências |
+| Não dispara triggers |Dispara triggers |
+
+## Cenários de Uso
+
+DATA_ARCHITECT apresenta: "Situações ideais para TRUNCATE"
+
+### 1. Limpeza de Ambiente
+
+```SQL
+-- Limpando tabelas temporárias
+TRUNCATE TABLE 
+    temp_imports,
+    staging_area,
+    etl_buffer
+RESTART IDENTITY;
+```
+
+### 2. Reset de Desenvolvimento
+
+```SQL
+-- Resetando ambiente de testes
+TRUNCATE TABLE 
+    test_data,
+    test_logs,
+    test_metrics
+CASCADE;
+```
+
+## Boas Práticas
+
+SAFETY_MASTER compartilha diretrizes essenciais:
+
+### 1. Segurança
+
+* Faça backup antes
+
+* Verifique dependências
+
+* Use em ambiente correto
+
+* Documente operações
+
+### 2. Performance
+
+* Considere locks
+
+* Avalie impacto
+
+* Planeje janela de execução
+
+* Monitore espaço em disco
+
+```
+╔════════════════════════════════════════════╗
+║  CHECKLIST DE TRUNCATE:                   ║
+║  □ Backup realizado?                      ║
+║  □ Ambiente correto?                      ║
+║  □ Dependências verificadas?              ║
+║  □ Equipe notificada?                     ║
+║  □ Janela de manutenção definida?        ║
+╚════════════════════════════════════════════╝
+```
+
+## Troubleshooting
+
+ERROR_HANDLER apresenta soluções comuns:
+
+### 1. Bloqueios
+
+```SQL
+-- Verificando locks
+SELECT relation::regclass, mode, granted
+FROM pg_locks
+WHERE relation IN (
+    SELECT oid 
+    FROM pg_class 
+    WHERE relname = 'sua_tabela'
+);
+```
+
+### 2. Dependências
+
+```SQL
+-- Verificando referências
+SELECT 
+    tc.table_schema, 
+    tc.table_name, 
+    kcu.column_name
+FROM information_schema.table_constraints tc
+JOIN information_schema.key_column_usage kcu
+    ON tc.constraint_name = kcu.constraint_name
+WHERE tc.constraint_type = 'FOREIGN KEY'
+AND kcu.referenced_table_name = 'sua_tabela';
+```
+
+## Padrões de Uso
+
+PATTERN_MASTER apresenta: "Padrões comuns de utilização"
+
+### 1. Limpeza Periódica
+
+```SQL
+-- Procedure de limpeza
+CREATE PROCEDURE limpar_logs()
+LANGUAGE SQL
+AS $$
+    TRUNCATE TABLE 
+        system_logs,
+        audit_logs,
+        error_logs;
+$$;
+```
+
+### 2. Reset de Ambiente
+
+```SQL
+-- Script de reset
+BEGIN;
+    -- Desativa foreign key checks
+    SET CONSTRAINTS ALL DEFERRED;
+    
+    -- Limpa todas as tabelas
+    TRUNCATE TABLE 
+        tabela1,
+        tabela2,
+        tabela3
+    CASCADE;
+    
+    -- Reativa constraints
+    SET CONSTRAINTS ALL IMMEDIATE;
+COMMIT;
+```
+
+## Conclusão
+
+TRUNCATE_SPECIALIST conclui: "TRUNCATE é uma ferramenta poderosa para limpeza de dados, mas deve ser usada com conhecimento e cautela."
+
+Tip:
+
+Dica Final: Sempre tenha um plano de recuperação antes de executar TRUNCATE em tabelas importantes. A operação é rápida, mas irreversível!
+
+
+
+# DML - Linguagem de Manipulação de Dados
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║  DATA_MANIPULATOR >> Operações com Dados                   ║
+║  INSTRUTOR: DML_MASTER                                     ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+## Visão Geral
+
+DML_MASTER apresenta: "A Linguagem de Manipulação de Dados (DML) é o conjunto de comandos SQL usado para gerenciar dados em um banco de dados."
+
+```MERMAID
+graph TD
+    A[DML] --> B[SELECT]
+    A --> C[INSERT]
+    A --> D[UPDATE]
+    A --> E[DELETE]
+    A --> F[MERGE]
+```
+
+## Comandos Principais
+
+### 1. SELECT
+
+DATA_READER explica: "Recupera dados do banco"
+
+```SQL
+-- Consulta básica
+SELECT nome, preco 
+FROM produtos 
+WHERE categoria = 'Eletrônicos';
+
+-- Com joins
+SELECT c.nome, p.descricao
+FROM clientes c
+JOIN pedidos p ON c.id = p.cliente_id;
+```
+
+### 2. INSERT
+
+DATA_WRITER demonstra: "Adiciona novos registros"
+
+```SQL
+-- Inserção simples
+INSERT INTO produtos (nome, preco)
+VALUES ('Smartphone', 999.99);
+
+-- Inserção múltipla
+INSERT INTO produtos (nome, preco)
+VALUES 
+    ('Tablet', 499.99),
+    ('Notebook', 1499.99);
+```
+
+### 3. UPDATE
+
+DATA_MODIFIER apresenta: "Modifica registros existentes"
+
+```SQL
+-- Atualização simples
+UPDATE produtos 
+SET preco = preco * 1.1
+WHERE categoria = 'Eletrônicos';
+
+-- Atualização com join
+UPDATE pedidos p
+SET status = 'Aprovado'
+FROM clientes c
+WHERE p.cliente_id = c.id
+AND c.vip = true;
+```
+
+### 4. DELETE
+
+DATA_REMOVER alerta: "Remove registros do banco"
+
+```SQL
+-- Remoção simples
+DELETE FROM logs 
+WHERE data < CURRENT_DATE - INTERVAL '30 days';
+
+-- Remoção com subquery
+DELETE FROM produtos
+WHERE id IN (
+    SELECT produto_id 
+    FROM estoque 
+    WHERE quantidade = 0
+);
+```
+
+### 5. MERGE
+
+DATA_SYNC_MASTER explica: "Sincroniza dados entre tabelas"
+
+```SQL
+-- Merge básico
+MERGE INTO produtos_destino d
+USING produtos_origem o
+ON (d.id = o.id)
+WHEN MATCHED THEN
+    UPDATE SET preco = o.preco
+WHEN NOT MATCHED THEN
+    INSERT (id, nome, preco)
+    VALUES (o.id, o.nome, o.preco);
+```
+
+## Boas Práticas
+
+BEST_PRACTICE_GURU compartilha:
+
+### 1. Performance
+
+* Use índices apropriados
+
+* Evite SELECT *
+
+* Otimize JOINs
+
+* Limite resultados quando possível
+
+### 2. Segurança
+
+* Use transações
+
+* Valide dados de entrada
+
+* Faça backup antes de operações grandes
+
+* Use WHERE em UPDATE/DELETE
+
+### 3. Manutenção
+
+* Documente queries complexas
+
+* Use aliases descritivos
+
+* Mantenha consistência no estilo
+
+* Implemente logging quando necessário
+
+```
+╔════════════════════════════════════════════╗
+║  CHECKLIST DML:                           ║
+║  □ Índices verificados?                   ║
+║  □ Transação necessária?                  ║
+║  □ WHERE clause adequada?                 ║
+║  □ Performance otimizada?                 ║
+║  □ Backup realizado?                      ║
+╚════════════════════════════════════════════╝
+```
+
+## Padrões Comuns
+
+PATTERN_MASTER apresenta padrões úteis:
+
+### 1. Upsert
+
+```SQL
+INSERT INTO produtos (id, nome, preco)
+VALUES (1, 'Smartphone', 999.99)
+ON CONFLICT (id) 
+DO UPDATE SET preco = EXCLUDED.preco;
+```
+
+### 2. Soft Delete
+
+```SQL
+-- Em vez de DELETE
+UPDATE usuarios
+SET ativo = false,
+    data_inativacao = CURRENT_TIMESTAMP
+WHERE id = 123;
+```
+
+### 3. Batch Processing
+
+```SQL
+-- Processamento em lotes
+WITH batch AS (
+    SELECT id 
+    FROM pedidos 
+    WHERE status = 'Pendente' 
+    LIMIT 1000
+    FOR UPDATE SKIP LOCKED
+)
+UPDATE pedidos p
+SET status = 'Processando'
+FROM batch b
+WHERE p.id = b.id;
+```
+
+## Troubleshooting
+
+ERROR_HANDLER apresenta soluções para problemas comuns:
+
+### 1. Deadlocks
+
+```SQL
+-- Verificando bloqueios
+SELECT blocked_locks.pid AS blocked_pid,
+       blocking_locks.pid AS blocking_pid
+FROM pg_catalog.pg_locks blocked_locks
+JOIN pg_catalog.pg_locks blocking_locks 
+    ON blocking_locks.locktype = blocked_locks.locktype;
+```
+
+### 2. Performance Issues
+
+```SQL
+-- Analisando query
+EXPLAIN ANALYZE
+SELECT * FROM produtos p
+JOIN categorias c ON p.categoria_id = c.id
+WHERE p.preco > 100;
+```
+
+## Conclusão
+
+DML_MASTER conclui: "O domínio dos comandos DML é essencial para qualquer desenvolvedor de banco de dados. Use-os com sabedoria e sempre considere performance e segurança."
+
+Tip:
+
+Dica Final: Mantenha um ambiente de testes para praticar operações DML complexas antes de executá-las em produção.
+
+
+
+# SELECT: Recuperando Dados
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║  QUERY_MASTER >> Arte da Consulta de Dados                 ║
+║  INSTRUTOR: SELECT_SPECIALIST                              ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+## Fundamentos do SELECT
+
+SELECT_SPECIALIST explica: "O comando SELECT é a base para recuperação de dados em SQL."
+
+### Sintaxe Básica
+
+```SQL
+SELECT coluna1, coluna2
+FROM tabela
+WHERE condição
+GROUP BY coluna
+HAVING condição_grupo
+ORDER BY coluna;
+```
+
+## Cláusulas Principais
+
+### 1. FROM
+
+DATA_SOURCE_EXPERT demonstra: "Define a fonte dos dados"
+
+```SQL
+-- Tabela única
+FROM produtos
+
+-- Múltiplas tabelas
+FROM produtos p, categorias c
+
+-- Subquery
+FROM (SELECT * FROM vendas WHERE ano = 2023) v
+```
+
+### 2. WHERE
+
+FILTER_MASTER apresenta: "Filtra os registros"
+
+```SQL
+-- Comparações básicas
+WHERE preco > 100
+AND categoria = 'Eletrônicos'
+
+-- Operadores IN/BETWEEN
+WHERE status IN ('Ativo', 'Pendente')
+AND data_criacao BETWEEN '2023-01-01' AND '2023-12-31'
+
+-- Pattern matching
+WHERE nome LIKE 'A%'
+AND descricao ILIKE '%premium%'
+```
+
+### 3. JOIN
+
+JOIN_SPECIALIST explica: "Combina dados de múltiplas tabelas"
+
+```SQL
+-- INNER JOIN
+SELECT p.nome, c.categoria
+FROM produtos p
+INNER JOIN categorias c ON p.categoria_id = c.id
+
+-- LEFT JOIN
+SELECT c.nome, COUNT(p.id) as total_pedidos
+FROM clientes c
+LEFT JOIN pedidos p ON c.id = p.cliente_id
+GROUP BY c.nome
+
+-- Multiple JOINs
+SELECT p.nome, c.categoria, f.nome as fornecedor
+FROM produtos p
+JOIN categorias c ON p.categoria_id = c.id
+JOIN fornecedores f ON p.fornecedor_id = f.id
+```
+
+### 4. GROUP BY
+
+AGGREGATION_MASTER demonstra: "Agrupa resultados"
+
+```SQL
+-- Agrupamento simples
+SELECT categoria, COUNT(*) as total
+FROM produtos
+GROUP BY categoria
+
+-- Múltiplas colunas
+SELECT categoria, status, SUM(valor) as total
+FROM vendas
+GROUP BY categoria, status
+
+-- Com HAVING
+SELECT cliente_id, COUNT(*) as total_pedidos
+FROM pedidos
+GROUP BY cliente_id
+HAVING COUNT(*) > 5
+```
+
+### 5. ORDER BY
+
+SORT_EXPERT apresenta: "Ordena resultados"
+
+```SQL
+-- Ordenação simples
+ORDER BY data_criacao DESC
+
+-- Múltiplas colunas
+ORDER BY categoria ASC, preco DESC
+
+-- Com expressões
+ORDER BY (preco * quantidade) DESC
+```
+
+## Funções e Expressões
+
+### 1. Agregação
+
+```SQL
+SELECT 
+    COUNT(*) as total,
+    SUM(valor) as valor_total,
+    AVG(preco) as preco_medio,
+    MAX(data) as data_mais_recente,
+    MIN(data) as data_mais_antiga
+FROM vendas;
+```
+
+### 2. String
+
+```SQL
+SELECT 
+    UPPER(nome) as nome_maiusculo,
+    LOWER(email) as email_minusculo,
+    SUBSTRING(descricao, 1, 100) as descricao_curta,
+    CONCAT(nome, ' - ', categoria) as nome_completo
+FROM produtos;
+```
+
+### 3. Data/Hora
+
+```SQL
+SELECT 
+    DATE_TRUNC('month', data_criacao) as mes,
+    EXTRACT(YEAR FROM data_criacao) as ano,
+    data_criacao + INTERVAL '7 days' as data_vencimento
+FROM pedidos;
+```
+
+## Subconsultas
+
+SUBQUERY_MASTER explica: "Consultas dentro de consultas"
+
+```SQL
+-- Subconsulta no WHERE
+SELECT nome
+FROM produtos
+WHERE categoria_id IN (
+    SELECT id 
+    FROM categorias 
+    WHERE ativo = true
+);
+
+-- Subconsulta no FROM
+SELECT dept_nome, total_funcionarios
+FROM (
+    SELECT departamento_id, COUNT(*) as total
+    FROM funcionarios
+    GROUP BY departamento_id
+) f
+JOIN departamentos d ON f.departamento_id = d.id;
+
+-- Subconsulta correlacionada
+SELECT p.nome
+FROM produtos p
+WHERE preco > (
+    SELECT AVG(preco)
+    FROM produtos
+    WHERE categoria_id = p.categoria_id
+);
+```
+
+## Otimização
+
+PERFORMANCE_GURU compartilha dicas essenciais:
+
+### 1. Índices
+
+```SQL
+-- Use índices apropriados
+CREATE INDEX idx_produtos_categoria 
+ON produtos(categoria_id);
+
+-- Índice composto para consultas frequentes
+CREATE INDEX idx_pedidos_cliente_data 
+ON pedidos(cliente_id, data_criacao);
+```
+
+### 2. Análise de Execução
+
+```SQL
+-- Analise o plano de execução
+EXPLAIN ANALYZE
+SELECT c.nome, COUNT(p.id) as total_pedidos
+FROM clientes c
+JOIN pedidos p ON c.id = p.cliente_id
+GROUP BY c.nome;
+```
+
+## Boas Práticas
+
+BEST_PRACTICE_MASTER recomenda:
+
+1. Performance
+
+* Evite SELECT *
+
+* Use JOINs apropriados
+
+* Limite resultados grandes
+
+* Utilize índices corretamente
+
+2. Legibilidade
+
+* Use aliases descritivos
+
+* Formate SQL adequadamente
+
+* Comente consultas complexas
+
+* Mantenha consistência
+
+3. Manutenção
+
+* Documente consultas importantes
+
+* Use views para consultas comuns
+
+* Implemente paginação
+
+* Monitore performance
+
+```
+╔════════════════════════════════════════════╗
+║  CHECKLIST SELECT:                        ║
+║  □ Colunas necessárias apenas?           ║
+║  □ Índices apropriados?                  ║
+║  □ JOINs otimizados?                     ║
+║  □ WHERE eficiente?                      ║
+║  □ Resultados limitados?                 ║
+╚════════════════════════════════════════════╝
+```
+
+## Conclusão
+
+SELECT_SPECIALIST conclui: "O domínio do SELECT é fundamental para qualquer desenvolvedor SQL. Pratique diferentes tipos de consultas e sempre considere performance e manutenibilidade."
+
+Tip:
+
+Dica Final: Teste suas consultas com volumes de dados realistas para garantir performance em produção.
+
+
+
+# INSERT: Inserindo Dados
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║  DATA_MASTER >> Inserção de Dados                          ║
+║  INSTRUTOR: INSERT_SPECIALIST                              ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+## Fundamentos do INSERT
+
+INSERT_SPECIALIST explica: "O comando INSERT é fundamental para adicionar dados em suas tabelas."
+
+### Sintaxe Básica
+
+```SQL
+-- Inserção simples
+INSERT INTO tabela (coluna1, coluna2) 
+VALUES (valor1, valor2);
+
+-- Múltiplos registros
+INSERT INTO tabela (coluna1, coluna2) 
+VALUES 
+    (valor1, valor2),
+    (valor3, valor4),
+    (valor5, valor6);
+```
+
+## Formas de Inserção
+
+### 1. Valores Explícitos
+
+```SQL
+-- Com todas as colunas
+INSERT INTO produtos (
+    nome,
+    preco,
+    categoria,
+    estoque
+) VALUES (
+    'Smartphone X',
+    999.99,
+    'Eletrônicos',
+    100
+);
+
+-- Com colunas específicas
+INSERT INTO usuarios (
+    email,
+    nome
+) VALUES (
+    'user@email.com',
+    'João Silva'
+);
+```
+
+### 2. Inserção via SELECT
+
+DATA_TRANSFER_EXPERT demonstra: "Copie dados de outras tabelas!"
+
+```SQL
+-- Inserção básica via SELECT
+INSERT INTO produtos_backup
+SELECT * FROM produtos
+WHERE categoria = 'Eletrônicos';
+
+-- Inserção seletiva
+INSERT INTO resumo_vendas (produto, total_vendido)
+SELECT 
+    p.nome,
+    SUM(v.quantidade)
+FROM vendas v
+JOIN produtos p ON v.produto_id = p.id
+GROUP BY p.nome;
+```
+
+### 3. Valores Default e Expressões
+
+```SQL
+-- Usando DEFAULT
+INSERT INTO logs (
+    evento,
+    data_registro
+) VALUES (
+    'Login usuário',
+    DEFAULT  -- Usa CURRENT_TIMESTAMP
+);
+
+-- Com expressões
+INSERT INTO pedidos (
+    produto_id,
+    quantidade,
+    valor_total
+) VALUES (
+    101,
+    5,
+    (SELECT preco FROM produtos WHERE id = 101) * 5
+);
+```
+
+## Tratamento de Erros
+
+ERROR_HANDLER apresenta: "Lidando com conflitos e erros"
+
+```SQL
+-- Ignorar duplicados
+INSERT INTO logs (id, mensagem)
+ON CONFLICT (id) DO NOTHING;
+
+-- Atualizar em caso de conflito
+INSERT INTO produtos (codigo, nome, estoque)
+VALUES ('P123', 'Novo Produto', 100)
+ON CONFLICT (codigo) 
+DO UPDATE SET 
+    estoque = produtos.estoque + EXCLUDED.estoque;
+```
+
+## Inserção em Massa
+
+BULK_INSERT_MASTER compartilha: "Otimize inserções grandes!"
+
+```SQL
+-- Preparando statement
+PREPARE insert_produto (text, decimal, int) AS
+INSERT INTO produtos (nome, preco, estoque)
+VALUES ($1, $2, $3);
+
+-- Executando
+EXECUTE insert_produto('Produto A', 99.99, 50);
+EXECUTE insert_produto('Produto B', 149.99, 30);
+
+-- Limpando
+DEALLOCATE insert_produto;
+```
+
+## Boas Práticas
+
+BEST_PRACTICES_SAGE recomenda:
+
+### 1. Performance
+
+* Use inserção em lote para múltiplos registros
+
+* Considere desativar índices para cargas grandes
+
+* Utilize transações apropriadamente
+
+* Monitore o tamanho dos lotes
+
+### 2. Integridade
+
+* Valide dados antes da inserção
+
+* Use constraints apropriadas
+
+* Mantenha consistência referencial
+
+* Trate valores nulos adequadamente
+
+### 3. Manutenção
+
+* Documente processos de carga
+
+* Mantenha logs de inserção
+
+* Implemente rollback strategy
+
+* Monitore espaço em disco
+
+```
+╔════════════════════════════════════════════╗
+║  CHECKLIST INSERT:                        ║
+║  □ Dados validados?                      ║
+║  □ Constraints verificadas?              ║
+║  □ Transação necessária?                 ║
+║  □ Índices considerados?                 ║
+║  □ Backup realizado?                     ║
+╚════════════════════════════════════════════╝
+```
+
+## Exemplos Práticos
+
+### Sistema de E-commerce
+
+```SQL
+-- Inserindo novo produto
+INSERT INTO produtos (
+    codigo,
+    nome,
+    descricao,
+    preco,
+    estoque,
+    categoria_id,
+    criado_em,
+    status
+) VALUES (
+    'PROD-123',
+    'Smartphone Ultimate',
+    'Smartphone de última geração',
+    1299.99,
+    50,
+    (SELECT id FROM categorias WHERE nome = 'Eletrônicos'),
+    CURRENT_TIMESTAMP,
+    'ativo'
+);
+
+-- Registrando pedido
+INSERT INTO pedidos (
+    cliente_id,
+    valor_total,
+    status,
+    data_pedido
+) VALUES (
+    1001,
+    1299.99,
+    'pendente',
+    CURRENT_TIMESTAMP
+);
+
+-- Inserindo itens do pedido
+INSERT INTO itens_pedido (
+    pedido_id,
+    produto_id,
+    quantidade,
+    preco_unitario
+) VALUES (
+    CURRVAL('pedidos_id_seq'),
+    (SELECT id FROM produtos WHERE codigo = 'PROD-123'),
+    1,
+    1299.99
+);
+```
+
+## Troubleshooting Comum
+
+PROBLEM_SOLVER apresenta soluções para problemas frequentes:
+
+1. Violação de Chave Única
+
+```SQL
+-- Verificando existência
+SELECT COUNT(*) 
+FROM produtos 
+WHERE codigo = 'PROD-123';
+
+-- Inserção segura
+INSERT INTO produtos (codigo, nome)
+SELECT 'PROD-123', 'Novo Produto'
+WHERE NOT EXISTS (
+    SELECT 1 
+    FROM produtos 
+    WHERE codigo = 'PROD-123'
+);
+```
+
+1. Violação de Chave Estrangeira
+
+```SQL
+-- Verificando referência
+SELECT id 
+FROM categorias 
+WHERE id = 5;
+
+-- Inserção com verificação
+INSERT INTO produtos (categoria_id, nome)
+SELECT 5, 'Novo Produto'
+WHERE EXISTS (
+    SELECT 1 
+    FROM categorias 
+    WHERE id = 5
+);
+```
+
+## Conclusão
+
+INSERT_SPECIALIST conclui: "O domínio do INSERT vai além da sintaxe básica. Considere sempre performance, integridade e manutenibilidade em suas operações de inserção."
+
+Tip:
+
+Dica Final: Sempre teste suas inserções em ambiente de desenvolvimento antes de aplicar em produção.
+
+
+
+# UPDATE: Modificando Dados
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║  DATA_MASTER >> Atualização de Dados                       ║
+║  INSTRUTOR: UPDATE_SPECIALIST                              ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+## Fundamentos do UPDATE
+
+UPDATE_SPECIALIST explica: "O comando UPDATE permite modificar dados existentes de forma precisa e controlada."
+
+### Sintaxe Básica
+
+```SQL
+-- Atualização simples
+UPDATE tabela
+SET coluna = valor
+WHERE condição;
+
+-- Múltiplas colunas
+UPDATE tabela
+SET 
+    coluna1 = valor1,
+    coluna2 = valor2
+WHERE condição;
+```
+
+## Formas de Atualização
+
+### 1. Valores Diretos
+
+```SQL
+-- Atualização simples
+UPDATE produtos
+SET 
+    preco = 999.99,
+    ultima_atualizacao = CURRENT_TIMESTAMP
+WHERE id = 1001;
+
+-- Com expressões
+UPDATE produtos
+SET preco = preco * 1.1
+WHERE categoria = 'Eletrônicos';
+```
+
+### 2. Atualização com JOIN
+
+DATA_SYNC_EXPERT demonstra: "Atualize baseado em outras tabelas!"
+
+```SQL
+-- Atualização com JOIN
+UPDATE pedidos p
+SET status = 'aprovado'
+FROM clientes c
+WHERE p.cliente_id = c.id
+AND c.categoria = 'VIP';
+
+-- Atualização múltipla
+UPDATE produtos p
+SET 
+    preco = p.preco * t.fator_ajuste,
+    atualizado_em = CURRENT_TIMESTAMP
+FROM tabela_ajustes t
+WHERE p.categoria = t.categoria;
+```
+
+### 3. Atualizações Condicionais
+
+```SQL
+-- Usando CASE
+UPDATE funcionarios
+SET salario = CASE
+    WHEN tempo_servico < 2 THEN salario * 1.05
+    WHEN tempo_servico < 5 THEN salario * 1.07
+    ELSE salario * 1.10
+END;
+
+-- Com COALESCE
+UPDATE clientes
+SET 
+    telefone = COALESCE(novo_telefone, telefone),
+    email = COALESCE(novo_email, email)
+FROM atualizacoes_clientes
+WHERE clientes.id = atualizacoes_clientes.cliente_id;
+```
+
+## Tratamento de Erros
+
+ERROR_HANDLER apresenta: "Lidando com atualizações seguras"
+
+```SQL
+-- Com validação
+UPDATE produtos
+SET preco = novo_preco
+WHERE id = produto_id
+AND novo_preco > 0
+RETURNING id, nome, preco as novo_preco;
+
+-- Dentro de transação
+BEGIN;
+    UPDATE contas
+    SET saldo = saldo - 100
+    WHERE id = 1;
+    
+    UPDATE contas
+    SET saldo = saldo + 100
+    WHERE id = 2;
+    
+    -- Verificação
+    IF EXISTS (SELECT 1 FROM contas WHERE saldo < 0) THEN
+        ROLLBACK;
+    ELSE
+        COMMIT;
+    END IF;
+```
+
+## Atualizações em Massa
+
+BULK_UPDATE_MASTER compartilha: "Otimize atualizações grandes!"
+
+```SQL
+-- Atualização em lotes
+UPDATE produtos
+SET status = 'inativo'
+WHERE id IN (
+    SELECT id 
+    FROM produtos
+    WHERE ultima_venda < CURRENT_DATE - INTERVAL '1 year'
+    LIMIT 1000
+);
+
+-- Com tabela temporária
+CREATE TEMP TABLE updates_temp AS
+SELECT id, novo_preco
+FROM calculos_precos;
+
+UPDATE produtos p
+SET preco = t.novo_preco
+FROM updates_temp t
+WHERE p.id = t.id;
+```
+
+## Boas Práticas
+
+BEST_PRACTICES_SAGE recomenda:
+
+### 1. Performance
+
+* Use índices adequadamente
+
+* Atualize em lotes quando possível
+
+* Evite triggers desnecessários
+
+* Monitore locks e deadlocks
+
+### 2. Integridade
+
+* Valide dados antes da atualização
+
+* Use transações quando necessário
+
+* Mantenha consistência referencial
+
+* Considere impacto em constraints
+
+### 3. Manutenção
+
+* Mantenha logs de alterações
+
+* Documente atualizações críticas
+
+* Implemente rollback strategy
+
+* Monitore impacto em índices
+
+```
+╔════════════════════════════════════════════╗
+║  CHECKLIST UPDATE:                        ║
+║  □ WHERE adequado?                       ║
+║  □ Dados validados?                      ║
+║  □ Transação necessária?                 ║
+║  □ Índices considerados?                 ║
+║  □ Backup realizado?                     ║
+╚════════════════════════════════════════════╝
+```
+
+## Exemplos Práticos
+
+### Sistema de E-commerce
+
+```SQL
+-- Atualização de estoque após venda
+UPDATE produtos p
+SET 
+    estoque = p.estoque - v.quantidade,
+    ultima_venda = CURRENT_TIMESTAMP,
+    total_vendas = p.total_vendas + 1
+FROM vendas v
+WHERE p.id = v.produto_id
+AND v.status = 'confirmado';
+
+-- Atualização de status de pedidos
+UPDATE pedidos p
+SET 
+    status = 'em_transito',
+    atualizado_em = CURRENT_TIMESTAMP,
+    tracking_code = e.codigo_rastreio
+FROM entregas e
+WHERE p.id = e.pedido_id
+AND p.status = 'aprovado'
+AND e.status = 'coletado';
+```
+
+## Troubleshooting Comum
+
+PROBLEM_SOLVER apresenta soluções para problemas frequentes:
+
+1. Deadlocks em Atualizações
+
+```SQL
+-- Identificando locks
+SELECT relation::regclass, mode, granted
+FROM pg_locks
+WHERE NOT granted;
+
+-- Atualizando com timeout
+SET lock_timeout = '10s';
+UPDATE tabela_concorrida
+SET status = 'processado'
+WHERE id = 1001;
+```
+
+1. Atualizações Órfãs
+
+```SQL
+-- Verificando integridade
+UPDATE pedidos p
+SET status = 'cancelado'
+WHERE EXISTS (
+    SELECT 1 
+    FROM clientes c
+    WHERE p.cliente_id = c.id
+    AND c.status = 'inativo'
+);
+```
+
+## Conclusão
+
+UPDATE_SPECIALIST conclui: "O UPDATE é uma operação poderosa que requer atenção aos detalhes. Sempre valide suas condições e considere o impacto das alterações."
+
+Tip:
+
+Dica Final: Sempre teste suas atualizações com SELECT primeiro para confirmar o conjunto de registros afetados.
+
+
+
+# DELETE: Removendo Dados com Precisão
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║  DATA_MASTER >> Remoção de Dados                           ║
+║  INSTRUTOR: DELETE_SPECIALIST                              ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+## Fundamentos do DELETE
+
+DELETE_SPECIALIST explica: "O comando DELETE permite remover registros de forma precisa e controlada."
+
+### Sintaxe Básica
+
+```SQL
+-- Remoção simples
+DELETE FROM tabela
+WHERE condição;
+
+-- Remoção com RETURNING
+DELETE FROM produtos
+WHERE estoque = 0
+RETURNING id, nome;
+```
+
+## Formas de Deleção
+
+### 1. Deleção Simples
+
+```SQL
+-- Remoção por ID
+DELETE FROM pedidos
+WHERE id = 1001;
+
+-- Remoção por condição
+DELETE FROM produtos
+WHERE validade < CURRENT_DATE;
+```
+
+### 2. Deleção com JOIN
+
+DATA_SYNC_EXPERT demonstra: "Delete registros baseado em outras tabelas!"
+
+```SQL
+-- Deleção com JOIN
+DELETE FROM pedidos p
+USING clientes c
+WHERE p.cliente_id = c.id
+AND c.status = 'inativo';
+
+-- Deleção múltipla
+DELETE FROM produtos
+WHERE categoria_id IN (
+    SELECT id 
+    FROM categorias 
+    WHERE descontinuada = true
+);
+```
+
+### 3. Deleção Condicional
+
+```SQL
+-- Usando subquery
+DELETE FROM logs
+WHERE created_at < (
+    SELECT CURRENT_TIMESTAMP - INTERVAL '30 days'
+);
+
+-- Com EXISTS
+DELETE FROM carrinho
+WHERE EXISTS (
+    SELECT 1 
+    FROM produtos p
+    WHERE carrinho.produto_id = p.id
+    AND p.descontinuado = true
+);
+```
+
+## Deleção em Massa
+
+BULK_DELETE_MASTER compartilha: "Otimize deleções grandes!"
+
+```SQL
+-- Deleção em lotes
+DO $$
+DECLARE
+    batch_size INTEGER := 1000;
+BEGIN
+    WHILE EXISTS (
+        SELECT 1 
+        FROM logs 
+        WHERE created_at < CURRENT_DATE - INTERVAL '1 year'
+    ) LOOP
+        DELETE FROM logs
+        WHERE id IN (
+            SELECT id 
+            FROM logs 
+            WHERE created_at < CURRENT_DATE - INTERVAL '1 year'
+            LIMIT batch_size
+        );
+        COMMIT;
+    END LOOP;
+END $$;
+```
+
+## Soft Delete
+
+ARCHITECTURE_SAGE apresenta: "Às vezes, é melhor não deletar de verdade!"
+
+```SQL
+-- Implementando soft delete
+ALTER TABLE produtos
+ADD COLUMN deleted_at TIMESTAMP,
+ADD COLUMN is_active BOOLEAN DEFAULT true;
+
+-- Realizando soft delete
+UPDATE produtos
+SET 
+    deleted_at = CURRENT_TIMESTAMP,
+    is_active = false
+WHERE id = 1001;
+
+-- Consultando apenas ativos
+SELECT * FROM produtos
+WHERE is_active = true
+OR is_active IS NULL;
+```
+
+## Boas Práticas
+
+BEST_PRACTICES_SAGE recomenda:
+
+### 1. Performance
+
+* Use índices adequadamente
+
+* Delete em lotes quando necessário
+
+* Considere TRUNCATE para limpeza total
+
+* Monitore locks e deadlocks
+
+### 2. Integridade
+
+* Verifique constraints
+
+* Use transações quando necessário
+
+* Considere impacto em dados relacionados
+
+* Mantenha consistência referencial
+
+### 3. Segurança
+
+* Faça backup antes de deleções grandes
+
+* Valide condições WHERE cuidadosamente
+
+* Implemente soft delete quando apropriado
+
+* Mantenha logs de deleções importantes
+
+```
+╔════════════════════════════════════════════╗
+║  CHECKLIST DELETE:                        ║
+║  □ WHERE adequado?                       ║
+║  □ Impacto analisado?                    ║
+║  □ Transação necessária?                 ║
+║  □ Backup realizado?                     ║
+║  □ Soft delete considerado?              ║
+╚════════════════════════════════════════════╝
+```
+
+## Exemplos Práticos
+
+### Sistema de E-commerce
+
+```SQL
+-- Limpeza de carrinhos abandonados
+DELETE FROM carrinhos
+WHERE ultima_atualizacao < CURRENT_TIMESTAMP - INTERVAL '24 hours'
+AND status = 'pendente';
+
+-- Remoção de produtos descontinuados
+DELETE FROM produtos p
+WHERE NOT EXISTS (
+    SELECT 1 
+    FROM pedidos_itens pi
+    WHERE pi.produto_id = p.id
+    AND pi.created_at > CURRENT_DATE - INTERVAL '6 months'
+)
+AND p.estoque = 0;
+```
+
+## Troubleshooting Comum
+
+PROBLEM_SOLVER apresenta soluções para problemas frequentes:
+
+1. Violação de Constraint
+
+```SQL
+-- Verificando dependências
+SELECT 
+    tc.table_schema, 
+    tc.table_name, 
+    kcu.column_name
+FROM information_schema.table_constraints tc
+JOIN information_schema.key_column_usage kcu
+    ON tc.constraint_name = kcu.constraint_name
+WHERE tc.constraint_type = 'FOREIGN KEY'
+AND kcu.referenced_table_name = 'sua_tabela';
+
+-- Deleção segura
+BEGIN;
+    DELETE FROM tabela_dependente
+    WHERE chave_estrangeira IN (
+        SELECT id FROM tabela_principal WHERE status = 'inativo'
+    );
+    
+    DELETE FROM tabela_principal
+    WHERE status = 'inativo';
+COMMIT;
+```
+
+1. Recuperação de Dados
+
+```SQL
+-- Backup antes de deletar
+CREATE TABLE deleted_records AS
+SELECT * FROM tabela
+WHERE status = 'para_deletar';
+
+-- Então execute a deleção
+DELETE FROM tabela
+WHERE status = 'para_deletar';
+```
+
+## Conclusão
+
+DELETE_SPECIALIST conclui: "O DELETE é uma operação irreversível - use com cautela e sempre tenha um plano de backup."
+
+Tip:
+
+Dica Final: Sempre teste suas condições de DELETE com um SELECT primeiro para confirmar exatamente quais registros serão afetados.
+
+
+
+# MERGE: Sincronizando Dados com Precisão
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║  DATA_SYNC_MASTER >> Sincronização de Dados                ║
+║  INSTRUTOR: MERGE_SPECIALIST                              ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+## Fundamentos do MERGE
+
+MERGE_SPECIALIST explica: "O comando MERGE é uma ferramenta poderosa para sincronização de dados, combinando INSERT, UPDATE e DELETE em uma única operação."
+
+### Sintaxe Básica
+
+```SQL
+MERGE INTO tabela_destino d
+USING tabela_origem o
+ON (d.id = o.id)
+WHEN MATCHED THEN
+    UPDATE SET coluna = o.valor
+WHEN NOT MATCHED THEN
+    INSERT (coluna) VALUES (o.valor);
+```
+
+## Padrões de Uso
+
+### 1. Sincronização Completa
+
+```SQL
+-- Sincronização com todas as ações
+MERGE INTO produtos_destino d
+USING produtos_origem o
+ON (d.codigo = o.codigo)
+WHEN MATCHED THEN
+    UPDATE SET 
+        nome = o.nome,
+        preco = o.preco,
+        updated_at = CURRENT_TIMESTAMP
+WHEN NOT MATCHED THEN
+    INSERT (codigo, nome, preco, created_at)
+    VALUES (o.codigo, o.nome, o.preco, CURRENT_TIMESTAMP)
+WHEN NOT MATCHED BY SOURCE THEN
+    DELETE;
+```
+
+### 2. Atualização Condicional
+
+```SQL
+-- Merge com condições específicas
+MERGE INTO estoque e
+USING novos_dados n
+ON (e.produto_id = n.produto_id)
+WHEN MATCHED AND e.quantidade != n.quantidade THEN
+    UPDATE SET 
+        quantidade = n.quantidade,
+        ultima_atualizacao = CURRENT_TIMESTAMP
+WHEN NOT MATCHED AND n.quantidade > 0 THEN
+    INSERT (produto_id, quantidade, ultima_atualizacao)
+    VALUES (n.produto_id, n.quantidade, CURRENT_TIMESTAMP);
+```
+
+## Casos de Uso
+
+DATA_SYNC_EXPERT apresenta: "Cenários comuns para MERGE"
+
+### 1. Dimensões Slowly Changing
+
+```SQL
+-- Dimensão Tipo 2
+MERGE INTO dim_clientes d
+USING stg_clientes s
+ON (d.cliente_id = s.cliente_id AND d.atual = true)
+WHEN MATCHED AND (
+    d.nome != s.nome OR 
+    d.endereco != s.endereco
+) THEN
+    UPDATE SET 
+        atual = false,
+        data_fim = CURRENT_TIMESTAMP
+WHEN NOT MATCHED THEN
+    INSERT (cliente_id, nome, endereco, data_inicio, data_fim, atual)
+    VALUES (s.cliente_id, s.nome, s.endereco, CURRENT_TIMESTAMP, NULL, true);
+```
+
+### 2. Sincronização de Cache
+
+```SQL
+-- Atualização de cache
+MERGE INTO cache_produtos c
+USING produtos_atualizados p
+ON (c.produto_id = p.id)
+WHEN MATCHED AND c.hash != p.hash THEN
+    UPDATE SET 
+        dados = p.dados,
+        hash = p.hash,
+        atualizado_em = CURRENT_TIMESTAMP
+WHEN NOT MATCHED THEN
+    INSERT (produto_id, dados, hash, atualizado_em)
+    VALUES (p.id, p.dados, p.hash, CURRENT_TIMESTAMP);
+```
+
+## Boas Práticas
+
+BEST_PRACTICES_SAGE compartilha:
+
+### 1. Performance
+
+* Use índices apropriados
+
+* Considere o volume de dados
+
+* Faça em lotes quando necessário
+
+* Monitore tempos de execução
+
+### 2. Integridade
+
+* Use transações
+
+* Valide dados antes do merge
+
+* Mantenha consistência
+
+* Implemente logging
+
+### 3. Manutenção
+
+* Documente regras de merge
+
+* Mantenha histórico de execuções
+
+* Implemente recuperação de erros
+
+* Monitore resultados
+
+```
+╔════════════════════════════════════════════╗
+║  CHECKLIST MERGE:                         ║
+║  □ Dados validados?                      ║
+║  □ Índices verificados?                  ║
+║  □ Transação configurada?                ║
+║  □ Logging implementado?                 ║
+║  □ Recuperação planejada?                ║
+╚════════════════════════════════════════════╝
+```
+
+## Padrões Avançados
+
+PATTERN_MASTER demonstra: "Técnicas avançadas de MERGE"
+
+### 1. Merge com Staging
+
+```SQL
+-- Usando tabela temporária
+WITH staging AS (
+    SELECT * FROM novos_dados
+    WHERE data_processamento = CURRENT_DATE
+)
+MERGE INTO produtos_final p
+USING staging s
+ON (p.id = s.id)
+WHEN MATCHED THEN
+    UPDATE SET 
+        dados = s.dados,
+        atualizado_em = CURRENT_TIMESTAMP
+WHEN NOT MATCHED THEN
+    INSERT (id, dados, criado_em)
+    VALUES (s.id, s.dados, CURRENT_TIMESTAMP);
+```
+
+### 2. Merge com Auditoria
+
+```SQL
+-- Mantendo histórico de alterações
+MERGE INTO produtos p
+USING atualizacoes a
+ON (p.id = a.id)
+WHEN MATCHED THEN
+    UPDATE SET 
+        nome = a.nome,
+        preco = a.preco
+    -- Registro de auditoria
+    INSERT INTO produtos_audit (
+        produto_id, campo, valor_antigo, valor_novo, data_alteracao
+    )
+    VALUES 
+        (p.id, 'nome', p.nome, a.nome, CURRENT_TIMESTAMP),
+        (p.id, 'preco', p.preco, a.preco, CURRENT_TIMESTAMP)
+WHEN NOT MATCHED THEN
+    INSERT (id, nome, preco)
+    VALUES (a.id, a.nome, a.preco);
+```
+
+## Troubleshooting
+
+ERROR_HANDLER apresenta soluções para problemas comuns:
+
+1. Conflitos de Chave
+
+```SQL
+-- Verificação prévia
+SELECT COUNT(*), id 
+FROM tabela_origem 
+GROUP BY id 
+HAVING COUNT(*) > 1;
+
+-- Merge com resolução de duplicatas
+MERGE INTO destino d
+USING (
+    SELECT DISTINCT ON (id) *
+    FROM origem
+    ORDER BY id, ultima_atualizacao DESC
+) o
+ON (d.id = o.id)
+...
+```
+
+1. Performance
+
+```SQL
+-- Merge em lotes
+DO $$
+DECLARE
+    batch_size INTEGER := 1000;
+    total_rows INTEGER;
+BEGIN
+    SELECT COUNT(*) INTO total_rows FROM origem;
+    
+    FOR i IN 0..total_rows/batch_size LOOP
+        MERGE INTO destino d
+        USING (
+            SELECT *
+            FROM origem
+            OFFSET i * batch_size
+            LIMIT batch_size
+        ) o
+        ON (d.id = o.id)
+        ...;
+        
+        COMMIT;
+    END LOOP;
+END $$;
+```
+
+## Conclusão
+
+MERGE_SPECIALIST conclui: "O MERGE é uma ferramenta poderosa para sincronização de dados, mas requer planejamento cuidadoso e atenção aos detalhes."
+
+Tip:
+
+Dica Final: Sempre teste seu MERGE com um conjunto pequeno de dados antes de executar em produção, e mantenha backups atualizados.
+
+
+
+# DCL - Linguagem de Controle de Dados
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║  SECURITY_MASTER >> Controle de Acesso a Dados             ║
+║  INSTRUTOR: SECURITY_SPECIALIST                           ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+## Visão Geral
+
+SECURITY_SPECIALIST apresenta: "A Linguagem de Controle de Dados (DCL) é fundamental para gerenciar segurança e acesso em bancos de dados."
+
+```MERMAID
+graph TD
+    A[DCL] --> B[GRANT]
+    A --> C[REVOKE]
+    A --> D[ROLES]
+    B --> E[Privilégios]
+    B --> F[Roles]
+    C --> G[Remoção de Privilégios]
+    C --> H[Remoção de Roles]
+    D --> I[Criação]
+    D --> J[Gerenciamento]
+```
+
+## Comandos Principais
+
+### 1. GRANT
+
+PERMISSION_MASTER explica: "Concede privilégios a usuários e roles"
+
+```SQL
+-- Privilégios básicos
+GRANT SELECT, INSERT ON tabela TO usuario;
+
+-- Todos os privilégios
+GRANT ALL PRIVILEGES ON DATABASE banco TO admin;
+
+-- Privilégios específicos
+GRANT UPDATE(salario) ON funcionarios TO rh_manager;
+```
+
+### 2. REVOKE
+
+ACCESS_CONTROLLER demonstra: "Remove privilégios concedidos"
+
+```SQL
+-- Revogar privilégios específicos
+REVOKE INSERT, UPDATE ON produtos FROM usuario;
+
+-- Revogar todos os privilégios
+REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM usuario;
+```
+
+### 3. Gerenciamento de ROLES
+
+ROLE_MASTER apresenta: "Organiza privilégios em grupos lógicos"
+
+```SQL
+-- Criar role
+CREATE ROLE analistas;
+
+-- Atribuir privilégios à role
+GRANT SELECT ON ALL TABLES IN SCHEMA analytics TO analistas;
+
+-- Atribuir role a usuário
+GRANT analistas TO usuario;
+```
+
+## Padrões de Segurança
+
+SECURITY_ARCHITECT compartilha padrões essenciais:
+
+### 1. Princípio do Menor Privilégio
+
+```SQL
+-- Criar role com privilégios mínimos
+CREATE ROLE app_read;
+GRANT SELECT ON tabela1, tabela2 TO app_read;
+GRANT USAGE ON SCHEMA public TO app_read;
+
+-- Revogar privilégios desnecessários
+REVOKE ALL ON ALL TABLES IN SCHEMA public FROM PUBLIC;
+```
+
+### 2. Hierarquia de Roles
+
+```SQL
+-- Estrutura hierárquica
+CREATE ROLE junior_dev;
+CREATE ROLE senior_dev;
+CREATE ROLE tech_lead;
+
+GRANT junior_dev TO senior_dev;
+GRANT senior_dev TO tech_lead;
+```
+
+### 3. Segurança em Nível de Coluna
+
+```SQL
+-- Restringir acesso a colunas sensíveis
+GRANT SELECT (nome, email) ON usuarios TO suporte;
+REVOKE SELECT (senha_hash) ON usuarios FROM suporte;
+```
+
+## Boas Práticas
+
+SECURITY_GUARDIAN compartilha diretrizes:
+
+### 1. Auditoria
+
+```SQL
+-- Criar tabela de auditoria
+CREATE TABLE audit_log (
+    id SERIAL PRIMARY KEY,
+    usuario TEXT,
+    acao TEXT,
+    tabela TEXT,
+    data TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Trigger para auditoria
+CREATE TRIGGER audit_changes
+AFTER INSERT OR UPDATE OR DELETE ON dados_sensiveis
+FOR EACH ROW EXECUTE FUNCTION log_changes();
+```
+
+### 2. Revisão Regular
+
+```SQL
+-- Consultar privilégios existentes
+SELECT grantee, privilege_type, table_name
+FROM information_schema.role_table_grants
+WHERE table_schema = 'public';
+
+-- Verificar membros de roles
+SELECT rolname, member
+FROM pg_roles r
+JOIN pg_auth_members m ON r.oid = m.roleid;
+```
+
+### 3. Rotação de Credenciais
+
+```SQL
+-- Alterar senha de usuário
+ALTER USER aplicacao_user WITH PASSWORD 'novo_password_seguro';
+
+-- Revogar e reconectar sessões
+SELECT pg_terminate_backend(pid) 
+FROM pg_stat_activity 
+WHERE usename = 'aplicacao_user';
+```
+
+## Cenários Comuns
+
+IMPLEMENTATION_EXPERT apresenta soluções práticas:
+
+### 1. Ambiente de Desenvolvimento
+
+```SQL
+-- Setup inicial
+CREATE ROLE dev_team;
+GRANT CONNECT ON DATABASE dev_db TO dev_team;
+GRANT USAGE ON SCHEMA public TO dev_team;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO dev_team;
+```
+
+### 2. Ambiente de Produção
+
+```SQL
+-- Setup de produção
+CREATE ROLE app_service;
+GRANT CONNECT ON DATABASE prod_db TO app_service;
+GRANT USAGE ON SCHEMA public TO app_service;
+GRANT SELECT, INSERT ON tabela_cliente TO app_service;
+GRANT UPDATE (status, ultima_atualizacao) ON tabela_pedido TO app_service;
+```
+
+## Troubleshooting
+
+PROBLEM_SOLVER apresenta soluções para problemas comuns:
+
+### 1. Conflitos de Privilégios
+
+```SQL
+-- Verificar privilégios efetivos
+SELECT * FROM information_schema.role_table_grants
+WHERE grantee = 'usuario_problematico';
+
+-- Resetar privilégios
+REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM usuario_problematico;
+GRANT SELECT ON tabela_especifica TO usuario_problematico;
+```
+
+### 2. Problemas de Acesso
+
+```SQL
+-- Diagnosticar problemas de conexão
+SELECT * FROM pg_stat_activity
+WHERE usename = 'usuario_problema';
+
+-- Verificar configurações de autenticação
+SELECT rolname, rolcanlogin, rolvaliduntil
+FROM pg_roles
+WHERE rolname = 'usuario_problema';
+```
+
+```
+╔════════════════════════════════════════════╗
+║  CHECKLIST SEGURANÇA:                     ║
+║  □ Privilégios mínimos?                   ║
+║  □ Roles apropriadas?                     ║
+║  □ Auditoria ativa?                       ║
+║  □ Senhas fortes?                         ║
+║  □ Revisão regular?                       ║
+╚════════════════════════════════════════════╝
+```
+
+## Conclusão
+
+SECURITY_SPECIALIST conclui: "O DCL é crucial para manter a segurança e integridade do banco de dados. Implemente controles de acesso cuidadosamente e revise-os regularmente."
+
+Tip:
+
+Dica de Segurança: Mantenha um inventário atualizado de todos os privilégios concedidos e revise-o periodicamente para garantir conformidade com as políticas de segurança.
+
+
+
+# GRANT: Concedendo Privilégios
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║  PERMISSION_MASTER >> Gerenciamento de Privilégios         ║
+║  INSTRUTOR: GRANT_SPECIALIST                              ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+## Sintaxe Básica
+
+GRANT_SPECIALIST explica: "O comando GRANT é fundamental para controle de acesso!"
+
+```SQL
+-- Sintaxe básica
+GRANT privilégio ON objeto TO destinatário;
+
+-- Múltiplos privilégios
+GRANT SELECT, INSERT, UPDATE ON tabela TO usuario;
+
+-- Todos os privilégios
+GRANT ALL PRIVILEGES ON tabela TO admin;
+```
+
+## Tipos de Privilégios
+
+PRIVILEGE_MASTER apresenta os principais privilégios:
+
+### 1. Privilégios de Tabela
+
+```SQL
+-- Privilégios básicos
+GRANT SELECT ON clientes TO analista;
+GRANT INSERT, UPDATE ON produtos TO vendedor;
+GRANT DELETE ON temp_dados TO admin;
+
+-- Privilégios em colunas específicas
+GRANT SELECT (nome, email) ON usuarios TO suporte;
+GRANT UPDATE (preco, estoque) ON produtos TO gerente;
+```
+
+### 2. Privilégios de Schema
+
+```SQL
+-- Acesso ao schema
+GRANT USAGE ON SCHEMA public TO usuario;
+GRANT CREATE ON SCHEMA analytics TO dev_team;
+
+-- Todos os objetos do schema
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO leitor;
+```
+
+### 3. Privilégios de Database
+
+```SQL
+-- Privilégios de banco
+GRANT CONNECT ON DATABASE app_db TO app_user;
+GRANT TEMPORARY ON DATABASE temp_db TO etl_user;
+GRANT ALL PRIVILEGES ON DATABASE prod_db TO admin;
+```
+
+## Cenários Comuns
+
+IMPLEMENTATION_EXPERT demonstra casos práticos:
+
+### 1. Setup de Aplicação
+
+```SQL
+-- Usuário de aplicação
+GRANT CONNECT ON DATABASE app_db TO app_user;
+GRANT USAGE ON SCHEMA public TO app_user;
+GRANT SELECT, INSERT, UPDATE ON tabela_clientes TO app_user;
+GRANT EXECUTE ON FUNCTION proc_negocio TO app_user;
+```
+
+### 2. Setup de Analista
+
+```SQL
+-- Analista de dados
+GRANT CONNECT ON DATABASE analytics_db TO analista;
+GRANT USAGE ON SCHEMA relatorios TO analista;
+GRANT SELECT ON ALL TABLES IN SCHEMA relatorios TO analista;
+GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA relatorios TO analista;
+```
+
+## Boas Práticas
+
+SECURITY_GUARDIAN compartilha diretrizes:
+
+### 1. Princípio do Menor Privilégio
+
+```SQL
+-- Privilégios específicos
+GRANT SELECT ON vw_relatorio TO analista;
+GRANT INSERT ON log_acesso TO app_user;
+
+-- Evitar privilégios excessivos
+REVOKE ALL ON ALL TABLES IN SCHEMA public FROM PUBLIC;
+```
+
+### 2. Gerenciamento via Roles
+
+```SQL
+-- Criar e configurar role
+CREATE ROLE vendedores;
+GRANT SELECT, INSERT ON pedidos TO vendedores;
+GRANT UPDATE (status) ON pedidos TO vendedores;
+
+-- Atribuir role a usuários
+GRANT vendedores TO usuario1, usuario2;
+```
+
+### 3. Auditoria
+
+```SQL
+-- Visualizar privilégios
+SELECT grantee, privilege_type, table_name
+FROM information_schema.role_table_grants
+WHERE table_schema = 'public';
+
+-- Logging de alterações
+CREATE TRIGGER audit_grants
+AFTER GRANT ON *.* 
+FOR EACH STATEMENT 
+EXECUTE FUNCTION log_grant_changes();
+```
+
+```
+╔════════════════════════════════════════════╗
+║  CHECKLIST DE CONCESSÃO:                  ║
+║  □ Privilégios mínimos necessários?       ║
+║  □ Role apropriada existe?                ║
+║  □ Escopo bem definido?                   ║
+║  □ Auditoria configurada?                 ║
+║  □ Documentação atualizada?               ║
+╚════════════════════════════════════════════╝
+```
+
+## Troubleshooting
+
+PROBLEM_SOLVER apresenta soluções:
+
+### 1. Verificação de Privilégios
+
+```SQL
+-- Verificar privilégios concedidos
+SELECT * FROM information_schema.table_privileges
+WHERE grantee = 'usuario';
+
+-- Verificar roles do usuário
+SELECT r.rolname
+FROM pg_roles r
+JOIN pg_auth_members m ON m.roleid = r.oid
+WHERE m.member = 'usuario'::regrole;
+```
+
+### 2. Resolução de Problemas
+
+```SQL
+-- Revogar e reconceder privilégios
+REVOKE ALL PRIVILEGES ON tabela FROM usuario;
+GRANT SELECT, INSERT ON tabela TO usuario;
+
+-- Verificar conflitos
+SELECT * FROM information_schema.role_table_grants
+WHERE table_name = 'tabela_problema';
+```
+
+## Conclusão
+
+GRANT_SPECIALIST conclui: "GRANT é uma ferramenta poderosa para segurança. Use-a com sabedoria e mantenha documentação clara dos privilégios concedidos."
+
+Tip:
+
+Dica Final: Revise periodicamente os privilégios concedidos e mantenha um registro de todas as alterações de permissões para auditoria futura.
+
+
+
+# REVOKE: Revogando Privilégios
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║  SECURITY_MASTER >> Gerenciamento de Revogações            ║
+║  INSTRUTOR: REVOKE_SPECIALIST                              ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+## Sintaxe Básica
+
+REVOKE_SPECIALIST explica: "O comando REVOKE é essencial para manter a segurança e controle de acesso!"
+
+```SQL
+-- Sintaxe básica
+REVOKE privilégio ON objeto FROM destinatário;
+
+-- Múltiplos privilégios
+REVOKE SELECT, INSERT, UPDATE ON tabela FROM usuario;
+
+-- Todos os privilégios
+REVOKE ALL PRIVILEGES ON tabela FROM usuario;
+```
+
+## Tipos de Revogação
+
+SECURITY_MASTER apresenta os principais cenários:
+
+### 1. Revogação de Tabela
+
+```SQL
+-- Privilégios básicos
+REVOKE SELECT ON clientes FROM analista;
+REVOKE INSERT, UPDATE ON produtos FROM vendedor;
+REVOKE DELETE ON temp_dados FROM usuario;
+
+-- Privilégios em colunas específicas
+REVOKE SELECT (senha, dados_sensíveis) ON usuarios FROM suporte;
+REVOKE UPDATE (salario) ON funcionarios FROM gerente;
+```
+
+### 2. Revogação de Schema
+
+```SQL
+-- Acesso ao schema
+REVOKE USAGE ON SCHEMA confidencial FROM usuario;
+REVOKE CREATE ON SCHEMA public FROM dev_team;
+
+-- Todos os objetos do schema
+REVOKE SELECT ON ALL TABLES IN SCHEMA dados_sensiveis FROM grupo;
+```
+
+### 3. Revogação de Database
+
+```SQL
+-- Privilégios de banco
+REVOKE CONNECT ON DATABASE prod_db FROM test_user;
+REVOKE ALL PRIVILEGES ON DATABASE analytics FROM old_user;
+REVOKE TEMPORARY ON DATABASE temp_db FROM temp_user;
+```
+
+## Cenários Comuns
+
+IMPLEMENTATION_EXPERT demonstra casos práticos:
+
+### 1. Desativação de Usuário
+
+```SQL
+-- Remoção completa de acessos
+REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM usuario_desativado;
+REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM usuario_desativado;
+REVOKE ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public FROM usuario_desativado;
+REVOKE USAGE ON SCHEMA public FROM usuario_desativado;
+```
+
+### 2. Ajuste de Permissões
+
+```SQL
+-- Refinamento de acesso
+REVOKE INSERT, UPDATE, DELETE ON dados_financeiros FROM analista;
+GRANT SELECT ON dados_financeiros TO analista;
+```
+
+## Boas Práticas
+
+SECURITY_GUARDIAN compartilha diretrizes:
+
+### 1. Revogação Segura
+
+```SQL
+-- Verificar antes de revogar
+SELECT * FROM information_schema.role_table_grants
+WHERE grantee = 'usuario_alvo';
+
+-- Revogar com cautela
+BEGIN;
+    REVOKE critical_role FROM usuario;
+    -- Verificar impacto
+    SELECT current_user, session_user;
+COMMIT;
+```
+
+### 2. Auditoria de Revogações
+
+```SQL
+-- Logging de revogações
+CREATE TABLE revoke_audit_log (
+    id SERIAL PRIMARY KEY,
+    revoked_from VARCHAR(100),
+    revoked_privilege VARCHAR(50),
+    revoked_object VARCHAR(100),
+    revoked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    revoked_by VARCHAR(100)
+);
+
+-- Trigger para auditoria
+CREATE TRIGGER log_revokes
+AFTER REVOKE ON *.* 
+FOR EACH STATEMENT 
+EXECUTE FUNCTION log_revoke_changes();
+```
+
+```
+╔════════════════════════════════════════════╗
+║  CHECKLIST DE REVOGAÇÃO:                  ║
+║  □ Impacto analisado?                     ║
+║  □ Backup de permissões feito?            ║
+║  □ Usuários afetados notificados?         ║
+║  □ Auditoria configurada?                 ║
+║  □ Plano de contingência pronto?          ║
+╚════════════════════════════════════════════╝
+```
+
+## Troubleshooting
+
+PROBLEM_SOLVER apresenta soluções:
+
+### 1. Verificação de Impacto
+
+```SQL
+-- Analisar dependências
+SELECT r.rolname, m.member
+FROM pg_roles r
+JOIN pg_auth_members m ON r.oid = m.roleid
+WHERE r.rolname = 'role_a_revogar';
+
+-- Verificar sessões ativas
+SELECT pid, usename, application_name
+FROM pg_stat_activity
+WHERE usename = 'usuario_alvo';
+```
+
+### 2. Recuperação de Acesso
+
+```SQL
+-- Backup de privilégios
+CREATE TABLE privilege_backup AS
+SELECT * FROM information_schema.role_table_grants
+WHERE grantee = 'usuario_alvo';
+
+-- Restauração de privilégios
+-- (Gerar scripts de GRANT baseados no backup)
+```
+
+## Conclusão
+
+REVOKE_SPECIALIST conclui: "REVOKE é uma operação crítica para segurança - use com planejamento e cautela."
+
+Tip:
+
+Dica Final: Sempre documente as revogações realizadas e mantenha um histórico das alterações de permissões para referência futura.
+
+
+
+# Gerenciamento de Roles
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║  ROLE_MASTER >> Gerenciamento de Roles e Grupos            ║
+║  INSTRUTOR: ROLE_SPECIALIST                                ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+## Conceitos Básicos
+
+ROLE_SPECIALIST explica: "Roles são fundamentais para organizar e gerenciar permissões de forma eficiente!"
+
+```SQL
+-- Criar role básica
+CREATE ROLE nome_role;
+
+-- Criar role com login
+CREATE ROLE usuario_app WITH 
+    LOGIN 
+    PASSWORD 'senha_segura'
+    VALID UNTIL '2024-12-31';
+```
+
+## Tipos de Roles
+
+### 1. Roles de Aplicação
+
+```SQL
+-- Role para aplicação web
+CREATE ROLE app_web WITH LOGIN;
+GRANT CONNECT ON DATABASE app_db TO app_web;
+GRANT USAGE ON SCHEMA public TO app_web;
+GRANT SELECT, INSERT, UPDATE ON tabela_usuarios TO app_web;
+```
+
+### 2. Roles de Grupo
+
+```SQL
+-- Role para equipe de analistas
+CREATE ROLE analistas;
+GRANT SELECT ON ALL TABLES IN SCHEMA analytics TO analistas;
+GRANT USAGE ON SCHEMA analytics TO analistas;
+
+-- Atribuir usuários ao grupo
+GRANT analistas TO analista1, analista2, analista3;
+```
+
+## Hierarquia de Roles
+
+HIERARCHY_MASTER demonstra a estruturação:
+
+```SQL
+-- Estrutura hierárquica
+CREATE ROLE junior_dev;
+CREATE ROLE senior_dev;
+CREATE ROLE tech_lead;
+
+-- Estabelecer hierarquia
+GRANT junior_dev TO senior_dev;
+GRANT senior_dev TO tech_lead;
+
+-- Configurar permissões por nível
+GRANT SELECT ON app_tables TO junior_dev;
+GRANT INSERT, UPDATE ON app_tables TO senior_dev;
+GRANT ALL PRIVILEGES ON app_tables TO tech_lead;
+```
+
+## Gerenciamento de Permissões
+
+### 1. Atribuição de Privilégios
+
+```SQL
+-- Privilégios básicos
+GRANT SELECT, INSERT ON tabela TO role_name;
+
+-- Privilégios administrativos
+GRANT CREATE ON DATABASE app_db TO admin_role;
+GRANT USAGE, CREATE ON SCHEMA public TO dev_role;
+```
+
+### 2. Revogação de Privilégios
+
+```SQL
+-- Revogar privilégios
+REVOKE INSERT, UPDATE ON dados_sensiveis FROM role_name;
+
+-- Revogar membership
+REVOKE analistas FROM ex_analista;
+```
+
+## Boas Práticas
+
+SECURITY_EXPERT compartilha diretrizes:
+
+### 1. Organização
+
+```SQL
+-- Nomenclatura consistente
+CREATE ROLE app_read;  -- Apenas leitura
+CREATE ROLE app_write; -- Leitura e escrita
+CREATE ROLE app_admin; -- Administração
+
+-- Documentação
+COMMENT ON ROLE app_read IS 'Role para acesso somente leitura';
+```
+
+### 2. Auditoria
+
+```SQL
+-- Visualizar membros de role
+SELECT r.rolname, m.member, u.usename
+FROM pg_roles r
+LEFT JOIN pg_auth_members m ON r.oid = m.roleid
+LEFT JOIN pg_user u ON m.member = u.usesysid;
+
+-- Verificar privilégios
+SELECT * FROM information_schema.role_table_grants
+WHERE grantee = 'role_name';
+```
+
+```
+╔════════════════════════════════════════════╗
+║  CHECKLIST DE ROLES:                      ║
+║  □ Nomenclatura padronizada?              ║
+║  □ Hierarquia bem definida?               ║
+║  □ Privilégios mínimos necessários?       ║
+║  □ Documentação atualizada?               ║
+║  □ Auditoria configurada?                 ║
+╚════════════════════════════════════════════╝
+```
+
+## Cenários Comuns
+
+IMPLEMENTATION_EXPERT apresenta soluções práticas:
+
+### 1. Setup de Desenvolvimento
+
+```SQL
+-- Role para desenvolvedores
+CREATE ROLE dev_team;
+GRANT CONNECT ON DATABASE dev_db TO dev_team;
+GRANT USAGE, CREATE ON SCHEMA public TO dev_team;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO dev_team;
+```
+
+### 2. Setup de Produção
+
+```SQL
+-- Role para aplicação em produção
+CREATE ROLE prod_app WITH LOGIN;
+GRANT CONNECT ON DATABASE prod_db TO prod_app;
+GRANT USAGE ON SCHEMA public TO prod_app;
+GRANT SELECT, INSERT ON tabela_clientes TO prod_app;
+GRANT EXECUTE ON FUNCTION proc_negocio TO prod_app;
+```
+
+## Troubleshooting
+
+PROBLEM_SOLVER apresenta soluções:
+
+### 1. Diagnóstico
+
+```SQL
+-- Verificar conflitos
+SELECT r.rolname, 
+       r.rolsuper, 
+       r.rolinherit,
+       r.rolcreaterole,
+       r.rolcreatedb
+FROM pg_roles r
+WHERE r.rolname = 'role_problema';
+
+-- Verificar sessões ativas
+SELECT pid, usename, application_name
+FROM pg_stat_activity
+WHERE usename IN (
+    SELECT m.member::regrole::text
+    FROM pg_roles r
+    JOIN pg_auth_members m ON r.oid = m.roleid
+    WHERE r.rolname = 'role_problema'
+);
+```
+
+### 2. Manutenção
+
+```SQL
+-- Limpar roles não utilizadas
+SELECT r.rolname
+FROM pg_roles r
+LEFT JOIN pg_auth_members m ON r.oid = m.roleid
+WHERE m.roleid IS NULL
+AND NOT r.rolcanlogin;
+
+-- Atualizar expiração
+ALTER ROLE usuario_temporario 
+VALID UNTIL '2024-06-30';
+```
+
+## Conclusão
+
+ROLE_SPECIALIST conclui: "Um bom gerenciamento de roles é fundamental para segurança e organização do banco de dados."
+
+Tip:
+
+Dica Final: Revise regularmente as roles e suas permissões, mantendo documentação atualizada e removendo acessos desnecessários.
+
+
+

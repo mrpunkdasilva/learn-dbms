@@ -1,0 +1,56 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en-US" data-preset="contrast" data-primary-color="#E8488B"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="built-on" content="2025-04-25T23:35:29.341828934"><title>DDL - Linguagem de Defini&ccedil;&atilde;o de Dados | Database Management Systems: A Complete Guide</title><script type="application/json" id="virtual-toc-data">[{"id":"principais-comandos-ddl","level":0,"title":"Principais Comandos DDL","anchor":"#principais-comandos-ddl"},{"id":"boas-pr-ticas-de-ddl","level":0,"title":"Boas Práticas de DDL","anchor":"#boas-pr-ticas-de-ddl"},{"id":"considera-es-de-performance","level":0,"title":"Considerações de Performance","anchor":"#considera-es-de-performance"},{"id":"exerc-cio-pr-tico","level":0,"title":"Exercício Prático","anchor":"#exerc-cio-pr-tico"},{"id":"conclus-o","level":0,"title":"Conclusão","anchor":"#conclus-o"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.css" rel="stylesheet"><link href="static/custom.css" rel="stylesheet"><link rel="icon" type="image/svg" sizes="16x16" href="images/logo-primary.svg"><meta name="image" content=""><!-- Open Graph --><meta property="og:title" content="DDL - Linguagem de Defini&ccedil;&atilde;o de Dados | Database Management Systems: A Complete Guide"><meta property="og:description" content=""><meta property="og:image" content=""><meta property="og:site_name" content="Database Management Systems: A Complete Guide Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="writerside-documentation/sql-ddl.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content=""><meta name="twitter:title" content="DDL - Linguagem de Defini&ccedil;&atilde;o de Dados | Database Management Systems: A Complete Guide"><meta name="twitter:description" content=""><meta name="twitter:creator" content=""><meta name="twitter:image:src" content=""><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    "@id": "writerside-documentation/sql-ddl.html#webpage",
+    "url": "writerside-documentation/sql-ddl.html",
+    "name": "DDL - Linguagem de Defini&ccedil;&atilde;o de Dados | Database Management Systems: A Complete Guide",
+    "description": "",
+    "image": "",
+    "inLanguage":"en-US"
+}</script><!-- End Schema.org --><!-- Schema.org WebSite --><script type="application/ld+json">{
+    "@type": "WebSite",
+    "@id": "writerside-documentation/#website",
+    "url": "writerside-documentation/",
+    "name": "Database Management Systems: A Complete Guide Help"
+}</script><!-- End Schema.org --></head><body data-id="sql-ddl" data-main-title="DDL - Linguagem de Definição de Dados" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs="sql-fundamentals.md|Fundamentos SQL"><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>Database Management Systems: A Complete Guide  Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="sql-ddl" id="sql-ddl.md">DDL - Linguagem de Definição de Dados</h1><p id="k3iczu_3">A Linguagem de Defini&ccedil;&atilde;o de Dados (DDL) &eacute; um componente fundamental do SQL usado para definir e modificar a estrutura do banco de dados. Com ela, podemos criar, alterar e excluir objetos como tabelas, &iacute;ndices, views e outros elementos estruturais.</p><section class="chapter"><h2 id="principais-comandos-ddl" data-toc="principais-comandos-ddl">Principais Comandos DDL</h2><p id="k3iczu_9">O DDL possui quatro comandos principais que formam a base para gerenciamento de estruturas de banco de dados:</p><section class="chapter"><h3 id="create" data-toc="create">CREATE</h3><p id="k3iczu_14">O comando CREATE &eacute; usado para criar novos objetos no banco de dados. &Eacute; o comando mais b&aacute;sico e essencial do DDL.</p><p id="k3iczu_15"><span class="control" id="k3iczu_17">Exemplos pr&aacute;ticos:</span></p><div class="code-block" data-lang="sql">
+-- Criação de banco de dados
+CREATE DATABASE loja;
+
+-- Criação de tabela com diferentes tipos de dados e constraints
+CREATE TABLE produtos (
+    id INT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    preco DECIMAL(10,2),
+    categoria_id INT,
+    FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+);
+</div></section><section class="chapter"><h3 id="alter" data-toc="alter">ALTER</h3><p id="k3iczu_18">O ALTER permite modificar a estrutura de objetos existentes. &Eacute; crucial para evolu&ccedil;&atilde;o do schema do banco de dados.</p><p id="k3iczu_19"><span class="control" id="k3iczu_21">Exemplos comuns:</span></p><div class="code-block" data-lang="sql">
+-- Adicionando uma nova coluna
+ALTER TABLE produtos
+ADD COLUMN descricao TEXT;
+
+-- Modificando o tipo de uma coluna
+ALTER TABLE produtos
+ALTER COLUMN preco TYPE NUMERIC(12,2);
+</div></section><section class="chapter"><h3 id="drop" data-toc="drop">DROP</h3><p id="k3iczu_22">Usado para remover objetos do banco de dados. Deve ser usado com extrema cautela pois &eacute; irrevers&iacute;vel.</p><p id="k3iczu_23"><span class="control" id="k3iczu_25">Exemplo de uso:</span></p><div class="code-block" data-lang="sql">
+-- Removendo uma tabela
+DROP TABLE IF EXISTS produtos_antigos;
+</div></section><section class="chapter"><h3 id="truncate" data-toc="truncate">TRUNCATE</h3><p id="k3iczu_26">Remove todos os registros de uma tabela, mas mant&eacute;m sua estrutura. &Eacute; mais eficiente que DELETE para limpeza completa.</p><div class="code-block" data-lang="sql">
+TRUNCATE TABLE logs_temporarios;
+</div></section></section><section class="chapter"><h2 id="boas-pr-ticas-de-ddl" data-toc="boas-pr-ticas-de-ddl">Boas Pr&aacute;ticas de DDL</h2><section class="chapter"><h3 id="1-seguran-a-em-primeiro-lugar" data-toc="1-seguran-a-em-primeiro-lugar">1. Seguran&ccedil;a em Primeiro Lugar</h3><ul class="list _bullet" id="k3iczu_31"><li class="list__item" id="k3iczu_32"><p id="k3iczu_35">Sempre fa&ccedil;a backup antes de opera&ccedil;&otilde;es DDL</p></li><li class="list__item" id="k3iczu_33"><p id="k3iczu_36">Teste comandos em ambiente de desenvolvimento</p></li><li class="list__item" id="k3iczu_34"><p id="k3iczu_37">Mantenha scripts de rollback preparados</p></li></ul></section><section class="chapter"><h3 id="2-planejamento" data-toc="2-planejamento">2. Planejamento</h3><ul class="list _bullet" id="k3iczu_38"><li class="list__item" id="k3iczu_39"><p id="k3iczu_42">Documente todas as altera&ccedil;&otilde;es estruturais</p></li><li class="list__item" id="k3iczu_40"><p id="k3iczu_43">Avalie impactos em aplica&ccedil;&otilde;es existentes</p></li><li class="list__item" id="k3iczu_41"><p id="k3iczu_44">Considere volumes de dados nas opera&ccedil;&otilde;es</p></li></ul></section><section class="chapter"><h3 id="3-versionamento" data-toc="3-versionamento">3. Versionamento</h3><ul class="list _bullet" id="k3iczu_45"><li class="list__item" id="k3iczu_46"><p id="k3iczu_49">Mantenha controle de vers&atilde;o dos schemas</p></li><li class="list__item" id="k3iczu_47"><p id="k3iczu_50">Use migrations para altera&ccedil;&otilde;es estruturais</p></li><li class="list__item" id="k3iczu_48"><p id="k3iczu_51">Documente a evolu&ccedil;&atilde;o do banco de dados</p></li></ul></section></section><section class="chapter"><h2 id="considera-es-de-performance" data-toc="considera-es-de-performance">Considera&ccedil;&otilde;es de Performance</h2><section class="chapter"><h3 id="impacto-das-opera-es" data-toc="impacto-das-opera-es">Impacto das Opera&ccedil;&otilde;es</h3><ul class="list _bullet" id="k3iczu_54"><li class="list__item" id="k3iczu_55"><p id="k3iczu_58">Opera&ccedil;&otilde;es DDL podem bloquear tabelas</p></li><li class="list__item" id="k3iczu_56"><p id="k3iczu_59">Altera&ccedil;&otilde;es em tabelas grandes requerem planejamento</p></li><li class="list__item" id="k3iczu_57"><p id="k3iczu_60">Considere janelas de manuten&ccedil;&atilde;o para opera&ccedil;&otilde;es cr&iacute;ticas</p></li></ul></section><section class="chapter"><h3 id="otimiza-es" data-toc="otimiza-es">Otimiza&ccedil;&otilde;es</h3><ul class="list _bullet" id="k3iczu_61"><li class="list__item" id="k3iczu_62"><p id="k3iczu_65">Use &iacute;ndices adequadamente</p></li><li class="list__item" id="k3iczu_63"><p id="k3iczu_66">Planeje particionamento quando necess&aacute;rio</p></li><li class="list__item" id="k3iczu_64"><p id="k3iczu_67">Considere clustering quando apropriado</p></li></ul></section></section><section class="chapter"><h2 id="exerc-cio-pr-tico" data-toc="exerc-cio-pr-tico">Exerc&iacute;cio Pr&aacute;tico</h2><p id="k3iczu_68">Vamos criar uma estrutura b&aacute;sica para um sistema de vendas:</p><div class="code-block" data-lang="sql">
+-- Schema do sistema
+CREATE SCHEMA vendas;
+
+-- Tabela de produtos
+CREATE TABLE vendas.produtos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    preco DECIMAL(10,2) CHECK (preco &gt; 0),
+    estoque INT DEFAULT 0
+);
+
+-- Adicionando índice para busca por nome
+CREATE INDEX idx_produtos_nome 
+ON vendas.produtos(nome);
+</div></section><section class="chapter"><h2 id="conclus-o" data-toc="conclus-o">Conclus&atilde;o</h2><p id="k3iczu_70">O DDL &eacute; fundamental para o gerenciamento de bancos de dados, permitindo criar e manter estruturas de dados de forma eficiente. O dom&iacute;nio desses comandos, junto com boas pr&aacute;ticas de uso, &eacute; essencial para qualquer desenvolvedor ou DBA.</p><aside class="prompt" data-type="tip" data-title="" id="k3iczu_71"><p id="k3iczu_72"><span class="control" id="k3iczu_73">Dica de Seguran&ccedil;a</span>: Sempre mantenha backups atualizados e teste suas opera&ccedil;&otilde;es DDL em ambiente de desenvolvimento antes de aplicar em produ&ccedil;&atilde;o.</p></aside></section><div class="last-modified">26 abril 2025</div><div data-feedback-placeholder="true"></div><div class="navigation-links _bottom"><a href="sql-fundamentals.html" class="navigation-links__prev">Fundamentos SQL</a><a href="create-statements.html" class="navigation-links__next">CREATE Statements: Construindo Estruturas de Dados</a></div></article><div id="disqus_thread"></div></div></section></main></div><script src="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.js"></script></body></html>

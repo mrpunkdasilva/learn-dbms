@@ -1,0 +1,141 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en-US" data-preset="contrast" data-primary-color="#E8488B"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="built-on" content="2025-04-25T23:35:24.144030726"><title>Gerenciamento de Roles | Database Management Systems: A Complete Guide</title><script type="application/json" id="virtual-toc-data">[{"id":"conceitos-b-sicos","level":0,"title":"Conceitos Básicos","anchor":"#conceitos-b-sicos"},{"id":"tipos-de-roles","level":0,"title":"Tipos de Roles","anchor":"#tipos-de-roles"},{"id":"hierarquia-de-roles","level":0,"title":"Hierarquia de Roles","anchor":"#hierarquia-de-roles"},{"id":"gerenciamento-de-permiss-es","level":0,"title":"Gerenciamento de Permissões","anchor":"#gerenciamento-de-permiss-es"},{"id":"boas-pr-ticas","level":0,"title":"Boas Práticas","anchor":"#boas-pr-ticas"},{"id":"cen-rios-comuns","level":0,"title":"Cenários Comuns","anchor":"#cen-rios-comuns"},{"id":"troubleshooting","level":0,"title":"Troubleshooting","anchor":"#troubleshooting"},{"id":"conclus-o","level":0,"title":"Conclusão","anchor":"#conclus-o"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.css" rel="stylesheet"><link href="static/custom.css" rel="stylesheet"><link rel="icon" type="image/svg" sizes="16x16" href="images/logo-primary.svg"><meta name="image" content=""><!-- Open Graph --><meta property="og:title" content="Gerenciamento de Roles | Database Management Systems: A Complete Guide"><meta property="og:description" content=""><meta property="og:image" content=""><meta property="og:site_name" content="Database Management Systems: A Complete Guide Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="writerside-documentation/role-management.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content=""><meta name="twitter:title" content="Gerenciamento de Roles | Database Management Systems: A Complete Guide"><meta name="twitter:description" content=""><meta name="twitter:creator" content=""><meta name="twitter:image:src" content=""><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    "@id": "writerside-documentation/role-management.html#webpage",
+    "url": "writerside-documentation/role-management.html",
+    "name": "Gerenciamento de Roles | Database Management Systems: A Complete Guide",
+    "description": "",
+    "image": "",
+    "inLanguage":"en-US"
+}</script><!-- End Schema.org --><!-- Schema.org WebSite --><script type="application/ld+json">{
+    "@type": "WebSite",
+    "@id": "writerside-documentation/#website",
+    "url": "writerside-documentation/",
+    "name": "Database Management Systems: A Complete Guide Help"
+}</script><!-- End Schema.org --></head><body data-id="role-management" data-main-title="Gerenciamento de Roles" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs="sql-fundamentals.md|Fundamentos SQL///sql-dcl.md|DCL - Linguagem de Controle de Dados"><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>Database Management Systems: A Complete Guide  Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="role-management" id="role-management.md">Gerenciamento de Roles</h1><div class="code-block" data-lang="none">
+╔══════════════════════════════════════════════════════════════╗
+║  ROLE_MASTER &gt;&gt; Gerenciamento de Roles e Grupos            ║
+║  INSTRUTOR: ROLE_SPECIALIST                                ║
+╚══════════════════════════════════════════════════════════════╝
+</div><section class="chapter"><h2 id="conceitos-b-sicos" data-toc="conceitos-b-sicos">Conceitos B&aacute;sicos</h2><p id="p6l9_12">ROLE_SPECIALIST explica: &quot;Roles s&atilde;o fundamentais para organizar e gerenciar permiss&otilde;es de forma eficiente!&quot;</p><div class="code-block" data-lang="sql">
+-- Criar role básica
+CREATE ROLE nome_role;
+
+-- Criar role com login
+CREATE ROLE usuario_app WITH 
+    LOGIN 
+    PASSWORD 'senha_segura'
+    VALID UNTIL '2024-12-31';
+</div></section><section class="chapter"><h2 id="tipos-de-roles" data-toc="tipos-de-roles">Tipos de Roles</h2><section class="chapter"><h3 id="1-roles-de-aplica-o" data-toc="1-roles-de-aplica-o">1. Roles de Aplica&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+-- Role para aplicação web
+CREATE ROLE app_web WITH LOGIN;
+GRANT CONNECT ON DATABASE app_db TO app_web;
+GRANT USAGE ON SCHEMA public TO app_web;
+GRANT SELECT, INSERT, UPDATE ON tabela_usuarios TO app_web;
+</div></section><section class="chapter"><h3 id="2-roles-de-grupo" data-toc="2-roles-de-grupo">2. Roles de Grupo</h3><div class="code-block" data-lang="sql">
+-- Role para equipe de analistas
+CREATE ROLE analistas;
+GRANT SELECT ON ALL TABLES IN SCHEMA analytics TO analistas;
+GRANT USAGE ON SCHEMA analytics TO analistas;
+
+-- Atribuir usuários ao grupo
+GRANT analistas TO analista1, analista2, analista3;
+</div></section></section><section class="chapter"><h2 id="hierarquia-de-roles" data-toc="hierarquia-de-roles">Hierarquia de Roles</h2><p id="p6l9_18">HIERARCHY_MASTER demonstra a estrutura&ccedil;&atilde;o:</p><div class="code-block" data-lang="sql">
+-- Estrutura hierárquica
+CREATE ROLE junior_dev;
+CREATE ROLE senior_dev;
+CREATE ROLE tech_lead;
+
+-- Estabelecer hierarquia
+GRANT junior_dev TO senior_dev;
+GRANT senior_dev TO tech_lead;
+
+-- Configurar permissões por nível
+GRANT SELECT ON app_tables TO junior_dev;
+GRANT INSERT, UPDATE ON app_tables TO senior_dev;
+GRANT ALL PRIVILEGES ON app_tables TO tech_lead;
+</div></section><section class="chapter"><h2 id="gerenciamento-de-permiss-es" data-toc="gerenciamento-de-permiss-es">Gerenciamento de Permiss&otilde;es</h2><section class="chapter"><h3 id="1-atribui-o-de-privil-gios" data-toc="1-atribui-o-de-privil-gios">1. Atribui&ccedil;&atilde;o de Privil&eacute;gios</h3><div class="code-block" data-lang="sql">
+-- Privilégios básicos
+GRANT SELECT, INSERT ON tabela TO role_name;
+
+-- Privilégios administrativos
+GRANT CREATE ON DATABASE app_db TO admin_role;
+GRANT USAGE, CREATE ON SCHEMA public TO dev_role;
+</div></section><section class="chapter"><h3 id="2-revoga-o-de-privil-gios" data-toc="2-revoga-o-de-privil-gios">2. Revoga&ccedil;&atilde;o de Privil&eacute;gios</h3><div class="code-block" data-lang="sql">
+-- Revogar privilégios
+REVOKE INSERT, UPDATE ON dados_sensiveis FROM role_name;
+
+-- Revogar membership
+REVOKE analistas FROM ex_analista;
+</div></section></section><section class="chapter"><h2 id="boas-pr-ticas" data-toc="boas-pr-ticas">Boas Pr&aacute;ticas</h2><p id="p6l9_24">SECURITY_EXPERT compartilha diretrizes:</p><section class="chapter"><h3 id="1-organiza-o" data-toc="1-organiza-o">1. Organiza&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+-- Nomenclatura consistente
+CREATE ROLE app_read;  -- Apenas leitura
+CREATE ROLE app_write; -- Leitura e escrita
+CREATE ROLE app_admin; -- Administração
+
+-- Documentação
+COMMENT ON ROLE app_read IS 'Role para acesso somente leitura';
+</div></section><section class="chapter"><h3 id="2-auditoria" data-toc="2-auditoria">2. Auditoria</h3><div class="code-block" data-lang="sql">
+-- Visualizar membros de role
+SELECT r.rolname, m.member, u.usename
+FROM pg_roles r
+LEFT JOIN pg_auth_members m ON r.oid = m.roleid
+LEFT JOIN pg_user u ON m.member = u.usesysid;
+
+-- Verificar privilégios
+SELECT * FROM information_schema.role_table_grants
+WHERE grantee = 'role_name';
+</div><div class="code-block" data-lang="none">
+╔════════════════════════════════════════════╗
+║  CHECKLIST DE ROLES:                      ║
+║  □ Nomenclatura padronizada?              ║
+║  □ Hierarquia bem definida?               ║
+║  □ Privilégios mínimos necessários?       ║
+║  □ Documentação atualizada?               ║
+║  □ Auditoria configurada?                 ║
+╚════════════════════════════════════════════╝
+</div></section></section><section class="chapter"><h2 id="cen-rios-comuns" data-toc="cen-rios-comuns">Cen&aacute;rios Comuns</h2><p id="p6l9_30">IMPLEMENTATION_EXPERT apresenta solu&ccedil;&otilde;es pr&aacute;ticas:</p><section class="chapter"><h3 id="1-setup-de-desenvolvimento" data-toc="1-setup-de-desenvolvimento">1. Setup de Desenvolvimento</h3><div class="code-block" data-lang="sql">
+-- Role para desenvolvedores
+CREATE ROLE dev_team;
+GRANT CONNECT ON DATABASE dev_db TO dev_team;
+GRANT USAGE, CREATE ON SCHEMA public TO dev_team;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO dev_team;
+</div></section><section class="chapter"><h3 id="2-setup-de-produ-o" data-toc="2-setup-de-produ-o">2. Setup de Produ&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+-- Role para aplicação em produção
+CREATE ROLE prod_app WITH LOGIN;
+GRANT CONNECT ON DATABASE prod_db TO prod_app;
+GRANT USAGE ON SCHEMA public TO prod_app;
+GRANT SELECT, INSERT ON tabela_clientes TO prod_app;
+GRANT EXECUTE ON FUNCTION proc_negocio TO prod_app;
+</div></section></section><section class="chapter"><h2 id="troubleshooting" data-toc="troubleshooting">Troubleshooting</h2><p id="p6l9_35">PROBLEM_SOLVER apresenta solu&ccedil;&otilde;es:</p><section class="chapter"><h3 id="1-diagn-stico" data-toc="1-diagn-stico">1. Diagn&oacute;stico</h3><div class="code-block" data-lang="sql">
+-- Verificar conflitos
+SELECT r.rolname, 
+       r.rolsuper, 
+       r.rolinherit,
+       r.rolcreaterole,
+       r.rolcreatedb
+FROM pg_roles r
+WHERE r.rolname = 'role_problema';
+
+-- Verificar sessões ativas
+SELECT pid, usename, application_name
+FROM pg_stat_activity
+WHERE usename IN (
+    SELECT m.member::regrole::text
+    FROM pg_roles r
+    JOIN pg_auth_members m ON r.oid = m.roleid
+    WHERE r.rolname = 'role_problema'
+);
+</div></section><section class="chapter"><h3 id="2-manuten-o" data-toc="2-manuten-o">2. Manuten&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+-- Limpar roles não utilizadas
+SELECT r.rolname
+FROM pg_roles r
+LEFT JOIN pg_auth_members m ON r.oid = m.roleid
+WHERE m.roleid IS NULL
+AND NOT r.rolcanlogin;
+
+-- Atualizar expiração
+ALTER ROLE usuario_temporario 
+VALID UNTIL '2024-06-30';
+</div></section></section><section class="chapter"><h2 id="conclus-o" data-toc="conclus-o">Conclus&atilde;o</h2><p id="p6l9_40">ROLE_SPECIALIST conclui: &quot;Um bom gerenciamento de roles &eacute; fundamental para seguran&ccedil;a e organiza&ccedil;&atilde;o do banco de dados.&quot;</p><aside class="prompt" data-type="tip" data-title="" id="p6l9_41"><p id="p6l9_42"><span class="control" id="p6l9_43">Dica Final</span>: Revise regularmente as roles e suas permiss&otilde;es, mantendo documenta&ccedil;&atilde;o atualizada e removendo acessos desnecess&aacute;rios.</p></aside></section><div class="last-modified">26 abril 2025</div><div data-feedback-placeholder="true"></div><div class="navigation-links _bottom"><a href="revoke-statements.html" class="navigation-links__prev">REVOKE: Revogando Privil&eacute;gios</a></div></article><div id="disqus_thread"></div></div></section></main></div><script src="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.js"></script></body></html>

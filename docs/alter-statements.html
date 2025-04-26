@@ -1,0 +1,146 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en-US" data-preset="contrast" data-primary-color="#E8488B"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="built-on" content="2025-04-25T23:35:29.397550959"><title>ALTER Statements: Modificando Estruturas de Dados | Database Management Systems: A Complete Guide</title><script type="application/json" id="virtual-toc-data">[{"id":"fundamentos-do-alter","level":0,"title":"Fundamentos do ALTER","anchor":"#fundamentos-do-alter"},{"id":"alter-table","level":0,"title":"ALTER TABLE","anchor":"#alter-table"},{"id":"alter-index","level":0,"title":"ALTER INDEX","anchor":"#alter-index"},{"id":"alter-sequence","level":0,"title":"ALTER SEQUENCE","anchor":"#alter-sequence"},{"id":"cen-rios-pr-ticos","level":0,"title":"Cenários Práticos","anchor":"#cen-rios-pr-ticos"},{"id":"boas-pr-ticas","level":0,"title":"Boas Práticas","anchor":"#boas-pr-ticas"},{"id":"troubleshooting-comum","level":0,"title":"Troubleshooting Comum","anchor":"#troubleshooting-comum"},{"id":"conclus-o","level":0,"title":"Conclusão","anchor":"#conclus-o"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.css" rel="stylesheet"><link href="static/custom.css" rel="stylesheet"><link rel="icon" type="image/svg" sizes="16x16" href="images/logo-primary.svg"><meta name="image" content=""><!-- Open Graph --><meta property="og:title" content="ALTER Statements: Modificando Estruturas de Dados | Database Management Systems: A Complete Guide"><meta property="og:description" content=""><meta property="og:image" content=""><meta property="og:site_name" content="Database Management Systems: A Complete Guide Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="writerside-documentation/alter-statements.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content=""><meta name="twitter:title" content="ALTER Statements: Modificando Estruturas de Dados | Database Management Systems: A Complete Guide"><meta name="twitter:description" content=""><meta name="twitter:creator" content=""><meta name="twitter:image:src" content=""><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    "@id": "writerside-documentation/alter-statements.html#webpage",
+    "url": "writerside-documentation/alter-statements.html",
+    "name": "ALTER Statements: Modificando Estruturas de Dados | Database Management Systems: A Complete Guide",
+    "description": "",
+    "image": "",
+    "inLanguage":"en-US"
+}</script><!-- End Schema.org --><!-- Schema.org WebSite --><script type="application/ld+json">{
+    "@type": "WebSite",
+    "@id": "writerside-documentation/#website",
+    "url": "writerside-documentation/",
+    "name": "Database Management Systems: A Complete Guide Help"
+}</script><!-- End Schema.org --></head><body data-id="alter-statements" data-main-title="ALTER Statements: Modificando Estruturas de Dados" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs="sql-fundamentals.md|Fundamentos SQL///sql-ddl.md|DDL - Linguagem de Definição de Dados"><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>Database Management Systems: A Complete Guide  Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="alter-statements" id="alter-statements.md">ALTER Statements: Modificando Estruturas de Dados</h1><div class="code-block" data-lang="none">
+╔══════════════════════════════════════════════════════════════╗
+║  SCHEMA_EVOLUTION_MASTER &gt;&gt; Modificações Estruturais        ║
+║  INSTRUTOR: DATABASE_ARCHITECT                             ║
+╚══════════════════════════════════════════════════════════════╝
+</div><section class="chapter"><h2 id="fundamentos-do-alter" data-toc="fundamentos-do-alter">Fundamentos do ALTER</h2><p id="-mxce7c_12">DATABASE_ARCHITECT explica: &quot;O comando ALTER &eacute; sua ferramenta para evolu&ccedil;&atilde;o do banco de dados. Com ele, voc&ecirc; pode modificar estruturas existentes sem perder dados.&quot;</p></section><section class="chapter"><h2 id="alter-table" data-toc="alter-table">ALTER TABLE</h2><p id="-mxce7c_13">SCHEMA_MASTER apresenta: &quot;Vamos explorar as principais opera&ccedil;&otilde;es de altera&ccedil;&atilde;o de tabelas.&quot;</p><section class="chapter"><h3 id="1-adicionando-colunas" data-toc="1-adicionando-colunas">1. Adicionando Colunas</h3><div class="code-block" data-lang="sql">
+-- Adicionando uma coluna simples
+ALTER TABLE produtos
+ADD COLUMN descricao TEXT;
+
+-- Adicionando múltiplas colunas
+ALTER TABLE usuarios
+ADD COLUMN ultimo_acesso TIMESTAMP,
+ADD COLUMN tentativas_login INTEGER DEFAULT 0,
+ADD COLUMN bloqueado BOOLEAN DEFAULT FALSE;
+
+-- Adicionando coluna com constraint
+ALTER TABLE pedidos
+ADD COLUMN valor_total DECIMAL(10,2) NOT NULL DEFAULT 0.0
+CHECK (valor_total &gt;= 0);
+</div></section><section class="chapter"><h3 id="2-modificando-colunas" data-toc="2-modificando-colunas">2. Modificando Colunas</h3><p id="-mxce7c_19">MIGRATION_SPECIALIST adverte: &quot;Cuidado ao modificar tipos de dados - certifique-se da compatibilidade!&quot;</p><div class="code-block" data-lang="sql">
+-- Alterando tipo de dados
+ALTER TABLE produtos
+ALTER COLUMN preco TYPE NUMERIC(12,2);
+
+-- Modificando valor default
+ALTER TABLE usuarios
+ALTER COLUMN status SET DEFAULT 'ativo';
+
+-- Removendo valor default
+ALTER TABLE logs
+ALTER COLUMN nivel DROP DEFAULT;
+
+-- Tornando coluna NOT NULL
+ALTER TABLE clientes
+ALTER COLUMN email SET NOT NULL;
+</div></section><section class="chapter"><h3 id="3-constraints" data-toc="3-constraints">3. Constraints</h3><p id="-mxce7c_21">INTEGRITY_GUARDIAN compartilha: &quot;Constraints garantem a qualidade dos seus dados.&quot;</p><div class="code-block" data-lang="sql">
+-- Adicionando Primary Key
+ALTER TABLE produtos
+ADD CONSTRAINT pk_produtos PRIMARY KEY (id);
+
+-- Adicionando Foreign Key
+ALTER TABLE pedidos
+ADD CONSTRAINT fk_cliente 
+FOREIGN KEY (cliente_id) 
+REFERENCES clientes(id)
+ON DELETE RESTRICT;
+
+-- Adicionando Unique Constraint
+ALTER TABLE usuarios
+ADD CONSTRAINT uq_email UNIQUE (email);
+
+-- Adicionando Check Constraint
+ALTER TABLE produtos
+ADD CONSTRAINT chk_preco 
+CHECK (preco_venda &gt; preco_custo);
+</div></section><section class="chapter"><h3 id="4-renomeando-objetos" data-toc="4-renomeando-objetos">4. Renomeando Objetos</h3><p id="-mxce7c_23">REFACTORING_MASTER diz: &quot;&Agrave;s vezes precisamos reorganizar nossa estrutura.&quot;</p><div class="code-block" data-lang="sql">
+-- Renomeando tabela
+ALTER TABLE usuarios
+RENAME TO users;
+
+-- Renomeando coluna
+ALTER TABLE produtos
+RENAME COLUMN descricao TO detalhes;
+
+-- Renomeando constraint
+ALTER TABLE pedidos
+RENAME CONSTRAINT fk_cliente TO fk_pedidos_cliente;
+</div></section></section><section class="chapter"><h2 id="alter-index" data-toc="alter-index">ALTER INDEX</h2><p id="-mxce7c_25">INDEX_WIZARD explica: &quot;&Iacute;ndices tamb&eacute;m precisam de manuten&ccedil;&atilde;o.&quot;</p><div class="code-block" data-lang="sql">
+-- Renomeando índice
+ALTER INDEX idx_old_name 
+RENAME TO idx_new_name;
+
+-- Modificando configurações do índice
+ALTER INDEX idx_produtos 
+SET (fillfactor = 90);
+</div></section><section class="chapter"><h2 id="alter-sequence" data-toc="alter-sequence">ALTER SEQUENCE</h2><p id="-mxce7c_27">SEQUENCE_MASTER compartilha: &quot;Ajuste suas sequences conforme necess&aacute;rio.&quot;</p><div class="code-block" data-lang="sql">
+-- Modificando sequence
+ALTER SEQUENCE seq_pedidos
+INCREMENT BY 10
+MAXVALUE 999999
+CYCLE;
+</div></section><section class="chapter"><h2 id="cen-rios-pr-ticos" data-toc="cen-rios-pr-ticos">Cen&aacute;rios Pr&aacute;ticos</h2><p id="-mxce7c_29">PRACTICAL_GURU apresenta: &quot;Vamos ver alguns cen&aacute;rios comuns do mundo real!&quot;</p><section class="chapter"><h3 id="evolu-o-de-sistema-de-e-commerce" data-toc="evolu-o-de-sistema-de-e-commerce">Evolu&ccedil;&atilde;o de Sistema de E-commerce</h3><div class="code-block" data-lang="sql">
+-- Adicionando suporte a múltiplos endereços
+ALTER TABLE clientes
+ADD COLUMN endereco_entrega JSONB,
+ADD COLUMN endereco_cobranca JSONB;
+
+-- Implementando soft delete
+ALTER TABLE produtos
+ADD COLUMN deleted_at TIMESTAMP,
+ADD COLUMN active BOOLEAN DEFAULT TRUE;
+
+-- Adicionando auditoria
+ALTER TABLE pedidos
+ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN updated_at TIMESTAMP,
+ADD COLUMN created_by INTEGER,
+ADD COLUMN updated_by INTEGER;
+
+-- Adicionando constraints de auditoria
+ALTER TABLE pedidos
+ADD CONSTRAINT fk_created_by 
+    FOREIGN KEY (created_by) REFERENCES usuarios(id),
+ADD CONSTRAINT fk_updated_by 
+    FOREIGN KEY (updated_by) REFERENCES usuarios(id);
+</div></section></section><section class="chapter"><h2 id="boas-pr-ticas" data-toc="boas-pr-ticas">Boas Pr&aacute;ticas</h2><p id="-mxce7c_32">BEST_PRACTICES_SAGE compartilha diretrizes essenciais:</p><section class="chapter"><h3 id="1-seguran-a" data-toc="1-seguran-a">1. Seguran&ccedil;a</h3><ul class="list _bullet" id="-mxce7c_36"><li class="list__item" id="-mxce7c_37"><p id="-mxce7c_41">Fa&ccedil;a backup antes de altera&ccedil;&otilde;es</p></li><li class="list__item" id="-mxce7c_38"><p id="-mxce7c_42">Teste em ambiente de desenvolvimento</p></li><li class="list__item" id="-mxce7c_39"><p id="-mxce7c_43">Planeje janelas de manuten&ccedil;&atilde;o</p></li><li class="list__item" id="-mxce7c_40"><p id="-mxce7c_44">Prepare scripts de rollback</p></li></ul></section><section class="chapter"><h3 id="2-performance" data-toc="2-performance">2. Performance</h3><ul class="list _bullet" id="-mxce7c_45"><li class="list__item" id="-mxce7c_46"><p id="-mxce7c_50">Considere o impacto em tabelas grandes</p></li><li class="list__item" id="-mxce7c_47"><p id="-mxce7c_51">Avalie bloqueios necess&aacute;rios</p></li><li class="list__item" id="-mxce7c_48"><p id="-mxce7c_52">Use transa&ccedil;&otilde;es apropriadamente</p></li><li class="list__item" id="-mxce7c_49"><p id="-mxce7c_53">Monitore uso de recursos</p></li></ul></section><section class="chapter"><h3 id="3-manuten-o" data-toc="3-manuten-o">3. Manuten&ccedil;&atilde;o</h3><ul class="list _bullet" id="-mxce7c_54"><li class="list__item" id="-mxce7c_56"><p id="-mxce7c_60">Documente todas as altera&ccedil;&otilde;es</p></li><li class="list__item" id="-mxce7c_57"><p id="-mxce7c_61">Mantenha scripts de migra&ccedil;&atilde;o</p></li><li class="list__item" id="-mxce7c_58"><p id="-mxce7c_62">Use controle de vers&atilde;o</p></li><li class="list__item" id="-mxce7c_59"><p id="-mxce7c_63">Comunique mudan&ccedil;as &agrave; equipe</p></li></ul><div class="code-block" data-lang="none">
+╔════════════════════════════════════════════╗
+║  CHECKLIST DE ALTERAÇÕES:                 ║
+║  □ Backup realizado?                      ║
+║  □ Testado em desenvolvimento?            ║
+║  □ Script de rollback preparado?          ║
+║  □ Impacto analisado?                     ║
+║  □ Equipe notificada?                     ║
+║  □ Janela de manutenção agendada?        ║
+╚════════════════════════════════════════════╝
+</div></section></section><section class="chapter"><h2 id="troubleshooting-comum" data-toc="troubleshooting-comum">Troubleshooting Comum</h2><p id="-mxce7c_64">ERROR_HANDLER apresenta solu&ccedil;&otilde;es para problemas frequentes:</p><ol class="list _decimal" id="-mxce7c_65" type="1"><li class="list__item" id="-mxce7c_69"><p id="-mxce7c_70"><span class="control" id="-mxce7c_71">Erro de Depend&ecirc;ncia</span></p></li></ol><div class="code-block" data-lang="sql">
+-- Verificando dependências
+SELECT * FROM pg_depend 
+WHERE objid = 'sua_tabela'::regclass;
+
+-- Removendo dependências com cautela
+DROP VIEW IF EXISTS view_dependente CASCADE;
+</div><ol class="list _decimal" id="-mxce7c_67" type="1" start="2"><li class="list__item" id="-mxce7c_72"><p id="-mxce7c_73"><span class="control" id="-mxce7c_74">Problemas de Bloqueio</span></p></li></ol><div class="code-block" data-lang="sql">
+-- Verificando bloqueios
+SELECT * FROM pg_locks 
+WHERE relation = 'sua_tabela'::regclass;
+
+-- Finalizando sessões bloqueantes (com cautela!)
+SELECT pg_terminate_backend(pid);
+</div></section><section class="chapter"><h2 id="conclus-o" data-toc="conclus-o">Conclus&atilde;o</h2><p id="-mxce7c_75">DATABASE_ARCHITECT conclui: &quot;O ALTER &eacute; poderoso, mas requer responsabilidade. Sempre planeje suas altera&ccedil;&otilde;es e siga as boas pr&aacute;ticas para manter seu banco de dados saud&aacute;vel e evolutivo.&quot;</p><aside class="prompt" data-type="tip" data-title="" id="-mxce7c_76"><p id="-mxce7c_77"><span class="control" id="-mxce7c_78">Dica Final</span>: Mantenha um hist&oacute;rico de todas as altera&ccedil;&otilde;es estruturais em seu banco de dados. Isso ser&aacute; valioso para troubleshooting futuro e para entender a evolu&ccedil;&atilde;o do sistema.</p></aside></section><div class="last-modified">26 abril 2025</div><div data-feedback-placeholder="true"></div><div class="navigation-links _bottom"><a href="create-statements.html" class="navigation-links__prev">CREATE Statements: Construindo Estruturas de Dados</a><a href="drop-statements.html" class="navigation-links__next">DROP Statements: Removendo Objetos do Banco de Dados</a></div></article><div id="disqus_thread"></div></div></section></main></div><script src="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.js"></script></body></html>

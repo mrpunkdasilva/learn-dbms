@@ -1,0 +1,160 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en-US" data-preset="contrast" data-primary-color="#E8488B"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="built-on" content="2025-04-25T23:35:24.9662383"><title>DELETE: Removendo Dados com Precis&atilde;o | Database Management Systems: A Complete Guide</title><script type="application/json" id="virtual-toc-data">[{"id":"fundamentos-do-delete","level":0,"title":"Fundamentos do DELETE","anchor":"#fundamentos-do-delete"},{"id":"formas-de-dele-o","level":0,"title":"Formas de Deleção","anchor":"#formas-de-dele-o"},{"id":"dele-o-em-massa","level":0,"title":"Deleção em Massa","anchor":"#dele-o-em-massa"},{"id":"soft-delete","level":0,"title":"Soft Delete","anchor":"#soft-delete"},{"id":"boas-pr-ticas","level":0,"title":"Boas Práticas","anchor":"#boas-pr-ticas"},{"id":"exemplos-pr-ticos","level":0,"title":"Exemplos Práticos","anchor":"#exemplos-pr-ticos"},{"id":"troubleshooting-comum","level":0,"title":"Troubleshooting Comum","anchor":"#troubleshooting-comum"},{"id":"conclus-o","level":0,"title":"Conclusão","anchor":"#conclus-o"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.css" rel="stylesheet"><link href="static/custom.css" rel="stylesheet"><link rel="icon" type="image/svg" sizes="16x16" href="images/logo-primary.svg"><meta name="image" content=""><!-- Open Graph --><meta property="og:title" content="DELETE: Removendo Dados com Precis&atilde;o | Database Management Systems: A Complete Guide"><meta property="og:description" content=""><meta property="og:image" content=""><meta property="og:site_name" content="Database Management Systems: A Complete Guide Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="writerside-documentation/delete-statements.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content=""><meta name="twitter:title" content="DELETE: Removendo Dados com Precis&atilde;o | Database Management Systems: A Complete Guide"><meta name="twitter:description" content=""><meta name="twitter:creator" content=""><meta name="twitter:image:src" content=""><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    "@id": "writerside-documentation/delete-statements.html#webpage",
+    "url": "writerside-documentation/delete-statements.html",
+    "name": "DELETE: Removendo Dados com Precis&atilde;o | Database Management Systems: A Complete Guide",
+    "description": "",
+    "image": "",
+    "inLanguage":"en-US"
+}</script><!-- End Schema.org --><!-- Schema.org WebSite --><script type="application/ld+json">{
+    "@type": "WebSite",
+    "@id": "writerside-documentation/#website",
+    "url": "writerside-documentation/",
+    "name": "Database Management Systems: A Complete Guide Help"
+}</script><!-- End Schema.org --></head><body data-id="delete-statements" data-main-title="DELETE: Removendo Dados com Precisão" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs="sql-fundamentals.md|Fundamentos SQL///sql-dml.md|DML - Linguagem de Manipulação de Dados"><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>Database Management Systems: A Complete Guide  Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="delete-statements" id="delete-statements.md">DELETE: Removendo Dados com Precisão</h1><div class="code-block" data-lang="none">
+╔══════════════════════════════════════════════════════════════╗
+║  DATA_MASTER &gt;&gt; Remoção de Dados                           ║
+║  INSTRUTOR: DELETE_SPECIALIST                              ║
+╚══════════════════════════════════════════════════════════════╝
+</div><section class="chapter"><h2 id="fundamentos-do-delete" data-toc="fundamentos-do-delete">Fundamentos do DELETE</h2><p id="fdxmj5_12">DELETE_SPECIALIST explica: &quot;O comando DELETE permite remover registros de forma precisa e controlada.&quot;</p><section class="chapter"><h3 id="sintaxe-b-sica" data-toc="sintaxe-b-sica">Sintaxe B&aacute;sica</h3><div class="code-block" data-lang="sql">
+-- Remoção simples
+DELETE FROM tabela
+WHERE condição;
+
+-- Remoção com RETURNING
+DELETE FROM produtos
+WHERE estoque = 0
+RETURNING id, nome;
+</div></section></section><section class="chapter"><h2 id="formas-de-dele-o" data-toc="formas-de-dele-o">Formas de Dele&ccedil;&atilde;o</h2><section class="chapter"><h3 id="1-dele-o-simples" data-toc="1-dele-o-simples">1. Dele&ccedil;&atilde;o Simples</h3><div class="code-block" data-lang="sql">
+-- Remoção por ID
+DELETE FROM pedidos
+WHERE id = 1001;
+
+-- Remoção por condição
+DELETE FROM produtos
+WHERE validade &lt; CURRENT_DATE;
+</div></section><section class="chapter"><h3 id="2-dele-o-com-join" data-toc="2-dele-o-com-join">2. Dele&ccedil;&atilde;o com JOIN</h3><p id="fdxmj5_19">DATA_SYNC_EXPERT demonstra: &quot;Delete registros baseado em outras tabelas!&quot;</p><div class="code-block" data-lang="sql">
+-- Deleção com JOIN
+DELETE FROM pedidos p
+USING clientes c
+WHERE p.cliente_id = c.id
+AND c.status = 'inativo';
+
+-- Deleção múltipla
+DELETE FROM produtos
+WHERE categoria_id IN (
+    SELECT id 
+    FROM categorias 
+    WHERE descontinuada = true
+);
+</div></section><section class="chapter"><h3 id="3-dele-o-condicional" data-toc="3-dele-o-condicional">3. Dele&ccedil;&atilde;o Condicional</h3><div class="code-block" data-lang="sql">
+-- Usando subquery
+DELETE FROM logs
+WHERE created_at &lt; (
+    SELECT CURRENT_TIMESTAMP - INTERVAL '30 days'
+);
+
+-- Com EXISTS
+DELETE FROM carrinho
+WHERE EXISTS (
+    SELECT 1 
+    FROM produtos p
+    WHERE carrinho.produto_id = p.id
+    AND p.descontinuado = true
+);
+</div></section></section><section class="chapter"><h2 id="dele-o-em-massa" data-toc="dele-o-em-massa">Dele&ccedil;&atilde;o em Massa</h2><p id="fdxmj5_22">BULK_DELETE_MASTER compartilha: &quot;Otimize dele&ccedil;&otilde;es grandes!&quot;</p><div class="code-block" data-lang="sql">
+-- Deleção em lotes
+DO $$
+DECLARE
+    batch_size INTEGER := 1000;
+BEGIN
+    WHILE EXISTS (
+        SELECT 1 
+        FROM logs 
+        WHERE created_at &lt; CURRENT_DATE - INTERVAL '1 year'
+    ) LOOP
+        DELETE FROM logs
+        WHERE id IN (
+            SELECT id 
+            FROM logs 
+            WHERE created_at &lt; CURRENT_DATE - INTERVAL '1 year'
+            LIMIT batch_size
+        );
+        COMMIT;
+    END LOOP;
+END $$;
+</div></section><section class="chapter"><h2 id="soft-delete" data-toc="soft-delete">Soft Delete</h2><p id="fdxmj5_24">ARCHITECTURE_SAGE apresenta: &quot;&Agrave;s vezes, &eacute; melhor n&atilde;o deletar de verdade!&quot;</p><div class="code-block" data-lang="sql">
+-- Implementando soft delete
+ALTER TABLE produtos
+ADD COLUMN deleted_at TIMESTAMP,
+ADD COLUMN is_active BOOLEAN DEFAULT true;
+
+-- Realizando soft delete
+UPDATE produtos
+SET 
+    deleted_at = CURRENT_TIMESTAMP,
+    is_active = false
+WHERE id = 1001;
+
+-- Consultando apenas ativos
+SELECT * FROM produtos
+WHERE is_active = true
+OR is_active IS NULL;
+</div></section><section class="chapter"><h2 id="boas-pr-ticas" data-toc="boas-pr-ticas">Boas Pr&aacute;ticas</h2><p id="fdxmj5_26">BEST_PRACTICES_SAGE recomenda:</p><section class="chapter"><h3 id="1-performance" data-toc="1-performance">1. Performance</h3><ul class="list _bullet" id="fdxmj5_30"><li class="list__item" id="fdxmj5_31"><p id="fdxmj5_35">Use &iacute;ndices adequadamente</p></li><li class="list__item" id="fdxmj5_32"><p id="fdxmj5_36">Delete em lotes quando necess&aacute;rio</p></li><li class="list__item" id="fdxmj5_33"><p id="fdxmj5_37">Considere TRUNCATE para limpeza total</p></li><li class="list__item" id="fdxmj5_34"><p id="fdxmj5_38">Monitore locks e deadlocks</p></li></ul></section><section class="chapter"><h3 id="2-integridade" data-toc="2-integridade">2. Integridade</h3><ul class="list _bullet" id="fdxmj5_39"><li class="list__item" id="fdxmj5_40"><p id="fdxmj5_44">Verifique constraints</p></li><li class="list__item" id="fdxmj5_41"><p id="fdxmj5_45">Use transa&ccedil;&otilde;es quando necess&aacute;rio</p></li><li class="list__item" id="fdxmj5_42"><p id="fdxmj5_46">Considere impacto em dados relacionados</p></li><li class="list__item" id="fdxmj5_43"><p id="fdxmj5_47">Mantenha consist&ecirc;ncia referencial</p></li></ul></section><section class="chapter"><h3 id="3-seguran-a" data-toc="3-seguran-a">3. Seguran&ccedil;a</h3><ul class="list _bullet" id="fdxmj5_48"><li class="list__item" id="fdxmj5_50"><p id="fdxmj5_54">Fa&ccedil;a backup antes de dele&ccedil;&otilde;es grandes</p></li><li class="list__item" id="fdxmj5_51"><p id="fdxmj5_55">Valide condi&ccedil;&otilde;es WHERE cuidadosamente</p></li><li class="list__item" id="fdxmj5_52"><p id="fdxmj5_56">Implemente soft delete quando apropriado</p></li><li class="list__item" id="fdxmj5_53"><p id="fdxmj5_57">Mantenha logs de dele&ccedil;&otilde;es importantes</p></li></ul><div class="code-block" data-lang="none">
+╔════════════════════════════════════════════╗
+║  CHECKLIST DELETE:                        ║
+║  □ WHERE adequado?                       ║
+║  □ Impacto analisado?                    ║
+║  □ Transação necessária?                 ║
+║  □ Backup realizado?                     ║
+║  □ Soft delete considerado?              ║
+╚════════════════════════════════════════════╝
+</div></section></section><section class="chapter"><h2 id="exemplos-pr-ticos" data-toc="exemplos-pr-ticos">Exemplos Pr&aacute;ticos</h2><section class="chapter"><h3 id="sistema-de-e-commerce" data-toc="sistema-de-e-commerce">Sistema de E-commerce</h3><div class="code-block" data-lang="sql">
+-- Limpeza de carrinhos abandonados
+DELETE FROM carrinhos
+WHERE ultima_atualizacao &lt; CURRENT_TIMESTAMP - INTERVAL '24 hours'
+AND status = 'pendente';
+
+-- Remoção de produtos descontinuados
+DELETE FROM produtos p
+WHERE NOT EXISTS (
+    SELECT 1 
+    FROM pedidos_itens pi
+    WHERE pi.produto_id = p.id
+    AND pi.created_at &gt; CURRENT_DATE - INTERVAL '6 months'
+)
+AND p.estoque = 0;
+</div></section></section><section class="chapter"><h2 id="troubleshooting-comum" data-toc="troubleshooting-comum">Troubleshooting Comum</h2><p id="fdxmj5_60">PROBLEM_SOLVER apresenta solu&ccedil;&otilde;es para problemas frequentes:</p><ol class="list _decimal" id="fdxmj5_61" type="1"><li class="list__item" id="fdxmj5_65"><p id="fdxmj5_66"><span class="control" id="fdxmj5_67">Viola&ccedil;&atilde;o de Constraint</span></p></li></ol><div class="code-block" data-lang="sql">
+-- Verificando dependências
+SELECT 
+    tc.table_schema, 
+    tc.table_name, 
+    kcu.column_name
+FROM information_schema.table_constraints tc
+JOIN information_schema.key_column_usage kcu
+    ON tc.constraint_name = kcu.constraint_name
+WHERE tc.constraint_type = 'FOREIGN KEY'
+AND kcu.referenced_table_name = 'sua_tabela';
+
+-- Deleção segura
+BEGIN;
+    DELETE FROM tabela_dependente
+    WHERE chave_estrangeira IN (
+        SELECT id FROM tabela_principal WHERE status = 'inativo'
+    );
+    
+    DELETE FROM tabela_principal
+    WHERE status = 'inativo';
+COMMIT;
+</div><ol class="list _decimal" id="fdxmj5_63" type="1" start="2"><li class="list__item" id="fdxmj5_68"><p id="fdxmj5_69"><span class="control" id="fdxmj5_70">Recupera&ccedil;&atilde;o de Dados</span></p></li></ol><div class="code-block" data-lang="sql">
+-- Backup antes de deletar
+CREATE TABLE deleted_records AS
+SELECT * FROM tabela
+WHERE status = 'para_deletar';
+
+-- Então execute a deleção
+DELETE FROM tabela
+WHERE status = 'para_deletar';
+</div></section><section class="chapter"><h2 id="conclus-o" data-toc="conclus-o">Conclus&atilde;o</h2><p id="fdxmj5_71">DELETE_SPECIALIST conclui: &quot;O DELETE &eacute; uma opera&ccedil;&atilde;o irrevers&iacute;vel - use com cautela e sempre tenha um plano de backup.&quot;</p><aside class="prompt" data-type="tip" data-title="" id="fdxmj5_72"><p id="fdxmj5_73"><span class="control" id="fdxmj5_74">Dica Final</span>: Sempre teste suas condi&ccedil;&otilde;es de DELETE com um SELECT primeiro para confirmar exatamente quais registros ser&atilde;o afetados.</p></aside></section><div class="last-modified">26 abril 2025</div><div data-feedback-placeholder="true"></div><div class="navigation-links _bottom"><a href="update-statements.html" class="navigation-links__prev">UPDATE: Modificando Dados</a><a href="merge-statements.html" class="navigation-links__next">MERGE: Sincronizando Dados com Precis&atilde;o</a></div></article><div id="disqus_thread"></div></div></section></main></div><script src="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.js"></script></body></html>
