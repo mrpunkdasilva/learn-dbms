@@ -1,0 +1,82 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en-US" data-preset="contrast" data-primary-color="#E8488B"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="built-on" content="2025-05-03T19:40:10.958670058"><title>Laborat&oacute;rio: Evolu&ccedil;&atilde;o de Schema | Database Management Systems: A Complete Guide</title><script type="application/json" id="virtual-toc-data">[{"id":"objetivo","level":0,"title":"Objetivo","anchor":"#objetivo"},{"id":"cen-rio","level":0,"title":"Cenário","anchor":"#cen-rio"},{"id":"setup-inicial","level":0,"title":"Setup Inicial","anchor":"#setup-inicial"},{"id":"exerc-cios","level":0,"title":"Exercícios","anchor":"#exerc-cios"},{"id":"desafios-extras","level":0,"title":"Desafios Extras","anchor":"#desafios-extras"},{"id":"crit-rios-de-avalia-o","level":0,"title":"Critérios de Avaliação","anchor":"#crit-rios-de-avalia-o"},{"id":"entrega","level":0,"title":"Entrega","anchor":"#entrega"},{"id":"dicas","level":0,"title":"Dicas","anchor":"#dicas"},{"id":"recursos-adicionais","level":0,"title":"Recursos Adicionais","anchor":"#recursos-adicionais"},{"id":"pr-ximos-passos","level":0,"title":"Próximos Passos","anchor":"#pr-ximos-passos"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.css" rel="stylesheet"><link href="static/custom.css" rel="stylesheet"><link rel="icon" type="image/svg" sizes="16x16" href="images/logo-primary.svg"><meta name="image" content=""><!-- Open Graph --><meta property="og:title" content="Laborat&oacute;rio: Evolu&ccedil;&atilde;o de Schema | Database Management Systems: A Complete Guide"><meta property="og:description" content=""><meta property="og:image" content=""><meta property="og:site_name" content="Database Management Systems: A Complete Guide Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="writerside-documentation/lab-schema-evolution.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content=""><meta name="twitter:title" content="Laborat&oacute;rio: Evolu&ccedil;&atilde;o de Schema | Database Management Systems: A Complete Guide"><meta name="twitter:description" content=""><meta name="twitter:creator" content=""><meta name="twitter:image:src" content=""><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    "@id": "writerside-documentation/lab-schema-evolution.html#webpage",
+    "url": "writerside-documentation/lab-schema-evolution.html",
+    "name": "Laborat&oacute;rio: Evolu&ccedil;&atilde;o de Schema | Database Management Systems: A Complete Guide",
+    "description": "",
+    "image": "",
+    "inLanguage":"en-US"
+}</script><!-- End Schema.org --><!-- Schema.org WebSite --><script type="application/ld+json">{
+    "@type": "WebSite",
+    "@id": "writerside-documentation/#website",
+    "url": "writerside-documentation/",
+    "name": "Database Management Systems: A Complete Guide Help"
+}</script><!-- End Schema.org --></head><body data-id="lab-schema-evolution" data-main-title="Laboratório: Evolução de Schema" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs="sql-fundamentals.md|Fundamentos SQL///sql-ddl.md|DDL - Linguagem de Definição de Dados///ddl-labs.md|Laboratórios de DDL"><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>Database Management Systems: A Complete Guide  Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="lab-schema-evolution" id="lab-schema-evolution.md">Laboratório: Evolução de Schema</h1><section class="chapter"><h2 id="objetivo" data-toc="objetivo">Objetivo</h2><p id="-864k1b_13">Praticar altera&ccedil;&otilde;es de schema em um banco de dados em produ&ccedil;&atilde;o, aplicando boas pr&aacute;ticas de versionamento e migra&ccedil;&atilde;o.</p></section><section class="chapter"><h2 id="cen-rio" data-toc="cen-rio">Cen&aacute;rio</h2><p id="-864k1b_14">Voc&ecirc; &eacute; o DBA respons&aacute;vel por um sistema de e-commerce em crescimento que precisa evoluir seu schema para acomodar novos requisitos de neg&oacute;cio.</p></section><section class="chapter"><h2 id="setup-inicial" data-toc="setup-inicial">Setup Inicial</h2><div class="code-block" data-lang="sql">
+-- Schema inicial
+CREATE TABLE produtos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    preco DECIMAL(10,2) NOT NULL,
+    estoque INT DEFAULT 0
+);
+
+CREATE TABLE clientes (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE pedidos (
+    id SERIAL PRIMARY KEY,
+    cliente_id INT REFERENCES clientes(id),
+    data_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+</div></section><section class="chapter"><h2 id="exerc-cios" data-toc="exerc-cios">Exerc&iacute;cios</h2><section class="chapter"><h3 id="1-adi-o-de-novas-features" data-toc="1-adi-o-de-novas-features">1. Adi&ccedil;&atilde;o de Novas Features</h3><div class="code-block" data-lang="sql">
+-- TODO: Adicionar suporte para categorias de produtos
+-- 1.1 Crie uma tabela de categorias
+-- 1.2 Adicione uma coluna categoria_id em produtos
+-- 1.3 Estabeleça a foreign key apropriada
+</div></section><section class="chapter"><h3 id="2-modifica-o-de-estrutura-existente" data-toc="2-modifica-o-de-estrutura-existente">2. Modifica&ccedil;&atilde;o de Estrutura Existente</h3><div class="code-block" data-lang="sql">
+-- TODO: Expandir informações de cliente
+-- 2.1 Adicione colunas para telefone e endereço
+-- 2.2 Torne o telefone único e não nulo
+-- 2.3 Migre dados existentes adequadamente
+</div></section><section class="chapter"><h3 id="3-gest-o-de-constraints" data-toc="3-gest-o-de-constraints">3. Gest&atilde;o de Constraints</h3><div class="code-block" data-lang="sql">
+-- TODO: Implementar regras de negócio
+-- 3.1 Adicione check constraint para preço mínimo
+-- 3.2 Crie unique constraint para SKU de produtos
+-- 3.3 Implemente trigger para log de alterações
+</div></section></section><section class="chapter"><h2 id="desafios-extras" data-toc="desafios-extras">Desafios Extras</h2><section class="chapter"><h3 id="1-versionamento" data-toc="1-versionamento">1. Versionamento</h3><div class="code-block" data-lang="sql">
+-- Implemente um sistema de controle de versão de schema
+CREATE TABLE schema_version (
+    version INT PRIMARY KEY,
+    applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    description TEXT
+);
+
+-- TODO: Crie scripts de up/down para cada alteração
+</div></section><section class="chapter"><h3 id="2-zero-downtime" data-toc="2-zero-downtime">2. Zero Downtime</h3><p id="-864k1b_26">Desenvolva estrat&eacute;gias para:</p><ul class="list _bullet" id="-864k1b_27"><li class="list__item" id="-864k1b_28"><p id="-864k1b_31">Adi&ccedil;&atilde;o de colunas n&atilde;o-nulas</p></li><li class="list__item" id="-864k1b_29"><p id="-864k1b_32">Renomea&ccedil;&atilde;o de colunas</p></li><li class="list__item" id="-864k1b_30"><p id="-864k1b_33">Divis&atilde;o de tabelas</p></li></ul></section><section class="chapter"><h3 id="3-rollback-plan" data-toc="3-rollback-plan">3. Rollback Plan</h3><div class="code-block" data-lang="sql">
+-- TODO: Para cada alteração, crie um plano de rollback
+-- Exemplo:
+BEGIN;
+    -- Alterações
+    ALTER TABLE produtos ADD COLUMN categoria_id INT;
+    
+    -- Verificação
+    SELECT COUNT(*) FROM produtos WHERE categoria_id IS NULL;
+    
+    -- Decisão de commit/rollback
+    -- COMMIT ou ROLLBACK;
+END;
+</div></section></section><section class="chapter"><h2 id="crit-rios-de-avalia-o" data-toc="crit-rios-de-avalia-o">Crit&eacute;rios de Avalia&ccedil;&atilde;o</h2><ol class="list _decimal" id="-864k1b_35" type="1"><li class="list__item" id="-864k1b_36"><p id="-864k1b_39"><span class="control" id="-864k1b_41">Seguran&ccedil;a de Dados</span></p><ul class="list _bullet" id="-864k1b_40"><li class="list__item" id="-864k1b_42"><p id="-864k1b_45">Backup antes das altera&ccedil;&otilde;es</p></li><li class="list__item" id="-864k1b_43"><p id="-864k1b_46">Valida&ccedil;&atilde;o de integridade</p></li><li class="list__item" id="-864k1b_44"><p id="-864k1b_47">Tratamento de erros</p></li></ul></li><li class="list__item" id="-864k1b_37"><p id="-864k1b_48"><span class="control" id="-864k1b_50">Performance</span></p><ul class="list _bullet" id="-864k1b_49"><li class="list__item" id="-864k1b_51"><p id="-864k1b_54">Tempo de execu&ccedil;&atilde;o</p></li><li class="list__item" id="-864k1b_52"><p id="-864k1b_55">Impacto em produ&ccedil;&atilde;o</p></li><li class="list__item" id="-864k1b_53"><p id="-864k1b_56">Uso de recursos</p></li></ul></li><li class="list__item" id="-864k1b_38"><p id="-864k1b_57"><span class="control" id="-864k1b_59">Manutenibilidade</span></p><ul class="list _bullet" id="-864k1b_58"><li class="list__item" id="-864k1b_60"><p id="-864k1b_63">Documenta&ccedil;&atilde;o</p></li><li class="list__item" id="-864k1b_61"><p id="-864k1b_64">Versionamento</p></li><li class="list__item" id="-864k1b_62"><p id="-864k1b_65">Scripts de rollback</p></li></ul></li></ol></section><section class="chapter"><h2 id="entrega" data-toc="entrega">Entrega</h2><p id="-864k1b_66">Crie um arquivo SQL contendo:</p><ol class="list _decimal" id="-864k1b_67" type="1"><li class="list__item" id="-864k1b_68"><p id="-864k1b_72">Scripts de altera&ccedil;&atilde;o</p></li><li class="list__item" id="-864k1b_69"><p id="-864k1b_73">Scripts de rollback</p></li><li class="list__item" id="-864k1b_70"><p id="-864k1b_74">Documenta&ccedil;&atilde;o das mudan&ccedil;as</p></li><li class="list__item" id="-864k1b_71"><p id="-864k1b_75">Logs de teste</p></li></ol></section><section class="chapter"><h2 id="dicas" data-toc="dicas">Dicas</h2><div class="code-block" data-lang="none">
+╔════════════════════════════════════════════╗
+║  CHECKLIST DE ALTERAÇÕES:                 ║
+║  □ Backup realizado?                      ║
+║  □ Scripts testados em homologação?       ║
+║  □ Plano de rollback preparado?           ║
+║  □ Janela de manutenção definida?         ║
+║  □ Stakeholders notificados?              ║
+╚════════════════════════════════════════════╝
+</div></section><section class="chapter"><h2 id="recursos-adicionais" data-toc="recursos-adicionais">Recursos Adicionais</h2><ul class="list _bullet" id="-864k1b_77"><li class="list__item" id="-864k1b_78"><p id="-864k1b_81"><a href="https://www.postgresql.org/docs/current/sql-alter.html" id="-864k1b_82" data-external="true" rel="noopener noreferrer" target="_blank">Documenta&ccedil;&atilde;o PostgreSQL sobre ALTER</a></p></li><li class="list__item" id="-864k1b_79"><p id="-864k1b_83"><a href="https://flywaydb.org/documentation/concepts/migrations" id="-864k1b_84" data-external="true" rel="noopener noreferrer" target="_blank">Pr&aacute;ticas de Schema Migration</a></p></li><li class="list__item" id="-864k1b_80"><p id="-864k1b_85"><a href="https://www.postgresql.org/docs/current/monitoring-stats.html" id="-864k1b_86" data-external="true" rel="noopener noreferrer" target="_blank">Zero Downtime Deployments</a></p></li></ul></section><section class="chapter"><h2 id="pr-ximos-passos" data-toc="pr-ximos-passos">Pr&oacute;ximos Passos</h2><ol class="list _decimal" id="-864k1b_87" type="1"><li class="list__item" id="-864k1b_88"><p id="-864k1b_92">Implemente monitoramento de performance</p></li><li class="list__item" id="-864k1b_89"><p id="-864k1b_93">Automatize testes de migra&ccedil;&atilde;o</p></li><li class="list__item" id="-864k1b_90"><p id="-864k1b_94">Crie documenta&ccedil;&atilde;o detalhada</p></li><li class="list__item" id="-864k1b_91"><p id="-864k1b_95">Prepare apresenta&ccedil;&atilde;o dos resultados</p></li></ol></section><div class="last-modified">26 abril 2025</div><div data-feedback-placeholder="true"></div><div class="navigation-links _bottom"><a href="lab-database-creation.html" class="navigation-links__prev">Laborat&oacute;rio: Cria&ccedil;&atilde;o de Database</a><a href="lab-constraint-management.html" class="navigation-links__next">Laborat&oacute;rio: Gerenciamento de Constraints</a></div></article><div id="disqus_thread"></div></div></section></main></div><script src="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.js"></script></body></html>

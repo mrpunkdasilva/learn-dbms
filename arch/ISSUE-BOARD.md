@@ -4,27 +4,27 @@
 ╚══════════════════════════════════════════════════════════════════╝
 
 ## 🔥 CRITICAL / BURNING
-- [ ] #001 Fundamentals_overflow: Conceitos base de DBMS que vão fritar seu cérebro
+- [x] #001 Fundamentals_overflow: Conceitos base de DBMS que vão fritar seu cérebro
 - [ ] #002 SQL_vs_NoSQL: A eterna guerra dos paradigmas (spoiler: ambos podem falhar)
 - [ ] #003 ACID_trip: Transações e consistência (ou porque seu dinheiro some às vezes)
 
 ## 🚀 HIGH PRIORITY
 - [ ] #004 Query_optimization: Porque sua consulta está rodando há 3 dias
-- [ ] #005 Index_maze: Navegando pelo labirinto dos índices
+- [x] #005 Index_maze: Navegando pelo labirinto dos índices
 - [ ] #006 Scalability_nightmares: Quando 1000 users viram 1000000
 
 ## 💊 MEDIUM
 - [ ] #007 Security_paranoia: Protegendo dados do inevitável
-- [ ] #008 Backup_philosophy: "Não se você, mas quando você precisar"
+- [x] #008 Backup_philosophy: "Não se você, mas quando você precisar"
 - [ ] #009 Migration_hell: Movendo dados sem destruir produção
 
 ## 🌟 FEATURES
 - [ ] #010 MongoDB_chronicles: NoSQL para os rebeldes
-- [ ] #011 PostgreSQL_tales: SQL para os tradicionalistas
+- [x] #011 PostgreSQL_tales: SQL para os tradicionalistas
 - [ ] #012 Redis_speed: Porque memória RAM é o novo SSD
 
 ## 🎨 STYLE & DOCS
-- [ ] #013 ASCII_diagrams: Porque nem todo diagrama precisa ser colorido
+- [x] #013 ASCII_diagrams: Porque nem todo diagrama precisa ser colorido
 - [ ] #014 Cyberpunk_themes: Estilização visual que queima a retina
 - [ ] #015 Sarcasm_injection: Adicionar comentários ácidos em cada seção
 
@@ -32,9 +32,9 @@
 ║                        METRICS.SYS                             ║
 ╟────────────────────────────────────────────────────────────────╢
 ║ TOTAL ISSUES: 15                                              ║
-║ COMPLETED: 0                                                  ║
-║ PENDING: 15                                                   ║
-║ SANITY LEVEL: DECREASING                                      ║
+║ COMPLETED: 5                                                  ║
+║ PENDING: 10                                                   ║
+║ SANITY LEVEL: STABILIZING                                     ║
 ╚════════════════════════════════════════════════════════════════╝
 
 ## TAGS

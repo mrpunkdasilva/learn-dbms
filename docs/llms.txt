@@ -20447,6 +20447,2510 @@ Dica Final: Sempre tenha um plano de recuperação antes de executar TRUNCATE em
 
 
 
+# Exercícios de DDL (Data Definition Language)
+
+## Visão Geral
+
+Este módulo contém uma série progressiva de exercícios para praticar comandos DDL em SQL. Os exercícios estão organizados em três níveis de dificuldade:
+
+### Nível Básico
+
+* Criação de tabelas simples
+
+* Alterações básicas de estrutura
+
+* Operações fundamentais de DDL
+
+### Nível Intermediário
+
+* Relacionamentos entre tabelas
+
+* Constraints complexas
+
+* Modificações de schema
+
+### Nível Avançado
+
+* Otimização de estruturas
+
+* Migrations complexas
+
+* Cenários empresariais
+
+## Estrutura dos Exercícios
+
+Cada exercício segue o formato:
+
+1. Descrição do problema
+
+2. Requisitos específicos
+
+3. Dicas de implementação
+
+4. Solução de referência
+
+5. Critérios de avaliação
+
+## Ambiente de Prática
+
+```SQL
+-- Database de teste
+CREATE DATABASE exercicios_ddl;
+
+-- Schema para isolamento
+CREATE SCHEMA pratica;
+
+-- Tabela de controle
+CREATE TABLE controle_exercicios (
+    id SERIAL PRIMARY KEY,
+    exercicio VARCHAR(50),
+    completado BOOLEAN DEFAULT FALSE,
+    data_conclusao TIMESTAMP
+);
+```
+
+## Fluxo de Estudo Recomendado
+
+```MERMAID
+graph TD
+    A[Básico] --> B[Intermediário]
+    B --> C[Avançado]
+    A --> D[Laboratórios]
+    B --> D
+    C --> D
+    D --> E[Projetos Práticos]
+```
+
+## Avaliação de Progresso
+
+| Nível |Pontos por Exercício |Total de Exercícios |Pontuação Máxima |
+----------------------------------------------------------------------
+| Básico |10 |10 |100 |
+| Intermediário |20 |10 |200 |
+| Avançado |30 |10 |300 |
+
+## Recursos Necessários
+
+1. Ambiente de Desenvolvimento
+
+* PostgreSQL 12+
+
+* Cliente SQL
+
+* Editor de texto
+
+2. Conhecimentos Prévios
+
+* Conceitos básicos de SQL
+
+* Modelagem de dados
+
+* Comandos DDL fundamentais
+
+## Navegação do Conteúdo
+
+* [Exercícios Básicos](basic-ddl-exercises.html)
+
+* [Exercícios Intermediários](intermediate-ddl-exercises.html)
+
+* [Exercícios Avançados](advanced-ddl-exercises.html)
+
+## Dicas de Estudo
+
+```
+╔════════════════════════════════════════════╗
+║  BOAS PRÁTICAS:                           ║
+║  ✓ Teste cada comando individualmente      ║
+║  ✓ Mantenha scripts de rollback           ║
+║  ✓ Documente suas soluções                ║
+║  ✓ Pratique regularmente                  ║
+║  ✓ Revise conceitos quando necessário     ║
+╚════════════════════════════════════════════╝
+```
+
+## Suporte e Recursos
+
+* Fórum de discussão
+
+* Documentação oficial
+
+* Exemplos práticos
+
+* Soluções comentadas
+
+## Próximos Passos
+
+1. Comece pelos exercícios básicos
+
+2. Avance gradualmente
+
+3. Pratique em laboratórios
+
+4. Desenvolva projetos reais
+
+## Certificação
+
+Complete todos os exercícios para receber:
+
+* Certificado de conclusão
+
+* Badge de proficiência
+
+* Pontuação para ranking
+
+## Feedback
+
+Sua opinião é importante:
+
+* Avalie os exercícios
+
+* Sugira melhorias
+
+* Reporte problemas
+
+* Compartilhe experiências
+
+
+
+# Exercícios Básicos de DDL
+
+## Exercício 1: Criação de Tabela Simples
+
+### Descrição
+
+Crie uma tabela para armazenar informações básicas de produtos.
+
+### Requisitos
+
+* Nome do produto (máximo 100 caracteres, obrigatório)
+
+* Preço (decimal com 2 casas decimais, obrigatório)
+
+* Descrição (texto livre, opcional)
+
+* Data de cadastro (data/hora automática)
+
+### Solução
+
+```SQL
+CREATE TABLE produtos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    preco DECIMAL(10,2) NOT NULL,
+    descricao TEXT,
+    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+## Exercício 2: Alteração de Estrutura
+
+### Descrição
+
+Modifique a tabela de produtos adicionando novas colunas.
+
+### Requisitos
+
+* Adicionar coluna para quantidade em estoque
+
+* Adicionar coluna para código de barras (único)
+
+* Adicionar coluna para status do produto
+
+### Solução
+
+```SQL
+ALTER TABLE produtos
+    ADD COLUMN estoque INTEGER DEFAULT 0,
+    ADD COLUMN codigo_barras VARCHAR(13) UNIQUE,
+    ADD COLUMN status VARCHAR(20) DEFAULT 'ativo';
+```
+
+## Exercício 3: Constraints Básicas
+
+### Descrição
+
+Adicione restrições básicas à tabela de produtos.
+
+### Requisitos
+
+* Preço não pode ser negativo
+
+* Estoque não pode ser negativo
+
+* Status deve ser 'ativo' ou 'inativo'
+
+### Solução
+
+```SQL
+ALTER TABLE produtos
+    ADD CONSTRAINT check_preco CHECK (preco >= 0),
+    ADD CONSTRAINT check_estoque CHECK (estoque >= 0),
+    ADD CONSTRAINT check_status CHECK (status IN ('ativo', 'inativo'));
+```
+
+## Exercício 4: Tabelas Relacionadas
+
+### Descrição
+
+Crie uma tabela de categorias e relacione com produtos.
+
+### Requisitos
+
+* Tabela de categorias com nome e descrição
+
+* Relacionamento entre produtos e categorias
+
+* Categoria é obrigatória para produtos
+
+### Solução
+
+```SQL
+CREATE TABLE categorias (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL UNIQUE,
+    descricao TEXT
+);
+
+ALTER TABLE produtos
+    ADD COLUMN categoria_id INTEGER NOT NULL,
+    ADD CONSTRAINT fk_categoria 
+    FOREIGN KEY (categoria_id) 
+    REFERENCES categorias(id);
+```
+
+## Exercício 5: Índices Simples
+
+### Descrição
+
+Crie índices para melhorar a performance das consultas.
+
+### Requisitos
+
+* Índice para busca por nome do produto
+
+* Índice para código de barras
+
+* Índice para categoria
+
+### Solução
+
+```SQL
+CREATE INDEX idx_produtos_nome ON produtos(nome);
+CREATE INDEX idx_produtos_codigo ON produtos(codigo_barras);
+CREATE INDEX idx_produtos_categoria ON produtos(categoria_id);
+```
+
+## Exercício 6: Exclusão e Recriação
+
+### Descrição
+
+Pratique operações de remoção e recriação de objetos.
+
+### Requisitos
+
+* Remover índices criados
+
+* Remover constraints
+
+* Remover tabelas com dependências
+
+### Solução
+
+```SQL
+DROP INDEX IF EXISTS idx_produtos_nome;
+DROP INDEX IF EXISTS idx_produtos_codigo;
+DROP INDEX IF EXISTS idx_produtos_categoria;
+
+ALTER TABLE produtos
+    DROP CONSTRAINT IF EXISTS fk_categoria,
+    DROP CONSTRAINT IF EXISTS check_preco,
+    DROP CONSTRAINT IF EXISTS check_estoque,
+    DROP CONSTRAINT IF EXISTS check_status;
+
+DROP TABLE IF EXISTS produtos CASCADE;
+DROP TABLE IF EXISTS categorias CASCADE;
+```
+
+## Exercício 7: Schema e Database
+
+### Descrição
+
+Crie um novo schema e database para isolamento.
+
+### Requisitos
+
+* Novo database para testes
+
+* Schema específico para produtos
+
+* Mover objetos entre schemas
+
+### Solução
+
+```SQL
+CREATE DATABASE loja_teste;
+
+\c loja_teste
+
+CREATE SCHEMA produtos_schema;
+
+CREATE TABLE produtos_schema.produtos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL
+);
+```
+
+## Exercício 8: Sequences
+
+### Descrição
+
+Trabalhe com sequences personalizadas.
+
+### Requisitos
+
+* Sequence para código do produto
+
+* Sequence com valor inicial específico
+
+* Alteração de sequence existente
+
+### Solução
+
+```SQL
+CREATE SEQUENCE seq_codigo_produto
+    START WITH 1000
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER TABLE produtos
+    ALTER COLUMN id SET DEFAULT nextval('seq_codigo_produto');
+```
+
+## Exercício 9: Comentários e Documentação
+
+### Descrição
+
+Adicione comentários aos objetos do banco.
+
+### Requisitos
+
+* Comentários em tabelas
+
+* Comentários em colunas
+
+* Comentários em constraints
+
+### Solução
+
+```SQL
+COMMENT ON TABLE produtos IS 'Tabela de cadastro de produtos';
+COMMENT ON COLUMN produtos.nome IS 'Nome do produto';
+COMMENT ON CONSTRAINT check_preco ON produtos IS 'Garante preço não negativo';
+```
+
+## Exercício 10: Visão Consolidada
+
+### Descrição
+
+Crie uma estrutura completa integrando todos os conceitos.
+
+### Requisitos
+
+* Tabelas relacionadas
+
+* Constraints apropriadas
+
+* Índices necessários
+
+* Documentação completa
+
+### Solução
+
+```SQL
+-- Schema dedicado
+CREATE SCHEMA IF NOT EXISTS loja;
+
+-- Tabela de categorias
+CREATE TABLE loja.categorias (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL UNIQUE,
+    descricao TEXT,
+    ativa BOOLEAN DEFAULT true,
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de produtos
+CREATE TABLE loja.produtos (
+    id SERIAL PRIMARY KEY,
+    codigo_barras VARCHAR(13) UNIQUE,
+    nome VARCHAR(100) NOT NULL,
+    descricao TEXT,
+    preco DECIMAL(10,2) NOT NULL CHECK (preco >= 0),
+    estoque INTEGER DEFAULT 0 CHECK (estoque >= 0),
+    categoria_id INTEGER NOT NULL REFERENCES loja.categorias(id),
+    status VARCHAR(20) DEFAULT 'ativo' CHECK (status IN ('ativo', 'inativo')),
+    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Índices
+CREATE INDEX idx_produtos_nome ON loja.produtos(nome);
+CREATE INDEX idx_produtos_categoria ON loja.produtos(categoria_id);
+
+-- Comentários
+COMMENT ON SCHEMA loja IS 'Schema para sistema de loja';
+COMMENT ON TABLE loja.produtos IS 'Cadastro de produtos da loja';
+COMMENT ON TABLE loja.categorias IS 'Categorias de produtos';
+```
+
+## Critérios de Avaliação
+
+* Sintaxe SQL correta
+
+* Uso apropriado de constraints
+
+* Nomenclatura adequada
+
+* Documentação clara
+
+* Scripts de rollback
+
+## Dicas de Estudo
+
+* Teste cada comando separadamente
+
+* Verifique a estrutura criada
+
+* Documente as decisões tomadas
+
+* Pratique os scripts de rollback
+
+
+
+# Exercícios Intermediários de DDL
+
+## Exercício 1: Herança de Tabelas
+
+### Descrição
+
+Implemente uma estrutura de herança para diferentes tipos de produtos.
+
+### Requisitos
+
+* Tabela base de produtos
+
+* Tabelas específicas para produtos físicos e digitais
+
+* Constraints específicas para cada tipo
+
+### Solução
+
+```SQL
+CREATE TABLE produtos_base (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    preco DECIMAL(10,2) NOT NULL,
+    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE produtos_fisicos (
+    peso DECIMAL(10,2) NOT NULL,
+    dimensoes VARCHAR(50),
+    localizacao_estoque VARCHAR(50)
+) INHERITS (produtos_base);
+
+CREATE TABLE produtos_digitais (
+    tamanho_arquivo VARCHAR(20),
+    formato VARCHAR(20),
+    url_download VARCHAR(255)
+) INHERITS (produtos_base);
+```
+
+## Exercício 2: Particionamento de Tabelas
+
+### Descrição
+
+Crie uma tabela particionada para histórico de vendas.
+
+### Requisitos
+
+* Particionamento por intervalo de datas
+
+* Partições mensais
+
+* Índices apropriados para cada partição
+
+### Solução
+
+```SQL
+CREATE TABLE historico_vendas (
+    id SERIAL,
+    data_venda DATE NOT NULL,
+    produto_id INTEGER,
+    quantidade INTEGER,
+    valor_total DECIMAL(10,2)
+) PARTITION BY RANGE (data_venda);
+
+CREATE TABLE vendas_202301 PARTITION OF historico_vendas
+    FOR VALUES FROM ('2023-01-01') TO ('2023-02-01');
+
+CREATE TABLE vendas_202302 PARTITION OF historico_vendas
+    FOR VALUES FROM ('2023-02-01') TO ('2023-03-01');
+
+CREATE INDEX idx_vendas_202301_data ON vendas_202301(data_venda);
+CREATE INDEX idx_vendas_202302_data ON vendas_202302(data_venda);
+```
+
+## Exercício 3: Domínios Personalizados
+
+### Descrição
+
+Defina domínios customizados para tipos de dados comuns.
+
+### Requisitos
+
+* Domínio para e-mail
+
+* Domínio para telefone
+
+* Domínio para CPF/CNPJ
+
+### Solução
+
+```SQL
+CREATE DOMAIN email_type AS VARCHAR(255)
+    CHECK (VALUE ~ '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+
+CREATE DOMAIN telefone_type AS VARCHAR(20)
+    CHECK (VALUE ~ '^\+?[0-9]{10,14}$');
+
+CREATE DOMAIN documento_type AS VARCHAR(14)
+    CHECK (VALUE ~ '^\d{11}$' OR VALUE ~ '^\d{14}$');
+
+CREATE TABLE clientes (
+    id SERIAL PRIMARY KEY,
+    email email_type NOT NULL,
+    telefone telefone_type,
+    documento documento_type NOT NULL UNIQUE
+);
+```
+
+## Exercício 4: Triggers e Funções
+
+### Descrição
+
+Implemente triggers para auditoria de alterações.
+
+### Requisitos
+
+* Tabela de auditoria
+
+* Trigger para INSERT/UPDATE/DELETE
+
+* Registro de usuário e timestamp
+
+### Solução
+
+```SQL
+CREATE TABLE auditoria (
+    id SERIAL PRIMARY KEY,
+    tabela_nome VARCHAR(50),
+    operacao VARCHAR(20),
+    registro_id INTEGER,
+    dados_antigos JSONB,
+    dados_novos JSONB,
+    usuario_modificacao VARCHAR(50),
+    data_modificacao TIMESTAMP
+);
+
+CREATE OR REPLACE FUNCTION fn_auditoria()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO auditoria (
+        tabela_nome,
+        operacao,
+        registro_id,
+        dados_antigos,
+        dados_novos,
+        usuario_modificacao,
+        data_modificacao
+    ) VALUES (
+        TG_TABLE_NAME,
+        TG_OP,
+        COALESCE(NEW.id, OLD.id),
+        CASE WHEN TG_OP IN ('UPDATE','DELETE') THEN to_jsonb(OLD) ELSE NULL END,
+        CASE WHEN TG_OP IN ('UPDATE','INSERT') THEN to_jsonb(NEW) ELSE NULL END,
+        current_user,
+        current_timestamp
+    );
+    RETURN COALESCE(NEW, OLD);
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_produtos_auditoria
+AFTER INSERT OR UPDATE OR DELETE ON produtos
+FOR EACH ROW EXECUTE FUNCTION fn_auditoria();
+```
+
+## Exercício 5: Views Materializadas
+
+### Descrição
+
+Crie views materializadas para relatórios de vendas.
+
+### Requisitos
+
+* Agregações complexas
+
+* Atualização programada
+
+* Índices para performance
+
+### Solução
+
+```SQL
+CREATE MATERIALIZED VIEW mv_resumo_vendas AS
+SELECT 
+    p.categoria_id,
+    c.nome as categoria,
+    DATE_TRUNC('month', v.data_venda) as mes,
+    COUNT(*) as total_vendas,
+    SUM(v.quantidade) as quantidade_total,
+    SUM(v.valor_total) as valor_total
+FROM historico_vendas v
+JOIN produtos p ON v.produto_id = p.id
+JOIN categorias c ON p.categoria_id = c.id
+GROUP BY p.categoria_id, c.nome, DATE_TRUNC('month', v.data_venda)
+WITH DATA;
+
+CREATE UNIQUE INDEX idx_mv_resumo_vendas 
+ON mv_resumo_vendas (categoria_id, mes);
+
+CREATE OR REPLACE FUNCTION refresh_mv_resumo_vendas()
+RETURNS void AS $$
+BEGIN
+    REFRESH MATERIALIZED VIEW CONCURRENTLY mv_resumo_vendas;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+## Exercício 6: Schemas e Segurança
+
+### Descrição
+
+Configure schemas diferentes para separação de responsabilidades.
+
+### Requisitos
+
+* Schemas para diferentes módulos
+
+* Controle de acesso granular
+
+* Roles específicas
+
+### Solução
+
+```SQL
+-- Criação de schemas
+CREATE SCHEMA vendas;
+CREATE SCHEMA estoque;
+CREATE SCHEMA relatorios;
+
+-- Criação de roles
+CREATE ROLE vendedor;
+CREATE ROLE estoquista;
+CREATE ROLE analista;
+
+-- Permissões
+GRANT USAGE ON SCHEMA vendas TO vendedor;
+GRANT SELECT, INSERT ON ALL TABLES IN SCHEMA vendas TO vendedor;
+
+GRANT USAGE ON SCHEMA estoque TO estoquista;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA estoque TO estoquista;
+
+GRANT USAGE ON SCHEMA relatorios TO analista;
+GRANT SELECT ON ALL TABLES IN SCHEMA relatorios TO analista;
+```
+
+## Exercício 7: Constraints Complexas
+
+### Descrição
+
+Implemente constraints avançadas com funções personalizadas.
+
+### Requisitos
+
+* Validação complexa de dados
+
+* Constraints exclusivas condicionais
+
+* Constraints entre tabelas
+
+### Solução
+
+```SQL
+-- Função para validação de estoque
+CREATE OR REPLACE FUNCTION fn_validar_estoque()
+RETURNS trigger AS $$
+BEGIN
+    IF NEW.quantidade < 0 THEN
+        RAISE EXCEPTION 'Quantidade não pode ser negativa';
+    END IF;
+    
+    IF NEW.quantidade < NEW.quantidade_minima THEN
+        RAISE NOTICE 'Estoque abaixo do mínimo';
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Constraint exclusiva condicional
+ALTER TABLE produtos
+ADD CONSTRAINT uk_produto_codigo
+EXCLUDE USING gist (
+    nome WITH =,
+    codigo_barras WITH =
+) WHERE (status = 'ativo');
+
+-- Constraint entre tabelas
+ALTER TABLE pedidos
+ADD CONSTRAINT check_limite_credito
+CHECK (
+    valor_total <= (
+        SELECT limite_credito 
+        FROM clientes 
+        WHERE id = cliente_id
+    )
+);
+```
+
+## Exercício 8: Extensões e Tipos Customizados
+
+### Descrição
+
+Utilize extensões PostgreSQL e crie tipos personalizados.
+
+### Requisitos
+
+* Extensão para geolocalização
+
+* Tipo customizado para endereço
+
+* Tipo customizado para dinheiro
+
+### Solução
+
+```SQL
+-- Instalação de extensão
+CREATE EXTENSION IF NOT EXISTS postgis;
+
+-- Tipo customizado para endereço
+CREATE TYPE endereco_type AS (
+    logradouro VARCHAR(100),
+    numero VARCHAR(10),
+    complemento VARCHAR(50),
+    bairro VARCHAR(50),
+    cidade VARCHAR(50),
+    estado CHAR(2),
+    cep VARCHAR(8)
+);
+
+-- Tipo customizado para moeda
+CREATE TYPE moeda_type AS (
+    valor DECIMAL(10,2),
+    moeda CHAR(3)
+);
+
+-- Uso dos tipos
+CREATE TABLE lojas (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100),
+    endereco endereco_type,
+    localizacao geography(Point),
+    faturamento_mensal moeda_type
+);
+```
+
+## Exercício 9: Otimização de Schema
+
+### Descrição
+
+Otimize a estrutura do banco de dados para performance.
+
+### Requisitos
+
+* Índices apropriados
+
+* Estatísticas personalizadas
+
+* Configuração de storage
+
+### Solução
+
+```SQL
+-- Índices para joins frequentes
+CREATE INDEX idx_produtos_categoria_preco 
+ON produtos (categoria_id, preco);
+
+-- Índice parcial
+CREATE INDEX idx_produtos_ativos 
+ON produtos (nome) 
+WHERE status = 'ativo';
+
+-- Índice de texto
+CREATE INDEX idx_produtos_busca 
+ON produtos USING gin(to_tsvector('portuguese', nome || ' ' || descricao));
+
+-- Estatísticas personalizadas
+CREATE STATISTICS produtos_stats (dependencies) 
+ON categoria_id, status, preco 
+FROM produtos;
+
+-- Configuração de storage
+ALTER TABLE produtos SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_analyze_scale_factor = 0.05
+);
+```
+
+## Exercício 10: Migração de Dados
+
+### Descrição
+
+Crie scripts para migração segura de dados.
+
+### Requisitos
+
+* Verificação de integridade
+
+* Tratamento de erros
+
+* Rollback em caso de falha
+
+### Solução
+
+```SQL
+DO $$
+DECLARE
+    v_count INTEGER;
+BEGIN
+    -- Início da transação
+    BEGIN
+        -- Criação de tabela temporária
+        CREATE TEMP TABLE tmp_produtos AS 
+        SELECT * FROM produtos_legado;
+        
+        GET DIAGNOSTICS v_count = ROW_COUNT;
+        RAISE NOTICE 'Dados copiados: %', v_count;
+        
+        -- Validação dos dados
+        PERFORM count(*) 
+        FROM tmp_produtos 
+        WHERE preco < 0;
+        
+        IF FOUND THEN
+            RAISE EXCEPTION 'Dados inválidos encontrados';
+        END IF;
+        
+        -- Inserção dos dados
+        INSERT INTO produtos_novo
+        SELECT * FROM tmp_produtos;
+        
+        -- Commit se tudo ok
+        RAISE NOTICE 'Migração concluída com sucesso';
+    EXCEPTION WHEN OTHERS THEN
+        -- Rollback em caso de erro
+        RAISE NOTICE 'Erro na migração: %', SQLERRM;
+        RAISE;
+    END;
+END;
+$$;
+```
+
+## Critérios de Avaliação
+
+* Implementação correta das funcionalidades
+
+* Uso adequado de recursos avançados
+
+* Performance e escalabilidade
+
+* Tratamento de erros
+
+* Documentação do código
+
+## Dicas de Estudo
+
+* Consulte a documentação oficial do PostgreSQL
+
+* Teste diferentes cenários
+
+* Monitore a performance
+
+* Mantenha scripts de rollback
+
+* Documente decisões de design
+
+
+
+# Exercícios Avançados de DDL
+
+## Exercício 1: Sistema de Particionamento
+
+### Descrição
+
+Implemente um sistema de particionamento automático para uma tabela de logs.
+
+### Requisitos
+
+* Particionamento por data
+
+* Manutenção automática
+
+* Rotação de partições
+
+### Solução
+
+```SQL
+-- Criar tabela particionada
+CREATE TABLE logs (
+    id BIGSERIAL,
+    timestamp TIMESTAMP NOT NULL,
+    nivel VARCHAR(20),
+    mensagem TEXT,
+    dados JSONB
+) PARTITION BY RANGE (timestamp);
+
+-- Função para criar partições automaticamente
+CREATE OR REPLACE FUNCTION criar_particao_logs(
+    data_inicio DATE,
+    data_fim DATE
+) RETURNS VOID AS $$
+BEGIN
+    EXECUTE format(
+        'CREATE TABLE IF NOT EXISTS logs_%s 
+         PARTITION OF logs 
+         FOR VALUES FROM (%L) TO (%L)',
+        to_char(data_inicio, 'YYYYMM'),
+        data_inicio,
+        data_fim
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+-- Criar partições para os próximos 12 meses
+DO $$
+DECLARE
+    v_data DATE := date_trunc('month', CURRENT_DATE);
+    v_fim DATE;
+BEGIN
+    FOR i IN 0..11 LOOP
+        v_fim := v_data + interval '1 month';
+        PERFORM criar_particao_logs(v_data, v_fim);
+        v_data := v_fim;
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+## Exercício 2: Gerenciamento de Extensões
+
+### Descrição
+
+Desenvolva um sistema de gerenciamento de extensões PostgreSQL.
+
+### Requisitos
+
+* Instalação controlada
+
+* Versionamento
+
+* Dependências
+
+### Solução
+
+```SQL
+-- Schema para gerenciamento de extensões
+CREATE SCHEMA ext_manager;
+
+-- Tabela de controle de extensões
+CREATE TABLE ext_manager.extensions (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    versao VARCHAR(50) NOT NULL,
+    dependencias JSONB,
+    instalada_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ultima_atualizacao TIMESTAMP,
+    status VARCHAR(20) DEFAULT 'INSTALADA',
+    UNIQUE(nome, versao)
+);
+
+-- Função para instalar extensão
+CREATE OR REPLACE FUNCTION ext_manager.instalar_extensao(
+    p_nome VARCHAR,
+    p_versao VARCHAR DEFAULT NULL,
+    p_deps JSONB DEFAULT NULL
+) RETURNS VOID AS $$
+BEGIN
+    -- Verificar se já está instalada
+    IF EXISTS (
+        SELECT 1 
+        FROM ext_manager.extensions 
+        WHERE nome = p_nome 
+        AND status = 'INSTALADA'
+    ) THEN
+        RAISE EXCEPTION 'Extensão % já está instalada', p_nome;
+    END IF;
+
+    -- Instalar extensão
+    IF p_versao IS NULL THEN
+        EXECUTE format('CREATE EXTENSION IF NOT EXISTS %I', p_nome);
+    ELSE
+        EXECUTE format('CREATE EXTENSION IF NOT EXISTS %I VERSION %L',
+            p_nome, p_versao);
+    END IF;
+
+    -- Registrar instalação
+    INSERT INTO ext_manager.extensions (
+        nome, versao, dependencias
+    ) VALUES (
+        p_nome, 
+        COALESCE(p_versao, 
+            (SELECT extversion FROM pg_extension WHERE extname = p_nome)),
+        p_deps
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+-- Função para atualizar extensão
+CREATE OR REPLACE FUNCTION ext_manager.atualizar_extensao(
+    p_nome VARCHAR,
+    p_versao_nova VARCHAR
+```
+
+## Exercício 3: Sistema de Versionamento
+
+### Descrição
+
+Crie um sistema de versionamento de schema do banco de dados.
+
+### Requisitos
+
+* Controle de versões
+
+* Migrations
+
+* Rollback
+
+### Solução
+
+```SQL
+-- Schema para versionamento
+CREATE SCHEMA IF NOT EXISTS versioning;
+
+-- Tabela de controle de versões
+CREATE TABLE versioning.schema_versions (
+    version_id SERIAL PRIMARY KEY,
+    version_number VARCHAR(50) NOT NULL,
+    applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    description TEXT,
+    script_name VARCHAR(200),
+    checksum VARCHAR(64),
+    applied_by VARCHAR(100) DEFAULT CURRENT_USER,
+    status VARCHAR(20) DEFAULT 'SUCCESS',
+    UNIQUE(version_number)
+);
+
+-- Função para aplicar versão
+CREATE OR REPLACE FUNCTION versioning.apply_version(
+    p_version VARCHAR,
+    p_description TEXT,
+    p_script TEXT
+) RETURNS VOID AS $$
+DECLARE
+    v_checksum VARCHAR(64);
+BEGIN
+    -- Calcular checksum
+    v_checksum := encode(sha256(p_script::bytea), 'hex');
+    
+    -- Registrar versão
+    INSERT INTO versioning.schema_versions (
+        version_number,
+        description,
+        script_name,
+        checksum
+    ) VALUES (
+        p_version,
+        p_description,
+        p_script,
+        v_checksum
+    );
+    
+    -- Executar script
+    EXECUTE p_script;
+    
+EXCEPTION WHEN OTHERS THEN
+    -- Marcar como falha em caso de erro
+    UPDATE versioning.schema_versions
+    SET status = 'FAILED',
+        description = description || E'\nError: ' || SQLERRM
+    WHERE version_number = p_version;
+    
+    RAISE;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+## Exercício 4: Auditoria Avançada
+
+### Descrição
+
+Implemente um sistema de auditoria completo com histórico de alterações.
+
+### Requisitos
+
+* Rastreamento de todas as alterações DDL
+
+* Histórico de modificações de dados
+
+* Sistema de recuperação
+
+### Solução
+
+```SQL
+-- Schema para auditoria
+CREATE SCHEMA audit;
+
+-- Tabela de eventos DDL
+CREATE TABLE audit.ddl_events (
+    id BIGSERIAL PRIMARY KEY,
+    evento_timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    usuario_bd NAME DEFAULT CURRENT_USER,
+    usuario_app VARCHAR(50),
+    tipo_comando VARCHAR(20),
+    objeto_schema VARCHAR(100),
+    objeto_nome VARCHAR(100),
+    comando_sql TEXT
+);
+
+-- Função para capturar eventos DDL
+CREATE OR REPLACE FUNCTION audit.log_ddl_event() 
+RETURNS event_trigger AS $$
+DECLARE
+    obj record;
+    comando TEXT;
+BEGIN
+    SELECT * INTO obj FROM pg_event_trigger_ddl_commands() LIMIT 1;
+    
+    SELECT current_query() INTO comando;
+    
+    INSERT INTO audit.ddl_events (
+        tipo_comando,
+        objeto_schema,
+        objeto_nome,
+        comando_sql
+    ) VALUES (
+        obj.command_tag,
+        obj.schema_name,
+        obj.object_name,
+        comando
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+-- Event trigger para DDL
+CREATE EVENT TRIGGER trg_audit_ddl 
+ON ddl_command_end
+EXECUTE FUNCTION audit.log_ddl_event();
+```
+
+## Critérios de Avaliação
+
+1. Robustez
+
+* Tratamento de erros
+
+* Validações
+
+* Consistência dos dados
+
+2. Performance
+
+* Eficiência das operações
+
+* Uso de recursos
+
+* Escalabilidade
+
+3. Manutenibilidade
+
+* Clareza do código
+
+* Documentação
+
+* Modularidade
+
+4. Segurança
+
+* Controle de acesso
+
+* Proteção dos dados
+
+* Auditoria
+
+5. Funcionalidade
+
+* Atendimento aos requisitos
+
+* Completude da solução
+
+* Integração com sistemas existentes
+
+## Recursos Adicionais
+
+### Documentação
+
+* [PostgreSQL Partitioning](https://www.postgresql.org/docs/current/ddl-partitioning.html)
+
+* [PostgreSQL Replication](https://www.postgresql.org/docs/current/runtime-config-replication.html)
+
+* [PostgreSQL Extensions](https://www.postgresql.org/docs/current/extend-extensions.html)
+
+### Ferramentas Recomendadas
+
+* pgAdmin 4
+
+* DBeaver
+
+* pg_partman
+
+* pg_audit
+
+### Boas Práticas
+
+```
+╔════════════════════════════════════════════╗
+║  CHECKLIST DE IMPLEMENTAÇÃO:              ║
+║  ✓ Testes de performance                  ║
+║  ✓ Scripts de rollback                    ║
+║  ✓ Documentação técnica                   ║
+║  ✓ Monitoramento                          ║
+║  ✓ Backup e recuperação                   ║
+╚════════════════════════════════════════════╝
+```
+
+## Próximos Passos
+
+1. Prática Avançada
+
+* Implementar soluções em ambiente de teste
+
+* Realizar testes de carga
+
+* Simular cenários de falha
+
+2. Aprofundamento
+
+* Estudar casos de uso específicos
+
+* Explorar recursos avançados
+
+* Participar de comunidades
+
+3. Projetos Práticos
+
+* Desenvolver soluções completas
+
+* Documentar implementações
+
+* Compartilhar experiências
+
+## Conclusão
+
+Os exercícios avançados de DDL apresentados neste módulo cobrem aspectos críticos do desenvolvimento de bancos de dados em nível empresarial. A prática consistente destes conceitos é fundamental para o domínio das técnicas avançadas de gerenciamento de dados.
+
+## Referências
+
+1. PostgreSQL Documentation
+
+2. Database Design Best Practices
+
+3. Enterprise Database Architecture
+
+4. Performance Tuning Guidelines
+
+Tip:
+
+Nota: Mantenha este documento como referência para implementações futuras e continue praticando os conceitos apresentados.
+
+
+
+# Laboratórios de DDL
+
+## Visão Geral
+
+Os laboratórios práticos de DDL (Data Definition Language) são projetados para fornecer experiência hands-on com operações de definição de dados em ambientes PostgreSQL. Cada laboratório apresenta cenários reais e desafios práticos comumente encontrados em ambientes de produção.
+
+## Estrutura dos Laboratórios
+
+Cada laboratório segue uma estrutura consistente:
+
+1. Preparação do Ambiente
+
+* Configuração inicial
+
+* Pré-requisitos
+
+* Scripts de setup
+
+2. Objetivos de Aprendizado
+
+* Conceitos principais
+
+* Habilidades técnicas
+
+* Resultados esperados
+
+3. Roteiro Prático
+
+* Instruções passo a passo
+
+* Comandos e scripts
+
+* Pontos de verificação
+
+4. Avaliação
+
+* Critérios de conclusão
+
+* Testes de validação
+
+* Métricas de sucesso
+
+## Ambiente de Laboratório
+
+```SQL
+-- Criar database dedicado para laboratórios
+CREATE DATABASE lab_ddl;
+
+-- Schema para isolamento de exercícios
+CREATE SCHEMA lab_workspace;
+
+-- Tabela de controle de progresso
+CREATE TABLE lab_workspace.lab_progress (
+    lab_id SERIAL PRIMARY KEY,
+    lab_name VARCHAR(100),
+    start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    completion_time TIMESTAMP,
+    status VARCHAR(20) DEFAULT 'IN_PROGRESS',
+    notes TEXT
+);
+```
+
+## Laboratórios Disponíveis
+
+### 1. Criação de Database
+
+* Estruturação inicial de databases
+
+* Configurações básicas
+
+* Boas práticas de nomenclatura
+
+### 2. Evolução de Schema
+
+* Alterações estruturais
+
+* Migrações seguras
+
+* Versionamento de schema
+
+### 3. Gerenciamento de Constraints
+
+* Implementação de regras de negócio
+
+* Integridade referencial
+
+* Validações customizadas
+
+### 4. Manutenção de Tabelas
+
+* Operações de manutenção
+
+* Otimização de estruturas
+
+* Gerenciamento de espaço
+
+## Fluxo de Trabalho Recomendado
+
+```MERMAID
+graph TD
+    A[Preparação] --> B[Execução]
+    B --> C[Validação]
+    C --> D[Documentação]
+    D --> E[Revisão]
+    E --> F[Conclusão]
+```
+
+## Boas Práticas
+
+```
+╔════════════════════════════════════════════╗
+║  DIRETRIZES DE LABORATÓRIO:               ║
+║  ✓ Sempre fazer backup antes das práticas ║
+║  ✓ Documentar todas as alterações         ║
+║  ✓ Testar em ambiente isolado             ║
+║  ✓ Validar resultados                     ║
+║  ✓ Manter scripts de rollback             ║
+╚════════════════════════════════════════════╝
+```
+
+## Ferramentas Necessárias
+
+1. PostgreSQL Client
+
+* psql
+
+* pgAdmin 4
+
+* DBeaver
+
+2. Utilitários
+
+* pg_dump
+
+* pg_restore
+
+* pg_bench
+
+3. Scripts de Suporte
+
+```SQL
+-- Script de verificação de ambiente
+CREATE OR REPLACE FUNCTION lab_workspace.check_environment()
+RETURNS TABLE (
+    check_item VARCHAR,
+    status VARCHAR,
+    details TEXT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 'Database Version'::VARCHAR,
+           version()::VARCHAR,
+           'Verificação da versão do PostgreSQL'::TEXT
+    UNION ALL
+    SELECT 'Available Space',
+           pg_size_pretty(pg_database_size(current_database())),
+           'Espaço utilizado pelo database atual';
+END;
+$$ LANGUAGE plpgsql;
+```
+
+## Navegação dos Laboratórios
+
+* [Laboratório de Criação de Database](lab-database-creation.html)
+
+* [Laboratório de Evolução de Schema](lab-schema-evolution.html)
+
+* [Laboratório de Gerenciamento de Constraints](lab-constraint-management.html)
+
+* [Laboratório de Manutenção de Tabelas](lab-table-maintenance.html)
+
+## Suporte e Recursos
+
+### Documentação
+
+* [PostgreSQL Official Documentation](https://www.postgresql.org/docs/)
+
+* [DDL Reference Guide](https://www.postgresql.org/docs/current/ddl.html)
+
+* [Schema Management Best Practices](https://www.postgresql.org/docs/current/ddl-schemas.html)
+
+### Comunidade
+
+* Fórum PostgreSQL
+
+* Stack Overflow
+
+* GitHub Discussions
+
+## Conclusão
+
+Os laboratórios DDL fornecem uma base prática essencial para o desenvolvimento de habilidades em gerenciamento de estruturas de dados. A prática regular destes exercícios contribuirá significativamente para sua expertise em administração de bancos de dados PostgreSQL.
+
+## Próximos Passos
+
+1. Preparação
+
+* Configure seu ambiente local
+
+* Revise os pré-requisitos
+
+* Familiarize-se com as ferramentas
+
+2. Execução
+
+* Siga os laboratórios em ordem
+
+* Complete todos os exercícios
+
+* Documente seus resultados
+
+3. Avançado
+
+* Explore variações dos exercícios
+
+* Crie seus próprios cenários
+
+* Compartilhe experiências
+
+Tip:
+
+Nota: Certifique-se de manter backups e usar ambientes de teste apropriados durante a execução dos laboratórios.
+
+
+
+# Laboratório: Criação de Database
+
+## Objetivo
+
+Praticar a criação e configuração de databases PostgreSQL, aplicando boas práticas e explorando diferentes opções de configuração.
+
+## Pré-requisitos
+
+* PostgreSQL 12 ou superior instalado
+
+* Acesso administrativo ao servidor
+
+* psql ou ferramenta similar de acesso
+
+## Exercícios
+
+### 1. Database Básico
+
+```SQL
+-- Criar database simples
+CREATE DATABASE lab_basic;
+
+-- Verificar criação
+SELECT datname, encoding, datcollate, datctype 
+FROM pg_database 
+WHERE datname = 'lab_basic';
+```
+
+### 2. Database com Configurações Específicas
+
+```SQL
+-- Criar database com configurações customizadas
+CREATE DATABASE lab_advanced
+    WITH 
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'pt_BR.UTF-8'
+    LC_CTYPE = 'pt_BR.UTF-8'
+    TEMPLATE = template0
+    OWNER = lab_user
+    CONNECTION LIMIT = 100;
+```
+
+### 3. Database com Tablespaces
+
+```SQL
+-- Criar tablespace customizado
+CREATE TABLESPACE lab_space
+    LOCATION '/path/to/data/lab_tablespace';
+
+-- Criar database usando tablespace
+CREATE DATABASE lab_distributed
+    TABLESPACE lab_space;
+```
+
+## Tarefas Práticas
+
+### Tarefa 1: Setup Inicial
+
+1. Criar um novo database para ambiente de desenvolvimento
+
+2. Configurar encoding e locale apropriados
+
+3. Estabelecer limites de conexão
+
+4. Verificar configurações
+
+### Tarefa 2: Configuração Avançada
+
+1. Implementar tablespaces separados para dados e índices
+
+2. Configurar parâmetros de performance
+
+3. Estabelecer políticas de backup
+
+### Tarefa 3: Migração
+
+1. Criar database template
+
+2. Clonar estrutura para novo database
+
+3. Verificar integridade
+
+## Verificações
+
+```SQL
+-- Script de verificação de configurações
+CREATE OR REPLACE FUNCTION check_database_config()
+RETURNS TABLE (
+    parameter_name VARCHAR,
+    current_value VARCHAR,
+    recommended_value VARCHAR
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        'max_connections'::VARCHAR,
+        current_setting('max_connections')::VARCHAR,
+        '100'::VARCHAR
+    UNION ALL
+    SELECT 
+        'default_transaction_isolation',
+        current_setting('default_transaction_isolation'),
+        'read committed';
+END;
+$$ LANGUAGE plpgsql;
+```
+
+## Boas Práticas
+
+```
+╔════════════════════════════════════════════╗
+║  CHECKLIST DE CRIAÇÃO:                    ║
+║  ✓ Encoding adequado                      ║
+║  ✓ Locale correto                         ║
+║  ✓ Permissões apropriadas                 ║
+║  ✓ Limites de conexão                     ║
+║  ✓ Tablespaces configurados               ║
+╚════════════════════════════════════════════╝
+```
+
+## Troubleshooting
+
+### Problemas Comuns
+
+1. Erro de Locale
+
+```SQL
+-- Solução: Usar template0
+CREATE DATABASE lab_fix
+    TEMPLATE template0
+    LC_COLLATE 'pt_BR.UTF-8'
+    LC_CTYPE 'pt_BR.UTF-8';
+```
+
+2. Limite de Conexões
+
+```SQL
+-- Ajustar limite
+ALTER DATABASE lab_fix
+    CONNECTION LIMIT 150;
+```
+
+3. Permissões
+
+```SQL
+-- Corrigir ownership
+ALTER DATABASE lab_fix
+    OWNER TO lab_admin;
+```
+
+## Scripts de Suporte
+
+### Script de Validação
+
+```SQL
+CREATE OR REPLACE PROCEDURE validate_database_creation(
+    db_name VARCHAR
+) AS $$
+DECLARE
+    v_exists BOOLEAN;
+BEGIN
+    SELECT EXISTS (
+        SELECT 1 
+        FROM pg_database 
+        WHERE datname = db_name
+    ) INTO v_exists;
+
+    IF NOT v_exists THEN
+        RAISE EXCEPTION 'Database % não existe', db_name;
+    END IF;
+
+    -- Verificar configurações básicas
+    PERFORM check_database_config();
+END;
+$$ LANGUAGE plpgsql;
+```
+
+## Exercícios Avançados
+
+1. Replicação
+
+* Configurar database para replicação
+
+* Implementar streaming replication
+
+* Testar failover
+
+2. Performance
+
+* Otimizar configurações de memória
+
+* Ajustar parâmetros de vacuum
+
+* Monitorar desempenho
+
+3. Segurança
+
+* Implementar criptografia
+
+* Configurar SSL
+
+* Estabelecer políticas de acesso
+
+## Critérios de Conclusão
+
+1. Funcionalidade
+
+* Database criado corretamente
+
+* Configurações aplicadas
+
+* Conexões funcionando
+
+2. Performance
+
+* Tempos de resposta aceitáveis
+
+* Uso de recursos otimizado
+
+* Monitoramento estabelecido
+
+3. Segurança
+
+* Permissões corretas
+
+* Acessos controlados
+
+* Logs configurados
+
+## Próximos Passos
+
+1. Explorar configurações avançadas
+
+2. Implementar monitoramento
+
+3. Documentar procedimentos
+
+4. Automatizar processos
+
+## Recursos Adicionais
+
+* [PostgreSQL Database Creation](https://www.postgresql.org/docs/current/sql-createdatabase.html)
+
+* [Database Configuration](https://www.postgresql.org/docs/current/runtime-config.html)
+
+* [Tablespace Management](https://www.postgresql.org/docs/current/manage-ag-tablespaces.html)
+
+Tip:
+
+Nota: Mantenha este documento como referência para futuras criações de databases e configurações avançadas.
+
+
+
+# Laboratório: Evolução de Schema
+
+## Objetivo
+
+Praticar alterações de schema em um banco de dados em produção, aplicando boas práticas de versionamento e migração.
+
+## Cenário
+
+Você é o DBA responsável por um sistema de e-commerce em crescimento que precisa evoluir seu schema para acomodar novos requisitos de negócio.
+
+## Setup Inicial
+
+```SQL
+-- Schema inicial
+CREATE TABLE produtos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    preco DECIMAL(10,2) NOT NULL,
+    estoque INT DEFAULT 0
+);
+
+CREATE TABLE clientes (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE pedidos (
+    id SERIAL PRIMARY KEY,
+    cliente_id INT REFERENCES clientes(id),
+    data_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+## Exercícios
+
+### 1. Adição de Novas Features
+
+```SQL
+-- TODO: Adicionar suporte para categorias de produtos
+-- 1.1 Crie uma tabela de categorias
+-- 1.2 Adicione uma coluna categoria_id em produtos
+-- 1.3 Estabeleça a foreign key apropriada
+```
+
+### 2. Modificação de Estrutura Existente
+
+```SQL
+-- TODO: Expandir informações de cliente
+-- 2.1 Adicione colunas para telefone e endereço
+-- 2.2 Torne o telefone único e não nulo
+-- 2.3 Migre dados existentes adequadamente
+```
+
+### 3. Gestão de Constraints
+
+```SQL
+-- TODO: Implementar regras de negócio
+-- 3.1 Adicione check constraint para preço mínimo
+-- 3.2 Crie unique constraint para SKU de produtos
+-- 3.3 Implemente trigger para log de alterações
+```
+
+## Desafios Extras
+
+### 1. Versionamento
+
+```SQL
+-- Implemente um sistema de controle de versão de schema
+CREATE TABLE schema_version (
+    version INT PRIMARY KEY,
+    applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    description TEXT
+);
+
+-- TODO: Crie scripts de up/down para cada alteração
+```
+
+### 2. Zero Downtime
+
+Desenvolva estratégias para:
+
+* Adição de colunas não-nulas
+
+* Renomeação de colunas
+
+* Divisão de tabelas
+
+### 3. Rollback Plan
+
+```SQL
+-- TODO: Para cada alteração, crie um plano de rollback
+-- Exemplo:
+BEGIN;
+    -- Alterações
+    ALTER TABLE produtos ADD COLUMN categoria_id INT;
+    
+    -- Verificação
+    SELECT COUNT(*) FROM produtos WHERE categoria_id IS NULL;
+    
+    -- Decisão de commit/rollback
+    -- COMMIT ou ROLLBACK;
+END;
+```
+
+## Critérios de Avaliação
+
+1. Segurança de Dados
+
+* Backup antes das alterações
+
+* Validação de integridade
+
+* Tratamento de erros
+
+2. Performance
+
+* Tempo de execução
+
+* Impacto em produção
+
+* Uso de recursos
+
+3. Manutenibilidade
+
+* Documentação
+
+* Versionamento
+
+* Scripts de rollback
+
+## Entrega
+
+Crie um arquivo SQL contendo:
+
+1. Scripts de alteração
+
+2. Scripts de rollback
+
+3. Documentação das mudanças
+
+4. Logs de teste
+
+## Dicas
+
+```
+╔════════════════════════════════════════════╗
+║  CHECKLIST DE ALTERAÇÕES:                 ║
+║  □ Backup realizado?                      ║
+║  □ Scripts testados em homologação?       ║
+║  □ Plano de rollback preparado?           ║
+║  □ Janela de manutenção definida?         ║
+║  □ Stakeholders notificados?              ║
+╚════════════════════════════════════════════╝
+```
+
+## Recursos Adicionais
+
+* [Documentação PostgreSQL sobre ALTER](https://www.postgresql.org/docs/current/sql-alter.html)
+
+* [Práticas de Schema Migration](https://flywaydb.org/documentation/concepts/migrations)
+
+* [Zero Downtime Deployments](https://www.postgresql.org/docs/current/monitoring-stats.html)
+
+## Próximos Passos
+
+1. Implemente monitoramento de performance
+
+2. Automatize testes de migração
+
+3. Crie documentação detalhada
+
+4. Prepare apresentação dos resultados
+
+
+
+# Laboratório: Gerenciamento de Constraints
+
+## Objetivo
+
+Praticar a implementação e gerenciamento de diferentes tipos de constraints no PostgreSQL, garantindo a integridade dos dados e regras de negócio.
+
+## Ambiente de Teste
+
+```SQL
+-- Schema para o laboratório
+CREATE SCHEMA lab_constraints;
+
+-- Tabelas para prática
+CREATE TABLE lab_constraints.produtos (
+    id SERIAL PRIMARY KEY,
+    codigo VARCHAR(20) UNIQUE,
+    nome VARCHAR(100) NOT NULL,
+    preco DECIMAL(10,2),
+    categoria_id INTEGER,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE lab_constraints.categorias (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(50) UNIQUE,
+    ativa BOOLEAN DEFAULT true
+);
+```
+
+## Exercícios Práticos
+
+### 1. Constraints Básicas
+
+```SQL
+-- Primary Key
+ALTER TABLE lab_constraints.produtos
+    ADD CONSTRAINT pk_produtos PRIMARY KEY (id);
+
+-- Unique Constraint
+ALTER TABLE lab_constraints.produtos
+    ADD CONSTRAINT uk_produtos_codigo UNIQUE (codigo);
+
+-- Not Null
+ALTER TABLE lab_constraints.produtos
+    ALTER COLUMN nome SET NOT NULL;
+```
+
+### 2. Foreign Keys
+
+```SQL
+-- Adicionar Foreign Key com diferentes ações
+ALTER TABLE lab_constraints.produtos
+    ADD CONSTRAINT fk_produtos_categoria
+    FOREIGN KEY (categoria_id)
+    REFERENCES lab_constraints.categorias(id)
+    ON DELETE RESTRICT
+    ON UPDATE CASCADE;
+```
+
+### 3. Check Constraints
+
+```SQL
+-- Validação de preço
+ALTER TABLE lab_constraints.produtos
+    ADD CONSTRAINT ck_produtos_preco
+    CHECK (preco > 0);
+
+-- Validação de código
+ALTER TABLE lab_constraints.produtos
+    ADD CONSTRAINT ck_produtos_codigo
+    CHECK (codigo ~ '^[A-Z]{2}\d{4}$');
+```
+
+### 4. Exclusion Constraints
+
+```SQL
+-- Criar extensão btree_gist se necessário
+CREATE EXTENSION IF NOT EXISTS btree_gist;
+
+-- Exemplo de constraint de exclusão
+CREATE TABLE lab_constraints.eventos (
+    id SERIAL PRIMARY KEY,
+    sala_id INTEGER,
+    periodo tsrange,
+    EXCLUDE USING gist (
+        sala_id WITH =,
+        periodo WITH &&
+    )
+);
+```
+
+## Tarefas Práticas
+
+### Tarefa 1: Implementação de Regras de Negócio
+
+```SQL
+-- Regra: Produto não pode ser deletado se tiver vendas
+CREATE TABLE lab_constraints.vendas (
+    id SERIAL PRIMARY KEY,
+    produto_id INTEGER,
+    quantidade INTEGER,
+    CONSTRAINT fk_vendas_produto
+    FOREIGN KEY (produto_id)
+    REFERENCES lab_constraints.produtos(id)
+    ON DELETE RESTRICT
+);
+
+-- Regra: Quantidade deve ser positiva
+ALTER TABLE lab_constraints.vendas
+    ADD CONSTRAINT ck_vendas_quantidade
+    CHECK (quantidade > 0);
+```
+
+### Tarefa 2: Constraints Dinâmicas
+
+```SQL
+-- Função para validação customizada
+CREATE OR REPLACE FUNCTION lab_constraints.validar_preco()
+RETURNS trigger AS $$
+BEGIN
+    IF NEW.preco < (
+        SELECT MIN(preco) 
+        FROM lab_constraints.produtos 
+        WHERE categoria_id = NEW.categoria_id
+    ) * 0.5 THEN
+        RAISE EXCEPTION 'Preço muito baixo para a categoria';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger para aplicar validação
+CREATE TRIGGER trg_validar_preco
+    BEFORE INSERT OR UPDATE ON lab_constraints.produtos
+    FOR EACH ROW
+    EXECUTE FUNCTION lab_constraints.validar_preco();
+```
+
+### Tarefa 3: Gerenciamento de Constraints
+
+```SQL
+-- Desabilitar temporariamente
+ALTER TABLE lab_constraints.produtos
+    DISABLE TRIGGER trg_validar_preco;
+
+-- Reabilitar
+ALTER TABLE lab_constraints.produtos
+    ENABLE TRIGGER trg_validar_preco;
+
+-- Remover constraint
+ALTER TABLE lab_constraints.produtos
+    DROP CONSTRAINT IF EXISTS ck_produtos_preco;
+```
+
+## Verificação de Constraints
+
+```SQL
+-- Função para listar todas as constraints
+CREATE OR REPLACE FUNCTION lab_constraints.listar_constraints()
+RETURNS TABLE (
+    tabela VARCHAR,
+    constraint_name VARCHAR,
+    constraint_type VARCHAR,
+    definition TEXT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        tc.table_schema || '.' || tc.table_name::VARCHAR,
+        tc.constraint_name::VARCHAR,
+        tc.constraint_type::VARCHAR,
+        pg_get_constraintdef(pgc.oid)::TEXT
+    FROM information_schema.table_constraints tc
+    JOIN pg_constraint pgc 
+        ON tc.constraint_name = pgc.conname
+    WHERE tc.table_schema = 'lab_constraints'
+    ORDER BY tc.table_name, tc.constraint_name;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+## Boas Práticas
+
+```
+╔════════════════════════════════════════════╗
+║  DIRETRIZES DE CONSTRAINTS:               ║
+║  ✓ Nomes descritivos                      ║
+║  ✓ Documentação clara                     ║
+║  ✓ Performance considerada                ║
+║  ✓ Validações apropriadas                 ║
+║  ✓ Manutenção planejada                   ║
+╚════════════════════════════════════════════╝
+```
+
+## Troubleshooting
+
+### Problemas Comuns
+
+1. Violação de Constraint
+
+```SQL
+-- Verificar dados violando a constraint
+SELECT * FROM lab_constraints.produtos
+WHERE preco <= 0;
+```
+
+2. Deadlocks em Foreign Keys
+
+```SQL
+-- Ajustar isolamento
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+```
+
+3. Performance
+
+```SQL
+-- Analisar impacto
+EXPLAIN ANALYZE
+SELECT * FROM lab_constraints.produtos
+WHERE codigo = 'AB1234';
+```
+
+## Scripts de Manutenção
+
+```SQL
+-- Verificar integridade
+CREATE OR REPLACE PROCEDURE lab_constraints.verificar_integridade()
+AS $$
+DECLARE
+    v_constraint RECORD;
+BEGIN
+    FOR v_constraint IN (
+        SELECT * FROM lab_constraints.listar_constraints()
+    ) LOOP
+        EXECUTE 'VALIDATE CONSTRAINT ' || v_constraint.constraint_name ||
+                ' ON ' || v_constraint.tabela;
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+## Critérios de Avaliação
+
+1. Implementação
+
+* Constraints corretamente definidas
+
+* Regras de negócio implementadas
+
+* Validações funcionando
+
+2. Performance
+
+* Impacto aceitável
+
+* Índices apropriados
+
+* Otimizações aplicadas
+
+3. Manutenibilidade
+
+* Documentação clara
+
+* Nomes consistentes
+
+* Scripts de manutenção
+
+## Próximos Passos
+
+1. Explorar constraints avançadas
+
+2. Implementar casos complexos
+
+3. Otimizar performance
+
+4. Automatizar testes
+
+## Recursos Adicionais
+
+* [PostgreSQL Constraints](https://www.postgresql.org/docs/current/ddl-constraints.html)
+
+* [Check Constraints](https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-CHECK-CONSTRAINTS)
+
+* [Exclusion Constraints](https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-EXCLUSION)
+
+Tip:
+
+Nota: Este laboratório deve ser executado em um ambiente de teste para evitar impactos em dados de produção.
+
+
+
+# Laboratório: Manutenção de Tabelas
+
+## Objetivo
+
+Praticar operações de manutenção em tabelas de banco de dados, incluindo otimização de espaço, reorganização de dados e monitoramento de performance.
+
+## Cenário
+
+Você é o DBA responsável por um sistema que está em produção há vários anos. As tabelas cresceram significativamente e começaram a apresentar problemas de performance e fragmentação.
+
+## Setup Inicial
+
+```SQL
+-- Criar tabela de exemplo com fragmentação
+CREATE TABLE lab_maintenance.pedidos (
+    id SERIAL PRIMARY KEY,
+    cliente_id INTEGER,
+    produto_id INTEGER,
+    quantidade INTEGER,
+    valor DECIMAL(10,2),
+    status VARCHAR(20),
+    data_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_atualizacao TIMESTAMP
+);
+
+-- Inserir dados de exemplo (muitos registros)
+INSERT INTO lab_maintenance.pedidos (cliente_id, produto_id, quantidade, valor, status)
+SELECT 
+    floor(random() * 1000)::int,
+    floor(random() * 500)::int,
+    floor(random() * 10)::int + 1,
+    (random() * 1000)::decimal(10,2),
+    (ARRAY['PENDENTE', 'APROVADO', 'ENVIADO', 'ENTREGUE', 'CANCELADO'])[floor(random() * 5 + 1)]
+FROM generate_series(1, 500000);
+
+-- Simular atualizações frequentes para criar fragmentação
+UPDATE lab_maintenance.pedidos
+SET status = 'APROVADO', data_atualizacao = CURRENT_TIMESTAMP
+WHERE id % 3 = 0;
+
+UPDATE lab_maintenance.pedidos
+SET status = 'ENVIADO', data_atualizacao = CURRENT_TIMESTAMP
+WHERE id % 5 = 0;
+```
+
+## Exercícios
+
+### 1. Análise de Fragmentação
+
+```SQL
+-- Verificar estatísticas da tabela
+SELECT
+    schemaname,
+    relname,
+    n_live_tup,
+    n_dead_tup,
+    last_vacuum,
+    last_autovacuum
+FROM pg_stat_user_tables
+WHERE relname = 'pedidos';
+
+-- Verificar bloat (inchamento) da tabela
+-- Requer extensão pgstattuple
+CREATE EXTENSION IF NOT EXISTS pgstattuple;
+
+SELECT * FROM pgstattuple('lab_maintenance.pedidos');
+```
+
+### 2. Operações de VACUUM
+
+```SQL
+-- VACUUM básico
+VACUUM lab_maintenance.pedidos;
+
+-- VACUUM FULL (requer lock exclusivo)
+VACUUM FULL lab_maintenance.pedidos;
+
+-- VACUUM ANALYZE
+VACUUM ANALYZE lab_maintenance.pedidos;
+
+-- Verificar efeito do VACUUM
+SELECT
+    schemaname,
+    relname,
+    n_live_tup,
+    n_dead_tup,
+    last_vacuum
+FROM pg_stat_user_tables
+WHERE relname = 'pedidos';
+```
+
+### 3. Reconstrução de Índices
+
+```SQL
+-- Criar índices para a tabela
+CREATE INDEX idx_pedidos_cliente ON lab_maintenance.pedidos(cliente_id);
+CREATE INDEX idx_pedidos_status ON lab_maintenance.pedidos(status);
+CREATE INDEX idx_pedidos_data ON lab_maintenance.pedidos(data_pedido);
+
+-- Verificar fragmentação de índices
+SELECT
+    indexrelname,
+    idx_scan,
+    idx_tup_read,
+    idx_tup_fetch
+FROM pg_stat_user_indexes
+WHERE relname = 'pedidos';
+
+-- Reconstruir índice
+REINDEX INDEX idx_pedidos_cliente;
+
+-- Reconstruir todos os índices da tabela
+REINDEX TABLE lab_maintenance.pedidos;
+```
+
+### 4. Monitoramento de Espaço
+
+```SQL
+-- Verificar tamanho da tabela e índices
+SELECT
+    pg_size_pretty(pg_total_relation_size('lab_maintenance.pedidos')) as total_size,
+    pg_size_pretty(pg_relation_size('lab_maintenance.pedidos')) as table_size,
+    pg_size_pretty(pg_indexes_size('lab_maintenance.pedidos')) as indexes_size;
+
+-- Verificar espaço por schema
+SELECT
+    schemaname,
+    pg_size_pretty(sum(pg_relation_size(schemaname || '.' || relname))) as size
+FROM pg_stat_user_tables
+GROUP BY schemaname
+ORDER BY sum(pg_relation_size(schemaname || '.' || relname)) DESC;
+```
+
+## Tarefas Práticas
+
+### Tarefa 1: Otimização de Tabela Grande
+
+1. Crie uma tabela com pelo menos 1 milhão de registros
+
+2. Insira, atualize e exclua registros para criar fragmentação
+
+3. Analise o estado da tabela
+
+4. Aplique as operações de manutenção apropriadas
+
+5. Compare o desempenho antes e depois
+
+### Tarefa 2: Automação de Manutenção
+
+```SQL
+-- Criar função para manutenção automática
+CREATE OR REPLACE FUNCTION lab_maintenance.manter_tabela(tabela text)
+RETURNS void AS $$
+BEGIN
+    EXECUTE 'VACUUM ANALYZE ' || tabela;
+    RAISE NOTICE 'Manutenção concluída para %', tabela;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Agendar manutenção (simulação)
+SELECT lab_maintenance.manter_tabela('lab_maintenance.pedidos');
+```
+
+## Boas Práticas
+
+```
+╔════════════════════════════════════════════╗
+║  CHECKLIST DE MANUTENÇÃO:                 ║
+║  □ Monitorar crescimento de tabelas       ║
+║  □ Configurar autovacuum apropriadamente  ║
+║  □ Agendar VACUUM ANALYZE regularmente    ║
+║  □ Reconstruir índices periodicamente     ║
+║  □ Monitorar bloat de tabelas e índices   ║
+║  □ Manter estatísticas atualizadas        ║
+╚════════════════════════════════════════════╝
+```
+
+## Considerações de Performance
+
+1. Janelas de Manutenção
+
+* Agendar operações pesadas para períodos de baixo uso
+
+* Considerar impacto em sistemas 24/7
+
+* Balancear frequência e duração
+
+2. Configurações do Autovacuum
+
+```SQL
+-- Verificar configurações atuais
+SHOW autovacuum_vacuum_threshold;
+SHOW autovacuum_analyze_threshold;
+SHOW autovacuum_vacuum_scale_factor;
+SHOW autovacuum_analyze_scale_factor;
+```
+
+3. Monitoramento Contínuo
+
+* Implementar alertas para tabelas problemáticas
+
+* Acompanhar tendências de crescimento
+
+* Identificar padrões de acesso
+
+## Recursos Adicionais
+
+* [PostgreSQL VACUUM Documentation](https://www.postgresql.org/docs/current/sql-vacuum.html)
+
+* [PostgreSQL Index Maintenance](https://www.postgresql.org/docs/current/sql-reindex.html)
+
+* [Monitoring Database Activity](https://www.postgresql.org/docs/current/monitoring-stats.html)
+
+Tip:
+
+Nota: Este laboratório deve ser executado em um ambiente de teste para evitar impactos em dados de produção.
+
+
+
 # DML - Linguagem de Manipulação de Dados
 
 ```
@@ -21986,6 +24490,719 @@ MERGE_SPECIALIST conclui: "O MERGE é uma ferramenta poderosa para sincronizaç�
 Tip:
 
 Dica Final: Sempre teste seu MERGE com um conjunto pequeno de dados antes de executar em produção, e mantenha backups atualizados.
+
+
+
+# Exercícios de DML (Data Manipulation Language)
+
+## Visão Geral
+
+Este módulo contém uma série progressiva de exercícios para praticar comandos DML em SQL. Os exercícios estão organizados em três níveis de dificuldade:
+
+### Nível Básico
+
+* Consultas simples com SELECT
+
+* Inserções básicas de dados
+
+* Atualizações e exclusões simples
+
+* Operações fundamentais de DML
+
+### Nível Intermediário
+
+* Consultas com múltiplas tabelas
+
+* Subconsultas e expressões
+
+* Operações em lote
+
+* Técnicas de manipulação avançadas
+
+### Nível Avançado
+
+* Operações complexas de sincronização
+
+* Manipulação de dados em grande escala
+
+* Otimização de performance
+
+* Cenários empresariais realistas
+
+## Estrutura dos Exercícios
+
+Cada exercício segue o formato:
+
+1. Descrição do problema
+
+2. Requisitos específicos
+
+3. Dicas de implementação
+
+4. Solução de referência
+
+5. Critérios de avaliação
+
+## Ambiente de Prática
+
+```SQL
+-- Database de teste
+CREATE DATABASE exercicios_dml;
+
+-- Schema para isolamento
+CREATE SCHEMA pratica;
+
+-- Tabelas de exemplo
+CREATE TABLE pratica.clientes (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    data_cadastro DATE DEFAULT CURRENT_DATE
+);
+
+CREATE TABLE pratica.produtos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    preco DECIMAL(10,2) CHECK (preco > 0),
+    estoque INTEGER DEFAULT 0
+);
+
+CREATE TABLE pratica.pedidos (
+    id SERIAL PRIMARY KEY,
+    cliente_id INTEGER REFERENCES pratica.clientes(id),
+    data_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(20) DEFAULT 'Pendente'
+);
+
+CREATE TABLE pratica.itens_pedido (
+    pedido_id INTEGER REFERENCES pratica.pedidos(id),
+    produto_id INTEGER REFERENCES pratica.produtos(id),
+    quantidade INTEGER CHECK (quantidade > 0),
+    preco_unitario DECIMAL(10,2),
+    PRIMARY KEY (pedido_id, produto_id)
+);
+
+-- Tabela de controle
+CREATE TABLE pratica.controle_exercicios (
+    id SERIAL PRIMARY KEY,
+    exercicio VARCHAR(50),
+    completado BOOLEAN DEFAULT FALSE,
+    data_conclusao TIMESTAMP
+);
+```
+
+## Fluxo de Estudo Recomendado
+
+```MERMAID
+graph TD
+    A[Básico] --> B[Intermediário]
+    B --> C[Avançado]
+    A --> D[Laboratórios]
+    B --> D
+    C --> D
+    D --> E[Projetos Práticos]
+```
+
+## Preparação do Ambiente
+
+Para obter o máximo proveito destes exercícios, recomendamos:
+
+1. Configurar um ambiente de banco de dados
+
+* PostgreSQL 12+ ou MySQL 8+
+
+* Cliente SQL (DBeaver, pgAdmin, MySQL Workbench)
+
+* Scripts de inicialização fornecidos
+
+2. Dados de teste
+
+```SQL
+-- Inserir dados de exemplo
+INSERT INTO pratica.clientes (nome, email)
+VALUES 
+    ('Ana Silva', 'ana@email.com'),
+    ('Bruno Costa', 'bruno@email.com'),
+    ('Carla Mendes', 'carla@email.com');
+
+INSERT INTO pratica.produtos (nome, preco, estoque)
+VALUES
+    ('Smartphone', 1299.99, 50),
+    ('Notebook', 3499.99, 20),
+    ('Fones de Ouvido', 199.99, 100);
+```
+
+3. Ferramentas recomendadas
+
+* Editor de SQL com highlight de sintaxe
+
+* Ferramenta de visualização de planos de execução
+
+* Ambiente para documentar suas soluções
+
+## Navegação do Conteúdo
+
+* [Exercícios Básicos](basic-dml-exercises.html)
+
+* [Exercícios Intermediários](null)
+
+* [Exercícios Avançados](null)
+
+## Dicas de Estudo
+
+```
+╔════════════════════════════════════════════╗
+║  BOAS PRÁTICAS:                           ║
+║  ✓ Teste cada comando individualmente      ║
+║  ✓ Analise planos de execução              ║
+║  ✓ Documente suas soluções                ║
+║  ✓ Pratique regularmente                  ║
+║  ✓ Revise conceitos quando necessário     ║
+╚════════════════════════════════════════════╝
+```
+
+## Suporte e Recursos
+
+* Fórum de discussão
+
+* Documentação oficial do SGBD
+
+* Exemplos práticos adicionais
+
+* Soluções comentadas
+
+## Próximos Passos
+
+Após completar os exercícios de DML, recomendamos:
+
+1. Laboratórios práticos
+
+* Aplicação em cenários realistas
+
+* Integração com outros conceitos
+
+2. Projetos integrados
+
+* Desenvolvimento de aplicações completas
+
+* Implementação de sistemas de banco de dados
+
+3. Tópicos avançados
+
+* Otimização de consultas
+
+* Tuning de performance
+
+* Padrões de design SQL
+
+## Feedback e Avaliação
+
+Para cada conjunto de exercícios, você pode:
+
+* Verificar suas soluções contra as referências
+
+* Compartilhar abordagens alternativas
+
+* Discutir otimizações possíveis
+
+* Solicitar revisão por pares
+
+Tip:
+
+Nota: Estes exercícios são projetados para serem progressivos. Recomendamos completar os exercícios básicos antes de avançar para os níveis mais complexos.
+
+
+
+# Exercícios Básicos de DML
+
+## Exercício 1: Consultas Simples
+
+### Descrição
+
+Pratique consultas básicas para recuperar dados das tabelas.
+
+### Requisitos
+
+* Selecionar todos os clientes
+
+* Filtrar produtos por preço
+
+* Ordenar resultados
+
+* Limitar número de registros
+
+### Solução
+
+```SQL
+-- Selecionar todos os clientes
+SELECT * FROM pratica.clientes;
+
+-- Filtrar produtos por preço
+SELECT nome, preco 
+FROM pratica.produtos 
+WHERE preco < 1000;
+
+-- Ordenar resultados
+SELECT nome, preco 
+FROM pratica.produtos 
+ORDER BY preco DESC;
+
+-- Limitar número de registros
+SELECT nome, email 
+FROM pratica.clientes 
+LIMIT 5;
+```
+
+## Exercício 2: Inserção de Dados
+
+### Descrição
+
+Pratique a inserção de novos registros nas tabelas.
+
+### Requisitos
+
+* Inserir um único cliente
+
+* Inserir múltiplos produtos
+
+* Inserir com valores padrão
+
+* Inserir com subconsulta
+
+### Solução
+
+```SQL
+-- Inserir um único cliente
+INSERT INTO pratica.clientes (nome, email)
+VALUES ('Daniel Santos', 'daniel@email.com');
+
+-- Inserir múltiplos produtos
+INSERT INTO pratica.produtos (nome, preco, estoque)
+VALUES 
+    ('Mouse', 89.90, 30),
+    ('Teclado', 149.90, 25),
+    ('Monitor', 899.90, 10);
+
+-- Inserir com valores padrão
+INSERT INTO pratica.clientes (nome)
+VALUES ('Eduardo Lima');
+
+-- Inserir com subconsulta
+INSERT INTO pratica.pedidos (cliente_id, status)
+SELECT id, 'Novo' 
+FROM pratica.clientes 
+WHERE nome = 'Ana Silva';
+```
+
+## Exercício 3: Atualização de Dados
+
+### Descrição
+
+Pratique a atualização de registros existentes.
+
+### Requisitos
+
+* Atualizar um único registro
+
+* Atualizar múltiplos registros
+
+* Atualizar com condição
+
+* Atualizar com expressão
+
+### Solução
+
+```SQL
+-- Atualizar um único registro
+UPDATE pratica.clientes
+SET email = 'ana.silva@email.com'
+WHERE id = 1;
+
+-- Atualizar múltiplos registros
+UPDATE pratica.produtos
+SET estoque = estoque + 10
+WHERE estoque < 30;
+
+-- Atualizar com condição
+UPDATE pratica.pedidos
+SET status = 'Aprovado'
+WHERE cliente_id IN (
+    SELECT id FROM pratica.clientes
+    WHERE nome LIKE 'Ana%'
+);
+
+-- Atualizar com expressão
+UPDATE pratica.produtos
+SET preco = preco * 1.1
+WHERE nome = 'Smartphone';
+```
+
+## Exercício 4: Exclusão de Dados
+
+### Descrição
+
+Pratique a exclusão de registros das tabelas.
+
+### Requisitos
+
+* Excluir um único registro
+
+* Excluir múltiplos registros
+
+* Excluir com condição
+
+* Excluir com subconsulta
+
+### Solução
+
+```SQL
+-- Excluir um único registro
+DELETE FROM pratica.clientes
+WHERE id = 5;
+
+-- Excluir múltiplos registros
+DELETE FROM pratica.produtos
+WHERE estoque = 0;
+
+-- Excluir com condição
+DELETE FROM pratica.pedidos
+WHERE status = 'Cancelado'
+AND data_pedido < CURRENT_DATE - INTERVAL '30 days';
+
+-- Excluir com subconsulta
+DELETE FROM pratica.itens_pedido
+WHERE pedido_id IN (
+    SELECT id FROM pratica.pedidos
+    WHERE status = 'Cancelado'
+);
+```
+
+## Exercício 5: Consultas com Junções
+
+### Descrição
+
+Pratique consultas que relacionam dados de múltiplas tabelas.
+
+### Requisitos
+
+* Junção interna (INNER JOIN)
+
+* Junção externa (LEFT JOIN)
+
+* Múltiplas junções
+
+* Filtros em junções
+
+### Solução
+
+```SQL
+-- Junção interna
+SELECT c.nome, p.id as pedido_id
+FROM pratica.clientes c
+INNER JOIN pratica.pedidos p ON c.id = p.cliente_id;
+
+-- Junção externa
+SELECT c.nome, p.id as pedido_id
+FROM pratica.clientes c
+LEFT JOIN pratica.pedidos p ON c.id = p.cliente_id;
+
+-- Múltiplas junções
+SELECT c.nome, p.id as pedido_id, pr.nome as produto
+FROM pratica.clientes c
+JOIN pratica.pedidos p ON c.id = p.cliente_id
+JOIN pratica.itens_pedido ip ON p.id = ip.pedido_id
+JOIN pratica.produtos pr ON ip.produto_id = pr.id;
+
+-- Filtros em junções
+SELECT c.nome, p.id as pedido_id
+FROM pratica.clientes c
+JOIN pratica.pedidos p ON c.id = p.cliente_id
+WHERE p.status = 'Aprovado'
+AND c.data_cadastro > '2023-01-01';
+```
+
+## Exercício 6: Funções Agregadas
+
+### Descrição
+
+Pratique o uso de funções agregadas para análise de dados.
+
+### Requisitos
+
+* Contagem de registros
+
+* Soma de valores
+
+* Média, mínimo e máximo
+
+* Agrupamento de resultados
+
+### Solução
+
+```SQL
+-- Contagem de registros
+SELECT COUNT(*) as total_clientes
+FROM pratica.clientes;
+
+-- Soma de valores
+SELECT SUM(estoque) as estoque_total
+FROM pratica.produtos;
+
+-- Média, mínimo e máximo
+SELECT 
+    AVG(preco) as preco_medio,
+    MIN(preco) as preco_minimo,
+    MAX(preco) as preco_maximo
+FROM pratica.produtos;
+
+-- Agrupamento de resultados
+SELECT status, COUNT(*) as quantidade
+FROM pratica.pedidos
+GROUP BY status
+ORDER BY quantidade DESC;
+```
+
+## Exercício 7: Subconsultas
+
+### Descrição
+
+Pratique o uso de subconsultas para operações mais complexas.
+
+### Requisitos
+
+* Subconsulta no WHERE
+
+* Subconsulta no FROM
+
+* Subconsulta no SELECT
+
+* Subconsulta com EXISTS
+
+### Solução
+
+```SQL
+-- Subconsulta no WHERE
+SELECT nome
+FROM pratica.clientes
+WHERE id IN (
+    SELECT cliente_id
+    FROM pratica.pedidos
+    WHERE status = 'Aprovado'
+);
+
+-- Subconsulta no FROM
+SELECT temp.status, temp.total
+FROM (
+    SELECT status, COUNT(*) as total
+    FROM pratica.pedidos
+    GROUP BY status
+) as temp
+WHERE temp.total > 5;
+
+-- Subconsulta no SELECT
+SELECT 
+    nome,
+    (SELECT COUNT(*) FROM pratica.pedidos WHERE cliente_id = c.id) as total_pedidos
+FROM pratica.clientes c;
+
+-- Subconsulta com EXISTS
+SELECT nome
+FROM pratica.produtos p
+WHERE EXISTS (
+    SELECT 1 
+    FROM pratica.itens_pedido ip
+    WHERE ip.produto_id = p.id
+    AND ip.quantidade > 5
+);
+```
+
+## Exercício 8: Operações com Datas
+
+### Descrição
+
+Pratique operações e manipulações com campos de data.
+
+### Requisitos
+
+* Filtrar por data
+
+* Calcular diferença entre datas
+
+* Extrair componentes de data
+
+* Agrupar por período
+
+### Solução
+
+```SQL
+-- Filtrar por data
+SELECT *
+FROM pratica.pedidos
+WHERE data_pedido >= '2023-01-01'
+AND data_pedido < '2023-02-01';
+
+-- Calcular diferença entre datas
+SELECT 
+    id,
+    data_pedido,
+    CURRENT_DATE as hoje,
+    CURRENT_DATE - data_pedido::date as dias_decorridos
+FROM pratica.pedidos;
+
+-- Extrair componentes de data
+SELECT 
+    id,
+    data_pedido,
+    EXTRACT(YEAR FROM data_pedido) as ano,
+    EXTRACT(MONTH FROM data_pedido) as mes,
+    EXTRACT(DAY FROM data_pedido) as dia
+FROM pratica.pedidos;
+
+-- Agrupar por período
+SELECT 
+    EXTRACT(MONTH FROM data_pedido) as mes,
+    COUNT(*) as total_pedidos
+FROM pratica.pedidos
+GROUP BY mes
+ORDER BY mes;
+```
+
+## Exercício 9: Operações com Strings
+
+### Descrição
+
+Pratique operações e manipulações com campos de texto.
+
+### Requisitos
+
+* Concatenação de strings
+
+* Conversão de maiúsculas/minúsculas
+
+* Extração de substrings
+
+* Busca por padrões
+
+### Solução
+
+```SQL
+-- Concatenação de strings
+SELECT 
+    nome,
+    email,
+    nome || ' <' || email || '>' as contato
+FROM pratica.clientes;
+
+-- Conversão de maiúsculas/minúsculas
+SELECT 
+    nome,
+    UPPER(nome) as nome_maiusculo,
+    LOWER(email) as email_minusculo
+FROM pratica.clientes;
+
+-- Extração de substrings
+SELECT 
+    nome,
+    SUBSTRING(nome FROM 1 FOR 3) as iniciais,
+    SUBSTRING(email FROM POSITION('@' IN email) + 1) as dominio
+FROM pratica.clientes;
+
+-- Busca por padrões
+SELECT nome, email
+FROM pratica.clientes
+WHERE nome LIKE 'A%'
+OR email LIKE '%@gmail.com';
+```
+
+## Exercício 10: Transações
+
+### Descrição
+
+Pratique o uso de transações para garantir a integridade dos dados.
+
+### Requisitos
+
+* Iniciar transação
+
+* Confirmar alterações
+
+* Reverter alterações
+
+* Pontos de salvamento
+
+### Solução
+
+```SQL
+-- Iniciar transação
+BEGIN;
+
+-- Operações dentro da transação
+INSERT INTO pratica.clientes (nome, email)
+VALUES ('Fernando Gomes', 'fernando@email.com');
+
+UPDATE pratica.produtos
+SET estoque = estoque - 5
+WHERE nome = 'Smartphone';
+
+-- Confirmar alterações
+COMMIT;
+
+-- Exemplo com rollback
+BEGIN;
+
+UPDATE pratica.produtos
+SET preco = preco * 0.5;
+
+-- Ops, desconto muito alto!
+ROLLBACK;
+
+-- Exemplo com savepoint
+BEGIN;
+
+INSERT INTO pratica.clientes (nome, email)
+VALUES ('Gabriela Lima', 'gabriela@email.com');
+
+SAVEPOINT novo_cliente;
+
+UPDATE pratica.produtos
+SET estoque = -10;
+
+-- Erro no estoque, voltar ao savepoint
+ROLLBACK TO novo_cliente;
+
+INSERT INTO pratica.pedidos (cliente_id, status)
+VALUES ((SELECT id FROM pratica.clientes WHERE nome = 'Gabriela Lima'), 'Novo');
+
+COMMIT;
+```
+
+## Critérios de Avaliação
+
+* Sintaxe SQL correta
+
+* Uso apropriado dos comandos DML
+
+* Eficiência das consultas
+
+* Tratamento adequado de erros
+
+* Uso de transações quando necessário
+
+## Dicas de Estudo
+
+* Teste cada comando separadamente
+
+* Verifique os resultados após cada operação
+
+* Pratique com diferentes conjuntos de dados
+
+* Experimente variações dos comandos
+
+* Analise o plano de execução das consultas
+
+Tip:
+
+Nota: Estes exercícios são fundamentais para construir uma base sólida em manipulação de dados. Certifique-se de compreender completamente cada conceito antes de avançar para os exercícios intermediários.
 
 
 

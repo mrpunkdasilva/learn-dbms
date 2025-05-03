@@ -1,0 +1,275 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en-US" data-preset="contrast" data-primary-color="#E8488B"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="built-on" content="2025-05-03T19:40:10.612756992"><title>Exerc&iacute;cios Intermedi&aacute;rios de DDL | Database Management Systems: A Complete Guide</title><script type="application/json" id="virtual-toc-data">[{"id":"exerc-cio-1-heran-a-de-tabelas","level":0,"title":"Exercício 1: Herança de Tabelas","anchor":"#exerc-cio-1-heran-a-de-tabelas"},{"id":"exerc-cio-2-particionamento-de-tabelas","level":0,"title":"Exercício 2: Particionamento de Tabelas","anchor":"#exerc-cio-2-particionamento-de-tabelas"},{"id":"exerc-cio-3-dom-nios-personalizados","level":0,"title":"Exercício 3: Domínios Personalizados","anchor":"#exerc-cio-3-dom-nios-personalizados"},{"id":"exerc-cio-4-triggers-e-fun-es","level":0,"title":"Exercício 4: Triggers e Funções","anchor":"#exerc-cio-4-triggers-e-fun-es"},{"id":"exerc-cio-5-views-materializadas","level":0,"title":"Exercício 5: Views Materializadas","anchor":"#exerc-cio-5-views-materializadas"},{"id":"exerc-cio-6-schemas-e-seguran-a","level":0,"title":"Exercício 6: Schemas e Segurança","anchor":"#exerc-cio-6-schemas-e-seguran-a"},{"id":"exerc-cio-7-constraints-complexas","level":0,"title":"Exercício 7: Constraints Complexas","anchor":"#exerc-cio-7-constraints-complexas"},{"id":"exerc-cio-8-extens-es-e-tipos-customizados","level":0,"title":"Exercício 8: Extensões e Tipos Customizados","anchor":"#exerc-cio-8-extens-es-e-tipos-customizados"},{"id":"exerc-cio-9-otimiza-o-de-schema","level":0,"title":"Exercício 9: Otimização de Schema","anchor":"#exerc-cio-9-otimiza-o-de-schema"},{"id":"exerc-cio-10-migra-o-de-dados","level":0,"title":"Exercício 10: Migração de Dados","anchor":"#exerc-cio-10-migra-o-de-dados"},{"id":"crit-rios-de-avalia-o","level":0,"title":"Critérios de Avaliação","anchor":"#crit-rios-de-avalia-o"},{"id":"dicas-de-estudo","level":0,"title":"Dicas de Estudo","anchor":"#dicas-de-estudo"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.css" rel="stylesheet"><link href="static/custom.css" rel="stylesheet"><link rel="icon" type="image/svg" sizes="16x16" href="images/logo-primary.svg"><meta name="image" content=""><!-- Open Graph --><meta property="og:title" content="Exerc&iacute;cios Intermedi&aacute;rios de DDL | Database Management Systems: A Complete Guide"><meta property="og:description" content=""><meta property="og:image" content=""><meta property="og:site_name" content="Database Management Systems: A Complete Guide Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="writerside-documentation/intermediate-ddl-exercises.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content=""><meta name="twitter:title" content="Exerc&iacute;cios Intermedi&aacute;rios de DDL | Database Management Systems: A Complete Guide"><meta name="twitter:description" content=""><meta name="twitter:creator" content=""><meta name="twitter:image:src" content=""><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    "@id": "writerside-documentation/intermediate-ddl-exercises.html#webpage",
+    "url": "writerside-documentation/intermediate-ddl-exercises.html",
+    "name": "Exerc&iacute;cios Intermedi&aacute;rios de DDL | Database Management Systems: A Complete Guide",
+    "description": "",
+    "image": "",
+    "inLanguage":"en-US"
+}</script><!-- End Schema.org --><!-- Schema.org WebSite --><script type="application/ld+json">{
+    "@type": "WebSite",
+    "@id": "writerside-documentation/#website",
+    "url": "writerside-documentation/",
+    "name": "Database Management Systems: A Complete Guide Help"
+}</script><!-- End Schema.org --></head><body data-id="intermediate-ddl-exercises" data-main-title="Exercícios Intermediários de DDL" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs="sql-fundamentals.md|Fundamentos SQL///sql-ddl.md|DDL - Linguagem de Definição de Dados///ddl-exercises.md|Exercícios de DDL (Data Definition Language)"><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>Database Management Systems: A Complete Guide  Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="intermediate-ddl-exercises" id="intermediate-ddl-exercises.md">Exercícios Intermediários de DDL</h1><section class="chapter"><h2 id="exerc-cio-1-heran-a-de-tabelas" data-toc="exerc-cio-1-heran-a-de-tabelas">Exerc&iacute;cio 1: Heran&ccedil;a de Tabelas</h2><section class="chapter"><h3 id="descri-o" data-toc="descri-o">Descri&ccedil;&atilde;o</h3><p id="-1us7ty_18">Implemente uma estrutura de heran&ccedil;a para diferentes tipos de produtos.</p></section><section class="chapter"><h3 id="requisitos" data-toc="requisitos">Requisitos</h3><ul class="list _bullet" id="-1us7ty_19"><li class="list__item" id="-1us7ty_20"><p id="-1us7ty_23">Tabela base de produtos</p></li><li class="list__item" id="-1us7ty_21"><p id="-1us7ty_24">Tabelas espec&iacute;ficas para produtos f&iacute;sicos e digitais</p></li><li class="list__item" id="-1us7ty_22"><p id="-1us7ty_25">Constraints espec&iacute;ficas para cada tipo</p></li></ul></section><section class="chapter"><h3 id="solu-o" data-toc="solu-o">Solu&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+CREATE TABLE produtos_base (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    preco DECIMAL(10,2) NOT NULL,
+    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE produtos_fisicos (
+    peso DECIMAL(10,2) NOT NULL,
+    dimensoes VARCHAR(50),
+    localizacao_estoque VARCHAR(50)
+) INHERITS (produtos_base);
+
+CREATE TABLE produtos_digitais (
+    tamanho_arquivo VARCHAR(20),
+    formato VARCHAR(20),
+    url_download VARCHAR(255)
+) INHERITS (produtos_base);
+</div></section></section><section class="chapter"><h2 id="exerc-cio-2-particionamento-de-tabelas" data-toc="exerc-cio-2-particionamento-de-tabelas">Exerc&iacute;cio 2: Particionamento de Tabelas</h2><section class="chapter"><h3 id="descri-o" data-toc="descri-o">Descri&ccedil;&atilde;o</h3><p id="-1us7ty_30">Crie uma tabela particionada para hist&oacute;rico de vendas.</p></section><section class="chapter"><h3 id="requisitos" data-toc="requisitos">Requisitos</h3><ul class="list _bullet" id="-1us7ty_31"><li class="list__item" id="-1us7ty_32"><p id="-1us7ty_35">Particionamento por intervalo de datas</p></li><li class="list__item" id="-1us7ty_33"><p id="-1us7ty_36">Parti&ccedil;&otilde;es mensais</p></li><li class="list__item" id="-1us7ty_34"><p id="-1us7ty_37">&Iacute;ndices apropriados para cada parti&ccedil;&atilde;o</p></li></ul></section><section class="chapter"><h3 id="solu-o" data-toc="solu-o">Solu&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+CREATE TABLE historico_vendas (
+    id SERIAL,
+    data_venda DATE NOT NULL,
+    produto_id INTEGER,
+    quantidade INTEGER,
+    valor_total DECIMAL(10,2)
+) PARTITION BY RANGE (data_venda);
+
+CREATE TABLE vendas_202301 PARTITION OF historico_vendas
+    FOR VALUES FROM ('2023-01-01') TO ('2023-02-01');
+
+CREATE TABLE vendas_202302 PARTITION OF historico_vendas
+    FOR VALUES FROM ('2023-02-01') TO ('2023-03-01');
+
+CREATE INDEX idx_vendas_202301_data ON vendas_202301(data_venda);
+CREATE INDEX idx_vendas_202302_data ON vendas_202302(data_venda);
+</div></section></section><section class="chapter"><h2 id="exerc-cio-3-dom-nios-personalizados" data-toc="exerc-cio-3-dom-nios-personalizados">Exerc&iacute;cio 3: Dom&iacute;nios Personalizados</h2><section class="chapter"><h3 id="descri-o" data-toc="descri-o">Descri&ccedil;&atilde;o</h3><p id="-1us7ty_42">Defina dom&iacute;nios customizados para tipos de dados comuns.</p></section><section class="chapter"><h3 id="requisitos" data-toc="requisitos">Requisitos</h3><ul class="list _bullet" id="-1us7ty_43"><li class="list__item" id="-1us7ty_44"><p id="-1us7ty_47">Dom&iacute;nio para e-mail</p></li><li class="list__item" id="-1us7ty_45"><p id="-1us7ty_48">Dom&iacute;nio para telefone</p></li><li class="list__item" id="-1us7ty_46"><p id="-1us7ty_49">Dom&iacute;nio para CPF/CNPJ</p></li></ul></section><section class="chapter"><h3 id="solu-o" data-toc="solu-o">Solu&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+CREATE DOMAIN email_type AS VARCHAR(255)
+    CHECK (VALUE ~ '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+
+CREATE DOMAIN telefone_type AS VARCHAR(20)
+    CHECK (VALUE ~ '^\+?[0-9]{10,14}$');
+
+CREATE DOMAIN documento_type AS VARCHAR(14)
+    CHECK (VALUE ~ '^\d{11}$' OR VALUE ~ '^\d{14}$');
+
+CREATE TABLE clientes (
+    id SERIAL PRIMARY KEY,
+    email email_type NOT NULL,
+    telefone telefone_type,
+    documento documento_type NOT NULL UNIQUE
+);
+</div></section></section><section class="chapter"><h2 id="exerc-cio-4-triggers-e-fun-es" data-toc="exerc-cio-4-triggers-e-fun-es">Exerc&iacute;cio 4: Triggers e Fun&ccedil;&otilde;es</h2><section class="chapter"><h3 id="descri-o" data-toc="descri-o">Descri&ccedil;&atilde;o</h3><p id="-1us7ty_54">Implemente triggers para auditoria de altera&ccedil;&otilde;es.</p></section><section class="chapter"><h3 id="requisitos" data-toc="requisitos">Requisitos</h3><ul class="list _bullet" id="-1us7ty_55"><li class="list__item" id="-1us7ty_56"><p id="-1us7ty_59">Tabela de auditoria</p></li><li class="list__item" id="-1us7ty_57"><p id="-1us7ty_60">Trigger para INSERT/UPDATE/DELETE</p></li><li class="list__item" id="-1us7ty_58"><p id="-1us7ty_61">Registro de usu&aacute;rio e timestamp</p></li></ul></section><section class="chapter"><h3 id="solu-o" data-toc="solu-o">Solu&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+CREATE TABLE auditoria (
+    id SERIAL PRIMARY KEY,
+    tabela_nome VARCHAR(50),
+    operacao VARCHAR(20),
+    registro_id INTEGER,
+    dados_antigos JSONB,
+    dados_novos JSONB,
+    usuario_modificacao VARCHAR(50),
+    data_modificacao TIMESTAMP
+);
+
+CREATE OR REPLACE FUNCTION fn_auditoria()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO auditoria (
+        tabela_nome,
+        operacao,
+        registro_id,
+        dados_antigos,
+        dados_novos,
+        usuario_modificacao,
+        data_modificacao
+    ) VALUES (
+        TG_TABLE_NAME,
+        TG_OP,
+        COALESCE(NEW.id, OLD.id),
+        CASE WHEN TG_OP IN ('UPDATE','DELETE') THEN to_jsonb(OLD) ELSE NULL END,
+        CASE WHEN TG_OP IN ('UPDATE','INSERT') THEN to_jsonb(NEW) ELSE NULL END,
+        current_user,
+        current_timestamp
+    );
+    RETURN COALESCE(NEW, OLD);
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_produtos_auditoria
+AFTER INSERT OR UPDATE OR DELETE ON produtos
+FOR EACH ROW EXECUTE FUNCTION fn_auditoria();
+</div></section></section><section class="chapter"><h2 id="exerc-cio-5-views-materializadas" data-toc="exerc-cio-5-views-materializadas">Exerc&iacute;cio 5: Views Materializadas</h2><section class="chapter"><h3 id="descri-o" data-toc="descri-o">Descri&ccedil;&atilde;o</h3><p id="-1us7ty_66">Crie views materializadas para relat&oacute;rios de vendas.</p></section><section class="chapter"><h3 id="requisitos" data-toc="requisitos">Requisitos</h3><ul class="list _bullet" id="-1us7ty_67"><li class="list__item" id="-1us7ty_68"><p id="-1us7ty_71">Agrega&ccedil;&otilde;es complexas</p></li><li class="list__item" id="-1us7ty_69"><p id="-1us7ty_72">Atualiza&ccedil;&atilde;o programada</p></li><li class="list__item" id="-1us7ty_70"><p id="-1us7ty_73">&Iacute;ndices para performance</p></li></ul></section><section class="chapter"><h3 id="solu-o" data-toc="solu-o">Solu&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+CREATE MATERIALIZED VIEW mv_resumo_vendas AS
+SELECT 
+    p.categoria_id,
+    c.nome as categoria,
+    DATE_TRUNC('month', v.data_venda) as mes,
+    COUNT(*) as total_vendas,
+    SUM(v.quantidade) as quantidade_total,
+    SUM(v.valor_total) as valor_total
+FROM historico_vendas v
+JOIN produtos p ON v.produto_id = p.id
+JOIN categorias c ON p.categoria_id = c.id
+GROUP BY p.categoria_id, c.nome, DATE_TRUNC('month', v.data_venda)
+WITH DATA;
+
+CREATE UNIQUE INDEX idx_mv_resumo_vendas 
+ON mv_resumo_vendas (categoria_id, mes);
+
+CREATE OR REPLACE FUNCTION refresh_mv_resumo_vendas()
+RETURNS void AS $$
+BEGIN
+    REFRESH MATERIALIZED VIEW CONCURRENTLY mv_resumo_vendas;
+END;
+$$ LANGUAGE plpgsql;
+</div></section></section><section class="chapter"><h2 id="exerc-cio-6-schemas-e-seguran-a" data-toc="exerc-cio-6-schemas-e-seguran-a">Exerc&iacute;cio 6: Schemas e Seguran&ccedil;a</h2><section class="chapter"><h3 id="descri-o" data-toc="descri-o">Descri&ccedil;&atilde;o</h3><p id="-1us7ty_78">Configure schemas diferentes para separa&ccedil;&atilde;o de responsabilidades.</p></section><section class="chapter"><h3 id="requisitos" data-toc="requisitos">Requisitos</h3><ul class="list _bullet" id="-1us7ty_79"><li class="list__item" id="-1us7ty_80"><p id="-1us7ty_83">Schemas para diferentes m&oacute;dulos</p></li><li class="list__item" id="-1us7ty_81"><p id="-1us7ty_84">Controle de acesso granular</p></li><li class="list__item" id="-1us7ty_82"><p id="-1us7ty_85">Roles espec&iacute;ficas</p></li></ul></section><section class="chapter"><h3 id="solu-o" data-toc="solu-o">Solu&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+-- Criação de schemas
+CREATE SCHEMA vendas;
+CREATE SCHEMA estoque;
+CREATE SCHEMA relatorios;
+
+-- Criação de roles
+CREATE ROLE vendedor;
+CREATE ROLE estoquista;
+CREATE ROLE analista;
+
+-- Permissões
+GRANT USAGE ON SCHEMA vendas TO vendedor;
+GRANT SELECT, INSERT ON ALL TABLES IN SCHEMA vendas TO vendedor;
+
+GRANT USAGE ON SCHEMA estoque TO estoquista;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA estoque TO estoquista;
+
+GRANT USAGE ON SCHEMA relatorios TO analista;
+GRANT SELECT ON ALL TABLES IN SCHEMA relatorios TO analista;
+</div></section></section><section class="chapter"><h2 id="exerc-cio-7-constraints-complexas" data-toc="exerc-cio-7-constraints-complexas">Exerc&iacute;cio 7: Constraints Complexas</h2><section class="chapter"><h3 id="descri-o" data-toc="descri-o">Descri&ccedil;&atilde;o</h3><p id="-1us7ty_90">Implemente constraints avan&ccedil;adas com fun&ccedil;&otilde;es personalizadas.</p></section><section class="chapter"><h3 id="requisitos" data-toc="requisitos">Requisitos</h3><ul class="list _bullet" id="-1us7ty_91"><li class="list__item" id="-1us7ty_92"><p id="-1us7ty_95">Valida&ccedil;&atilde;o complexa de dados</p></li><li class="list__item" id="-1us7ty_93"><p id="-1us7ty_96">Constraints exclusivas condicionais</p></li><li class="list__item" id="-1us7ty_94"><p id="-1us7ty_97">Constraints entre tabelas</p></li></ul></section><section class="chapter"><h3 id="solu-o" data-toc="solu-o">Solu&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+-- Função para validação de estoque
+CREATE OR REPLACE FUNCTION fn_validar_estoque()
+RETURNS trigger AS $$
+BEGIN
+    IF NEW.quantidade &lt; 0 THEN
+        RAISE EXCEPTION 'Quantidade não pode ser negativa';
+    END IF;
+    
+    IF NEW.quantidade &lt; NEW.quantidade_minima THEN
+        RAISE NOTICE 'Estoque abaixo do mínimo';
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Constraint exclusiva condicional
+ALTER TABLE produtos
+ADD CONSTRAINT uk_produto_codigo
+EXCLUDE USING gist (
+    nome WITH =,
+    codigo_barras WITH =
+) WHERE (status = 'ativo');
+
+-- Constraint entre tabelas
+ALTER TABLE pedidos
+ADD CONSTRAINT check_limite_credito
+CHECK (
+    valor_total &lt;= (
+        SELECT limite_credito 
+        FROM clientes 
+        WHERE id = cliente_id
+    )
+);
+</div></section></section><section class="chapter"><h2 id="exerc-cio-8-extens-es-e-tipos-customizados" data-toc="exerc-cio-8-extens-es-e-tipos-customizados">Exerc&iacute;cio 8: Extens&otilde;es e Tipos Customizados</h2><section class="chapter"><h3 id="descri-o" data-toc="descri-o">Descri&ccedil;&atilde;o</h3><p id="-1us7ty_102">Utilize extens&otilde;es PostgreSQL e crie tipos personalizados.</p></section><section class="chapter"><h3 id="requisitos" data-toc="requisitos">Requisitos</h3><ul class="list _bullet" id="-1us7ty_103"><li class="list__item" id="-1us7ty_104"><p id="-1us7ty_107">Extens&atilde;o para geolocaliza&ccedil;&atilde;o</p></li><li class="list__item" id="-1us7ty_105"><p id="-1us7ty_108">Tipo customizado para endere&ccedil;o</p></li><li class="list__item" id="-1us7ty_106"><p id="-1us7ty_109">Tipo customizado para dinheiro</p></li></ul></section><section class="chapter"><h3 id="solu-o" data-toc="solu-o">Solu&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+-- Instalação de extensão
+CREATE EXTENSION IF NOT EXISTS postgis;
+
+-- Tipo customizado para endereço
+CREATE TYPE endereco_type AS (
+    logradouro VARCHAR(100),
+    numero VARCHAR(10),
+    complemento VARCHAR(50),
+    bairro VARCHAR(50),
+    cidade VARCHAR(50),
+    estado CHAR(2),
+    cep VARCHAR(8)
+);
+
+-- Tipo customizado para moeda
+CREATE TYPE moeda_type AS (
+    valor DECIMAL(10,2),
+    moeda CHAR(3)
+);
+
+-- Uso dos tipos
+CREATE TABLE lojas (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100),
+    endereco endereco_type,
+    localizacao geography(Point),
+    faturamento_mensal moeda_type
+);
+</div></section></section><section class="chapter"><h2 id="exerc-cio-9-otimiza-o-de-schema" data-toc="exerc-cio-9-otimiza-o-de-schema">Exerc&iacute;cio 9: Otimiza&ccedil;&atilde;o de Schema</h2><section class="chapter"><h3 id="descri-o" data-toc="descri-o">Descri&ccedil;&atilde;o</h3><p id="-1us7ty_114">Otimize a estrutura do banco de dados para performance.</p></section><section class="chapter"><h3 id="requisitos" data-toc="requisitos">Requisitos</h3><ul class="list _bullet" id="-1us7ty_115"><li class="list__item" id="-1us7ty_116"><p id="-1us7ty_119">&Iacute;ndices apropriados</p></li><li class="list__item" id="-1us7ty_117"><p id="-1us7ty_120">Estat&iacute;sticas personalizadas</p></li><li class="list__item" id="-1us7ty_118"><p id="-1us7ty_121">Configura&ccedil;&atilde;o de storage</p></li></ul></section><section class="chapter"><h3 id="solu-o" data-toc="solu-o">Solu&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+-- Índices para joins frequentes
+CREATE INDEX idx_produtos_categoria_preco 
+ON produtos (categoria_id, preco);
+
+-- Índice parcial
+CREATE INDEX idx_produtos_ativos 
+ON produtos (nome) 
+WHERE status = 'ativo';
+
+-- Índice de texto
+CREATE INDEX idx_produtos_busca 
+ON produtos USING gin(to_tsvector('portuguese', nome || ' ' || descricao));
+
+-- Estatísticas personalizadas
+CREATE STATISTICS produtos_stats (dependencies) 
+ON categoria_id, status, preco 
+FROM produtos;
+
+-- Configuração de storage
+ALTER TABLE produtos SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_analyze_scale_factor = 0.05
+);
+</div></section></section><section class="chapter"><h2 id="exerc-cio-10-migra-o-de-dados" data-toc="exerc-cio-10-migra-o-de-dados">Exerc&iacute;cio 10: Migra&ccedil;&atilde;o de Dados</h2><section class="chapter"><h3 id="descri-o" data-toc="descri-o">Descri&ccedil;&atilde;o</h3><p id="-1us7ty_126">Crie scripts para migra&ccedil;&atilde;o segura de dados.</p></section><section class="chapter"><h3 id="requisitos" data-toc="requisitos">Requisitos</h3><ul class="list _bullet" id="-1us7ty_127"><li class="list__item" id="-1us7ty_128"><p id="-1us7ty_131">Verifica&ccedil;&atilde;o de integridade</p></li><li class="list__item" id="-1us7ty_129"><p id="-1us7ty_132">Tratamento de erros</p></li><li class="list__item" id="-1us7ty_130"><p id="-1us7ty_133">Rollback em caso de falha</p></li></ul></section><section class="chapter"><h3 id="solu-o" data-toc="solu-o">Solu&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+DO $$
+DECLARE
+    v_count INTEGER;
+BEGIN
+    -- Início da transação
+    BEGIN
+        -- Criação de tabela temporária
+        CREATE TEMP TABLE tmp_produtos AS 
+        SELECT * FROM produtos_legado;
+        
+        GET DIAGNOSTICS v_count = ROW_COUNT;
+        RAISE NOTICE 'Dados copiados: %', v_count;
+        
+        -- Validação dos dados
+        PERFORM count(*) 
+        FROM tmp_produtos 
+        WHERE preco &lt; 0;
+        
+        IF FOUND THEN
+            RAISE EXCEPTION 'Dados inválidos encontrados';
+        END IF;
+        
+        -- Inserção dos dados
+        INSERT INTO produtos_novo
+        SELECT * FROM tmp_produtos;
+        
+        -- Commit se tudo ok
+        RAISE NOTICE 'Migração concluída com sucesso';
+    EXCEPTION WHEN OTHERS THEN
+        -- Rollback em caso de erro
+        RAISE NOTICE 'Erro na migração: %', SQLERRM;
+        RAISE;
+    END;
+END;
+$$;
+</div></section></section><section class="chapter"><h2 id="crit-rios-de-avalia-o" data-toc="crit-rios-de-avalia-o">Crit&eacute;rios de Avalia&ccedil;&atilde;o</h2><ul class="list _bullet" id="-1us7ty_135"><li class="list__item" id="-1us7ty_136"><p id="-1us7ty_141">Implementa&ccedil;&atilde;o correta das funcionalidades</p></li><li class="list__item" id="-1us7ty_137"><p id="-1us7ty_142">Uso adequado de recursos avan&ccedil;ados</p></li><li class="list__item" id="-1us7ty_138"><p id="-1us7ty_143">Performance e escalabilidade</p></li><li class="list__item" id="-1us7ty_139"><p id="-1us7ty_144">Tratamento de erros</p></li><li class="list__item" id="-1us7ty_140"><p id="-1us7ty_145">Documenta&ccedil;&atilde;o do c&oacute;digo</p></li></ul></section><section class="chapter"><h2 id="dicas-de-estudo" data-toc="dicas-de-estudo">Dicas de Estudo</h2><ul class="list _bullet" id="-1us7ty_146"><li class="list__item" id="-1us7ty_147"><p id="-1us7ty_152">Consulte a documenta&ccedil;&atilde;o oficial do PostgreSQL</p></li><li class="list__item" id="-1us7ty_148"><p id="-1us7ty_153">Teste diferentes cen&aacute;rios</p></li><li class="list__item" id="-1us7ty_149"><p id="-1us7ty_154">Monitore a performance</p></li><li class="list__item" id="-1us7ty_150"><p id="-1us7ty_155">Mantenha scripts de rollback</p></li><li class="list__item" id="-1us7ty_151"><p id="-1us7ty_156">Documente decis&otilde;es de design</p></li></ul></section><div class="last-modified">26 abril 2025</div><div data-feedback-placeholder="true"></div><div class="navigation-links _bottom"><a href="basic-ddl-exercises.html" class="navigation-links__prev">Exerc&iacute;cios B&aacute;sicos de DDL</a><a href="advanced-ddl-exercises.html" class="navigation-links__next">Exerc&iacute;cios Avan&ccedil;ados de DDL</a></div></article><div id="disqus_thread"></div></div></section></main></div><script src="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.js"></script></body></html>

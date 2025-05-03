@@ -1,0 +1,145 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en-US" data-preset="contrast" data-primary-color="#E8488B"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="built-on" content="2025-05-03T19:40:10.24393765"><title>Laborat&oacute;rio: Manuten&ccedil;&atilde;o de Tabelas | Database Management Systems: A Complete Guide</title><script type="application/json" id="virtual-toc-data">[{"id":"objetivo","level":0,"title":"Objetivo","anchor":"#objetivo"},{"id":"cen-rio","level":0,"title":"Cenário","anchor":"#cen-rio"},{"id":"setup-inicial","level":0,"title":"Setup Inicial","anchor":"#setup-inicial"},{"id":"exerc-cios","level":0,"title":"Exercícios","anchor":"#exerc-cios"},{"id":"tarefas-pr-ticas","level":0,"title":"Tarefas Práticas","anchor":"#tarefas-pr-ticas"},{"id":"boas-pr-ticas","level":0,"title":"Boas Práticas","anchor":"#boas-pr-ticas"},{"id":"considera-es-de-performance","level":0,"title":"Considerações de Performance","anchor":"#considera-es-de-performance"},{"id":"recursos-adicionais","level":0,"title":"Recursos Adicionais","anchor":"#recursos-adicionais"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.css" rel="stylesheet"><link href="static/custom.css" rel="stylesheet"><link rel="icon" type="image/svg" sizes="16x16" href="images/logo-primary.svg"><meta name="image" content=""><!-- Open Graph --><meta property="og:title" content="Laborat&oacute;rio: Manuten&ccedil;&atilde;o de Tabelas | Database Management Systems: A Complete Guide"><meta property="og:description" content=""><meta property="og:image" content=""><meta property="og:site_name" content="Database Management Systems: A Complete Guide Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="writerside-documentation/lab-table-maintenance.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content=""><meta name="twitter:title" content="Laborat&oacute;rio: Manuten&ccedil;&atilde;o de Tabelas | Database Management Systems: A Complete Guide"><meta name="twitter:description" content=""><meta name="twitter:creator" content=""><meta name="twitter:image:src" content=""><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    "@id": "writerside-documentation/lab-table-maintenance.html#webpage",
+    "url": "writerside-documentation/lab-table-maintenance.html",
+    "name": "Laborat&oacute;rio: Manuten&ccedil;&atilde;o de Tabelas | Database Management Systems: A Complete Guide",
+    "description": "",
+    "image": "",
+    "inLanguage":"en-US"
+}</script><!-- End Schema.org --><!-- Schema.org WebSite --><script type="application/ld+json">{
+    "@type": "WebSite",
+    "@id": "writerside-documentation/#website",
+    "url": "writerside-documentation/",
+    "name": "Database Management Systems: A Complete Guide Help"
+}</script><!-- End Schema.org --></head><body data-id="lab-table-maintenance" data-main-title="Laboratório: Manutenção de Tabelas" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs="sql-fundamentals.md|Fundamentos SQL///sql-ddl.md|DDL - Linguagem de Definição de Dados///ddl-labs.md|Laboratórios de DDL"><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>Database Management Systems: A Complete Guide  Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="lab-table-maintenance" id="lab-table-maintenance.md">Laboratório: Manutenção de Tabelas</h1><section class="chapter"><h2 id="objetivo" data-toc="objetivo">Objetivo</h2><p id="z4tpml2_11">Praticar opera&ccedil;&otilde;es de manuten&ccedil;&atilde;o em tabelas de banco de dados, incluindo otimiza&ccedil;&atilde;o de espa&ccedil;o, reorganiza&ccedil;&atilde;o de dados e monitoramento de performance.</p></section><section class="chapter"><h2 id="cen-rio" data-toc="cen-rio">Cen&aacute;rio</h2><p id="z4tpml2_12">Voc&ecirc; &eacute; o DBA respons&aacute;vel por um sistema que est&aacute; em produ&ccedil;&atilde;o h&aacute; v&aacute;rios anos. As tabelas cresceram significativamente e come&ccedil;aram a apresentar problemas de performance e fragmenta&ccedil;&atilde;o.</p></section><section class="chapter"><h2 id="setup-inicial" data-toc="setup-inicial">Setup Inicial</h2><div class="code-block" data-lang="sql">
+-- Criar tabela de exemplo com fragmentação
+CREATE TABLE lab_maintenance.pedidos (
+    id SERIAL PRIMARY KEY,
+    cliente_id INTEGER,
+    produto_id INTEGER,
+    quantidade INTEGER,
+    valor DECIMAL(10,2),
+    status VARCHAR(20),
+    data_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_atualizacao TIMESTAMP
+);
+
+-- Inserir dados de exemplo (muitos registros)
+INSERT INTO lab_maintenance.pedidos (cliente_id, produto_id, quantidade, valor, status)
+SELECT 
+    floor(random() * 1000)::int,
+    floor(random() * 500)::int,
+    floor(random() * 10)::int + 1,
+    (random() * 1000)::decimal(10,2),
+    (ARRAY['PENDENTE', 'APROVADO', 'ENVIADO', 'ENTREGUE', 'CANCELADO'])[floor(random() * 5 + 1)]
+FROM generate_series(1, 500000);
+
+-- Simular atualizações frequentes para criar fragmentação
+UPDATE lab_maintenance.pedidos
+SET status = 'APROVADO', data_atualizacao = CURRENT_TIMESTAMP
+WHERE id % 3 = 0;
+
+UPDATE lab_maintenance.pedidos
+SET status = 'ENVIADO', data_atualizacao = CURRENT_TIMESTAMP
+WHERE id % 5 = 0;
+</div></section><section class="chapter"><h2 id="exerc-cios" data-toc="exerc-cios">Exerc&iacute;cios</h2><section class="chapter"><h3 id="1-an-lise-de-fragmenta-o" data-toc="1-an-lise-de-fragmenta-o">1. An&aacute;lise de Fragmenta&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+-- Verificar estatísticas da tabela
+SELECT
+    schemaname,
+    relname,
+    n_live_tup,
+    n_dead_tup,
+    last_vacuum,
+    last_autovacuum
+FROM pg_stat_user_tables
+WHERE relname = 'pedidos';
+
+-- Verificar bloat (inchamento) da tabela
+-- Requer extensão pgstattuple
+CREATE EXTENSION IF NOT EXISTS pgstattuple;
+
+SELECT * FROM pgstattuple('lab_maintenance.pedidos');
+</div></section><section class="chapter"><h3 id="2-opera-es-de-vacuum" data-toc="2-opera-es-de-vacuum">2. Opera&ccedil;&otilde;es de VACUUM</h3><div class="code-block" data-lang="sql">
+-- VACUUM básico
+VACUUM lab_maintenance.pedidos;
+
+-- VACUUM FULL (requer lock exclusivo)
+VACUUM FULL lab_maintenance.pedidos;
+
+-- VACUUM ANALYZE
+VACUUM ANALYZE lab_maintenance.pedidos;
+
+-- Verificar efeito do VACUUM
+SELECT
+    schemaname,
+    relname,
+    n_live_tup,
+    n_dead_tup,
+    last_vacuum
+FROM pg_stat_user_tables
+WHERE relname = 'pedidos';
+</div></section><section class="chapter"><h3 id="3-reconstru-o-de-ndices" data-toc="3-reconstru-o-de-ndices">3. Reconstru&ccedil;&atilde;o de &Iacute;ndices</h3><div class="code-block" data-lang="sql">
+-- Criar índices para a tabela
+CREATE INDEX idx_pedidos_cliente ON lab_maintenance.pedidos(cliente_id);
+CREATE INDEX idx_pedidos_status ON lab_maintenance.pedidos(status);
+CREATE INDEX idx_pedidos_data ON lab_maintenance.pedidos(data_pedido);
+
+-- Verificar fragmentação de índices
+SELECT
+    indexrelname,
+    idx_scan,
+    idx_tup_read,
+    idx_tup_fetch
+FROM pg_stat_user_indexes
+WHERE relname = 'pedidos';
+
+-- Reconstruir índice
+REINDEX INDEX idx_pedidos_cliente;
+
+-- Reconstruir todos os índices da tabela
+REINDEX TABLE lab_maintenance.pedidos;
+</div></section><section class="chapter"><h3 id="4-monitoramento-de-espa-o" data-toc="4-monitoramento-de-espa-o">4. Monitoramento de Espa&ccedil;o</h3><div class="code-block" data-lang="sql">
+-- Verificar tamanho da tabela e índices
+SELECT
+    pg_size_pretty(pg_total_relation_size('lab_maintenance.pedidos')) as total_size,
+    pg_size_pretty(pg_relation_size('lab_maintenance.pedidos')) as table_size,
+    pg_size_pretty(pg_indexes_size('lab_maintenance.pedidos')) as indexes_size;
+
+-- Verificar espaço por schema
+SELECT
+    schemaname,
+    pg_size_pretty(sum(pg_relation_size(schemaname || '.' || relname))) as size
+FROM pg_stat_user_tables
+GROUP BY schemaname
+ORDER BY sum(pg_relation_size(schemaname || '.' || relname)) DESC;
+</div></section></section><section class="chapter"><h2 id="tarefas-pr-ticas" data-toc="tarefas-pr-ticas">Tarefas Pr&aacute;ticas</h2><section class="chapter"><h3 id="tarefa-1-otimiza-o-de-tabela-grande" data-toc="tarefa-1-otimiza-o-de-tabela-grande">Tarefa 1: Otimiza&ccedil;&atilde;o de Tabela Grande</h3><ol class="list _decimal" id="z4tpml2_24" type="1"><li class="list__item" id="z4tpml2_25"><p id="z4tpml2_30">Crie uma tabela com pelo menos 1 milh&atilde;o de registros</p></li><li class="list__item" id="z4tpml2_26"><p id="z4tpml2_31">Insira, atualize e exclua registros para criar fragmenta&ccedil;&atilde;o</p></li><li class="list__item" id="z4tpml2_27"><p id="z4tpml2_32">Analise o estado da tabela</p></li><li class="list__item" id="z4tpml2_28"><p id="z4tpml2_33">Aplique as opera&ccedil;&otilde;es de manuten&ccedil;&atilde;o apropriadas</p></li><li class="list__item" id="z4tpml2_29"><p id="z4tpml2_34">Compare o desempenho antes e depois</p></li></ol></section><section class="chapter"><h3 id="tarefa-2-automa-o-de-manuten-o" data-toc="tarefa-2-automa-o-de-manuten-o">Tarefa 2: Automa&ccedil;&atilde;o de Manuten&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+-- Criar função para manutenção automática
+CREATE OR REPLACE FUNCTION lab_maintenance.manter_tabela(tabela text)
+RETURNS void AS $$
+BEGIN
+    EXECUTE 'VACUUM ANALYZE ' || tabela;
+    RAISE NOTICE 'Manutenção concluída para %', tabela;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Agendar manutenção (simulação)
+SELECT lab_maintenance.manter_tabela('lab_maintenance.pedidos');
+</div></section></section><section class="chapter"><h2 id="boas-pr-ticas" data-toc="boas-pr-ticas">Boas Pr&aacute;ticas</h2><div class="code-block" data-lang="none">
+╔════════════════════════════════════════════╗
+║  CHECKLIST DE MANUTENÇÃO:                 ║
+║  □ Monitorar crescimento de tabelas       ║
+║  □ Configurar autovacuum apropriadamente  ║
+║  □ Agendar VACUUM ANALYZE regularmente    ║
+║  □ Reconstruir índices periodicamente     ║
+║  □ Monitorar bloat de tabelas e índices   ║
+║  □ Manter estatísticas atualizadas        ║
+╚════════════════════════════════════════════╝
+</div></section><section class="chapter"><h2 id="considera-es-de-performance" data-toc="considera-es-de-performance">Considera&ccedil;&otilde;es de Performance</h2><ol class="list _decimal" id="z4tpml2_37" type="1"><li class="list__item" id="z4tpml2_38"><p id="z4tpml2_41"><span class="control" id="z4tpml2_43">Janelas de Manuten&ccedil;&atilde;o</span></p><ul class="list _bullet" id="z4tpml2_42"><li class="list__item" id="z4tpml2_44"><p id="z4tpml2_47">Agendar opera&ccedil;&otilde;es pesadas para per&iacute;odos de baixo uso</p></li><li class="list__item" id="z4tpml2_45"><p id="z4tpml2_48">Considerar impacto em sistemas 24/7</p></li><li class="list__item" id="z4tpml2_46"><p id="z4tpml2_49">Balancear frequ&ecirc;ncia e dura&ccedil;&atilde;o</p></li></ul></li><li class="list__item" id="z4tpml2_39"><p id="z4tpml2_50"><span class="control" id="z4tpml2_52">Configura&ccedil;&otilde;es do Autovacuum</span></p><div class="code-block" data-lang="sql">
+-- Verificar configurações atuais
+SHOW autovacuum_vacuum_threshold;
+SHOW autovacuum_analyze_threshold;
+SHOW autovacuum_vacuum_scale_factor;
+SHOW autovacuum_analyze_scale_factor;
+</div></li><li class="list__item" id="z4tpml2_40"><p id="z4tpml2_53"><span class="control" id="z4tpml2_55">Monitoramento Cont&iacute;nuo</span></p><ul class="list _bullet" id="z4tpml2_54"><li class="list__item" id="z4tpml2_56"><p id="z4tpml2_59">Implementar alertas para tabelas problem&aacute;ticas</p></li><li class="list__item" id="z4tpml2_57"><p id="z4tpml2_60">Acompanhar tend&ecirc;ncias de crescimento</p></li><li class="list__item" id="z4tpml2_58"><p id="z4tpml2_61">Identificar padr&otilde;es de acesso</p></li></ul></li></ol></section><section class="chapter"><h2 id="recursos-adicionais" data-toc="recursos-adicionais">Recursos Adicionais</h2><ul class="list _bullet" id="z4tpml2_62"><li class="list__item" id="z4tpml2_65"><p id="z4tpml2_68"><a href="https://www.postgresql.org/docs/current/sql-vacuum.html" id="z4tpml2_69" data-external="true" rel="noopener noreferrer" target="_blank">PostgreSQL VACUUM Documentation</a></p></li><li class="list__item" id="z4tpml2_66"><p id="z4tpml2_70"><a href="https://www.postgresql.org/docs/current/sql-reindex.html" id="z4tpml2_71" data-external="true" rel="noopener noreferrer" target="_blank">PostgreSQL Index Maintenance</a></p></li><li class="list__item" id="z4tpml2_67"><p id="z4tpml2_72"><a href="https://www.postgresql.org/docs/current/monitoring-stats.html" id="z4tpml2_73" data-external="true" rel="noopener noreferrer" target="_blank">Monitoring Database Activity</a></p></li></ul><aside class="prompt" data-type="tip" data-title="" id="z4tpml2_64"><p id="z4tpml2_74"><span class="control" id="z4tpml2_75">Nota</span>: Este laborat&oacute;rio deve ser executado em um ambiente de teste para evitar impactos em dados de produ&ccedil;&atilde;o.</p></aside></section><div class="last-modified">03 maio 2025</div><div data-feedback-placeholder="true"></div><div class="navigation-links _bottom"><a href="lab-constraint-management.html" class="navigation-links__prev">Laborat&oacute;rio: Gerenciamento de Constraints</a><a href="sql-dml.html" class="navigation-links__next">DML - Linguagem de Manipula&ccedil;&atilde;o de Dados</a></div></article><div id="disqus_thread"></div></div></section></main></div><script src="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.js"></script></body></html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en-US" data-preset="contrast" data-primary-color="#E8488B"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="built-on" content="2025-05-03T19:40:10.967606243"><title>Laborat&oacute;rio: Gerenciamento de Constraints | Database Management Systems: A Complete Guide</title><script type="application/json" id="virtual-toc-data">[{"id":"objetivo","level":0,"title":"Objetivo","anchor":"#objetivo"},{"id":"ambiente-de-teste","level":0,"title":"Ambiente de Teste","anchor":"#ambiente-de-teste"},{"id":"exerc-cios-pr-ticos","level":0,"title":"Exercícios Práticos","anchor":"#exerc-cios-pr-ticos"},{"id":"tarefas-pr-ticas","level":0,"title":"Tarefas Práticas","anchor":"#tarefas-pr-ticas"},{"id":"verifica-o-de-constraints","level":0,"title":"Verificação de Constraints","anchor":"#verifica-o-de-constraints"},{"id":"boas-pr-ticas","level":0,"title":"Boas Práticas","anchor":"#boas-pr-ticas"},{"id":"troubleshooting","level":0,"title":"Troubleshooting","anchor":"#troubleshooting"},{"id":"scripts-de-manuten-o","level":0,"title":"Scripts de Manutenção","anchor":"#scripts-de-manuten-o"},{"id":"crit-rios-de-avalia-o","level":0,"title":"Critérios de Avaliação","anchor":"#crit-rios-de-avalia-o"},{"id":"pr-ximos-passos","level":0,"title":"Próximos Passos","anchor":"#pr-ximos-passos"},{"id":"recursos-adicionais","level":0,"title":"Recursos Adicionais","anchor":"#recursos-adicionais"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.css" rel="stylesheet"><link href="static/custom.css" rel="stylesheet"><link rel="icon" type="image/svg" sizes="16x16" href="images/logo-primary.svg"><meta name="image" content=""><!-- Open Graph --><meta property="og:title" content="Laborat&oacute;rio: Gerenciamento de Constraints | Database Management Systems: A Complete Guide"><meta property="og:description" content=""><meta property="og:image" content=""><meta property="og:site_name" content="Database Management Systems: A Complete Guide Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="writerside-documentation/lab-constraint-management.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content=""><meta name="twitter:title" content="Laborat&oacute;rio: Gerenciamento de Constraints | Database Management Systems: A Complete Guide"><meta name="twitter:description" content=""><meta name="twitter:creator" content=""><meta name="twitter:image:src" content=""><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    "@id": "writerside-documentation/lab-constraint-management.html#webpage",
+    "url": "writerside-documentation/lab-constraint-management.html",
+    "name": "Laborat&oacute;rio: Gerenciamento de Constraints | Database Management Systems: A Complete Guide",
+    "description": "",
+    "image": "",
+    "inLanguage":"en-US"
+}</script><!-- End Schema.org --><!-- Schema.org WebSite --><script type="application/ld+json">{
+    "@type": "WebSite",
+    "@id": "writerside-documentation/#website",
+    "url": "writerside-documentation/",
+    "name": "Database Management Systems: A Complete Guide Help"
+}</script><!-- End Schema.org --></head><body data-id="lab-constraint-management" data-main-title="Laboratório: Gerenciamento de Constraints" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs="sql-fundamentals.md|Fundamentos SQL///sql-ddl.md|DDL - Linguagem de Definição de Dados///ddl-labs.md|Laboratórios de DDL"><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>Database Management Systems: A Complete Guide  Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="lab-constraint-management" id="lab-constraint-management.md">Laboratório: Gerenciamento de Constraints</h1><section class="chapter"><h2 id="objetivo" data-toc="objetivo">Objetivo</h2><p id="z30jlzr_14">Praticar a implementa&ccedil;&atilde;o e gerenciamento de diferentes tipos de constraints no PostgreSQL, garantindo a integridade dos dados e regras de neg&oacute;cio.</p></section><section class="chapter"><h2 id="ambiente-de-teste" data-toc="ambiente-de-teste">Ambiente de Teste</h2><div class="code-block" data-lang="sql">
+-- Schema para o laboratório
+CREATE SCHEMA lab_constraints;
+
+-- Tabelas para prática
+CREATE TABLE lab_constraints.produtos (
+    id SERIAL PRIMARY KEY,
+    codigo VARCHAR(20) UNIQUE,
+    nome VARCHAR(100) NOT NULL,
+    preco DECIMAL(10,2),
+    categoria_id INTEGER,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE lab_constraints.categorias (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(50) UNIQUE,
+    ativa BOOLEAN DEFAULT true
+);
+</div></section><section class="chapter"><h2 id="exerc-cios-pr-ticos" data-toc="exerc-cios-pr-ticos">Exerc&iacute;cios Pr&aacute;ticos</h2><section class="chapter"><h3 id="1-constraints-b-sicas" data-toc="1-constraints-b-sicas">1. Constraints B&aacute;sicas</h3><div class="code-block" data-lang="sql">
+-- Primary Key
+ALTER TABLE lab_constraints.produtos
+    ADD CONSTRAINT pk_produtos PRIMARY KEY (id);
+
+-- Unique Constraint
+ALTER TABLE lab_constraints.produtos
+    ADD CONSTRAINT uk_produtos_codigo UNIQUE (codigo);
+
+-- Not Null
+ALTER TABLE lab_constraints.produtos
+    ALTER COLUMN nome SET NOT NULL;
+</div></section><section class="chapter"><h3 id="2-foreign-keys" data-toc="2-foreign-keys">2. Foreign Keys</h3><div class="code-block" data-lang="sql">
+-- Adicionar Foreign Key com diferentes ações
+ALTER TABLE lab_constraints.produtos
+    ADD CONSTRAINT fk_produtos_categoria
+    FOREIGN KEY (categoria_id)
+    REFERENCES lab_constraints.categorias(id)
+    ON DELETE RESTRICT
+    ON UPDATE CASCADE;
+</div></section><section class="chapter"><h3 id="3-check-constraints" data-toc="3-check-constraints">3. Check Constraints</h3><div class="code-block" data-lang="sql">
+-- Validação de preço
+ALTER TABLE lab_constraints.produtos
+    ADD CONSTRAINT ck_produtos_preco
+    CHECK (preco &gt; 0);
+
+-- Validação de código
+ALTER TABLE lab_constraints.produtos
+    ADD CONSTRAINT ck_produtos_codigo
+    CHECK (codigo ~ '^[A-Z]{2}\d{4}$');
+</div></section><section class="chapter"><h3 id="4-exclusion-constraints" data-toc="4-exclusion-constraints">4. Exclusion Constraints</h3><div class="code-block" data-lang="sql">
+-- Criar extensão btree_gist se necessário
+CREATE EXTENSION IF NOT EXISTS btree_gist;
+
+-- Exemplo de constraint de exclusão
+CREATE TABLE lab_constraints.eventos (
+    id SERIAL PRIMARY KEY,
+    sala_id INTEGER,
+    periodo tsrange,
+    EXCLUDE USING gist (
+        sala_id WITH =,
+        periodo WITH &amp;&amp;
+    )
+);
+</div></section></section><section class="chapter"><h2 id="tarefas-pr-ticas" data-toc="tarefas-pr-ticas">Tarefas Pr&aacute;ticas</h2><section class="chapter"><h3 id="tarefa-1-implementa-o-de-regras-de-neg-cio" data-toc="tarefa-1-implementa-o-de-regras-de-neg-cio">Tarefa 1: Implementa&ccedil;&atilde;o de Regras de Neg&oacute;cio</h3><div class="code-block" data-lang="sql">
+-- Regra: Produto não pode ser deletado se tiver vendas
+CREATE TABLE lab_constraints.vendas (
+    id SERIAL PRIMARY KEY,
+    produto_id INTEGER,
+    quantidade INTEGER,
+    CONSTRAINT fk_vendas_produto
+    FOREIGN KEY (produto_id)
+    REFERENCES lab_constraints.produtos(id)
+    ON DELETE RESTRICT
+);
+
+-- Regra: Quantidade deve ser positiva
+ALTER TABLE lab_constraints.vendas
+    ADD CONSTRAINT ck_vendas_quantidade
+    CHECK (quantidade &gt; 0);
+</div></section><section class="chapter"><h3 id="tarefa-2-constraints-din-micas" data-toc="tarefa-2-constraints-din-micas">Tarefa 2: Constraints Din&acirc;micas</h3><div class="code-block" data-lang="sql">
+-- Função para validação customizada
+CREATE OR REPLACE FUNCTION lab_constraints.validar_preco()
+RETURNS trigger AS $$
+BEGIN
+    IF NEW.preco &lt; (
+        SELECT MIN(preco) 
+        FROM lab_constraints.produtos 
+        WHERE categoria_id = NEW.categoria_id
+    ) * 0.5 THEN
+        RAISE EXCEPTION 'Preço muito baixo para a categoria';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger para aplicar validação
+CREATE TRIGGER trg_validar_preco
+    BEFORE INSERT OR UPDATE ON lab_constraints.produtos
+    FOR EACH ROW
+    EXECUTE FUNCTION lab_constraints.validar_preco();
+</div></section><section class="chapter"><h3 id="tarefa-3-gerenciamento-de-constraints" data-toc="tarefa-3-gerenciamento-de-constraints">Tarefa 3: Gerenciamento de Constraints</h3><div class="code-block" data-lang="sql">
+-- Desabilitar temporariamente
+ALTER TABLE lab_constraints.produtos
+    DISABLE TRIGGER trg_validar_preco;
+
+-- Reabilitar
+ALTER TABLE lab_constraints.produtos
+    ENABLE TRIGGER trg_validar_preco;
+
+-- Remover constraint
+ALTER TABLE lab_constraints.produtos
+    DROP CONSTRAINT IF EXISTS ck_produtos_preco;
+</div></section></section><section class="chapter"><h2 id="verifica-o-de-constraints" data-toc="verifica-o-de-constraints">Verifica&ccedil;&atilde;o de Constraints</h2><div class="code-block" data-lang="sql">
+-- Função para listar todas as constraints
+CREATE OR REPLACE FUNCTION lab_constraints.listar_constraints()
+RETURNS TABLE (
+    tabela VARCHAR,
+    constraint_name VARCHAR,
+    constraint_type VARCHAR,
+    definition TEXT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        tc.table_schema || '.' || tc.table_name::VARCHAR,
+        tc.constraint_name::VARCHAR,
+        tc.constraint_type::VARCHAR,
+        pg_get_constraintdef(pgc.oid)::TEXT
+    FROM information_schema.table_constraints tc
+    JOIN pg_constraint pgc 
+        ON tc.constraint_name = pgc.conname
+    WHERE tc.table_schema = 'lab_constraints'
+    ORDER BY tc.table_name, tc.constraint_name;
+END;
+$$ LANGUAGE plpgsql;
+</div></section><section class="chapter"><h2 id="boas-pr-ticas" data-toc="boas-pr-ticas">Boas Pr&aacute;ticas</h2><div class="code-block" data-lang="none">
+╔════════════════════════════════════════════╗
+║  DIRETRIZES DE CONSTRAINTS:               ║
+║  ✓ Nomes descritivos                      ║
+║  ✓ Documentação clara                     ║
+║  ✓ Performance considerada                ║
+║  ✓ Validações apropriadas                 ║
+║  ✓ Manutenção planejada                   ║
+╚════════════════════════════════════════════╝
+</div></section><section class="chapter"><h2 id="troubleshooting" data-toc="troubleshooting">Troubleshooting</h2><section class="chapter"><h3 id="problemas-comuns" data-toc="problemas-comuns">Problemas Comuns</h3><ol class="list _decimal" id="z30jlzr_33" type="1"><li class="list__item" id="z30jlzr_34"><p id="z30jlzr_37"><span class="control" id="z30jlzr_39">Viola&ccedil;&atilde;o de Constraint</span></p><div class="code-block" data-lang="sql">
+-- Verificar dados violando a constraint
+SELECT * FROM lab_constraints.produtos
+WHERE preco &lt;= 0;
+</div></li><li class="list__item" id="z30jlzr_35"><p id="z30jlzr_40"><span class="control" id="z30jlzr_42">Deadlocks em Foreign Keys</span></p><div class="code-block" data-lang="sql">
+-- Ajustar isolamento
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+</div></li><li class="list__item" id="z30jlzr_36"><p id="z30jlzr_43"><span class="control" id="z30jlzr_45">Performance</span></p><div class="code-block" data-lang="sql">
+-- Analisar impacto
+EXPLAIN ANALYZE
+SELECT * FROM lab_constraints.produtos
+WHERE codigo = 'AB1234';
+</div></li></ol></section></section><section class="chapter"><h2 id="scripts-de-manuten-o" data-toc="scripts-de-manuten-o">Scripts de Manuten&ccedil;&atilde;o</h2><div class="code-block" data-lang="sql">
+-- Verificar integridade
+CREATE OR REPLACE PROCEDURE lab_constraints.verificar_integridade()
+AS $$
+DECLARE
+    v_constraint RECORD;
+BEGIN
+    FOR v_constraint IN (
+        SELECT * FROM lab_constraints.listar_constraints()
+    ) LOOP
+        EXECUTE 'VALIDATE CONSTRAINT ' || v_constraint.constraint_name ||
+                ' ON ' || v_constraint.tabela;
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+</div></section><section class="chapter"><h2 id="crit-rios-de-avalia-o" data-toc="crit-rios-de-avalia-o">Crit&eacute;rios de Avalia&ccedil;&atilde;o</h2><ol class="list _decimal" id="z30jlzr_47" type="1"><li class="list__item" id="z30jlzr_48"><p id="z30jlzr_51"><span class="control" id="z30jlzr_53">Implementa&ccedil;&atilde;o</span></p><ul class="list _bullet" id="z30jlzr_52"><li class="list__item" id="z30jlzr_54"><p id="z30jlzr_57">Constraints corretamente definidas</p></li><li class="list__item" id="z30jlzr_55"><p id="z30jlzr_58">Regras de neg&oacute;cio implementadas</p></li><li class="list__item" id="z30jlzr_56"><p id="z30jlzr_59">Valida&ccedil;&otilde;es funcionando</p></li></ul></li><li class="list__item" id="z30jlzr_49"><p id="z30jlzr_60"><span class="control" id="z30jlzr_62">Performance</span></p><ul class="list _bullet" id="z30jlzr_61"><li class="list__item" id="z30jlzr_63"><p id="z30jlzr_66">Impacto aceit&aacute;vel</p></li><li class="list__item" id="z30jlzr_64"><p id="z30jlzr_67">&Iacute;ndices apropriados</p></li><li class="list__item" id="z30jlzr_65"><p id="z30jlzr_68">Otimiza&ccedil;&otilde;es aplicadas</p></li></ul></li><li class="list__item" id="z30jlzr_50"><p id="z30jlzr_69"><span class="control" id="z30jlzr_71">Manutenibilidade</span></p><ul class="list _bullet" id="z30jlzr_70"><li class="list__item" id="z30jlzr_72"><p id="z30jlzr_75">Documenta&ccedil;&atilde;o clara</p></li><li class="list__item" id="z30jlzr_73"><p id="z30jlzr_76">Nomes consistentes</p></li><li class="list__item" id="z30jlzr_74"><p id="z30jlzr_77">Scripts de manuten&ccedil;&atilde;o</p></li></ul></li></ol></section><section class="chapter"><h2 id="pr-ximos-passos" data-toc="pr-ximos-passos">Pr&oacute;ximos Passos</h2><ol class="list _decimal" id="z30jlzr_78" type="1"><li class="list__item" id="z30jlzr_79"><p id="z30jlzr_83">Explorar constraints avan&ccedil;adas</p></li><li class="list__item" id="z30jlzr_80"><p id="z30jlzr_84">Implementar casos complexos</p></li><li class="list__item" id="z30jlzr_81"><p id="z30jlzr_85">Otimizar performance</p></li><li class="list__item" id="z30jlzr_82"><p id="z30jlzr_86">Automatizar testes</p></li></ol></section><section class="chapter"><h2 id="recursos-adicionais" data-toc="recursos-adicionais">Recursos Adicionais</h2><ul class="list _bullet" id="z30jlzr_87"><li class="list__item" id="z30jlzr_90"><p id="z30jlzr_93"><a href="https://www.postgresql.org/docs/current/ddl-constraints.html" id="z30jlzr_94" data-external="true" rel="noopener noreferrer" target="_blank">PostgreSQL Constraints</a></p></li><li class="list__item" id="z30jlzr_91"><p id="z30jlzr_95"><a href="https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-CHECK-CONSTRAINTS" id="z30jlzr_96" data-external="true" rel="noopener noreferrer" target="_blank">Check Constraints</a></p></li><li class="list__item" id="z30jlzr_92"><p id="z30jlzr_97"><a href="https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-EXCLUSION" id="z30jlzr_98" data-external="true" rel="noopener noreferrer" target="_blank">Exclusion Constraints</a></p></li></ul><aside class="prompt" data-type="tip" data-title="" id="z30jlzr_89"><p id="z30jlzr_99"><span class="control" id="z30jlzr_100">Nota</span>: Este laborat&oacute;rio deve ser executado em um ambiente de teste para evitar impactos em dados de produ&ccedil;&atilde;o.</p></aside></section><div class="last-modified">26 abril 2025</div><div data-feedback-placeholder="true"></div><div class="navigation-links _bottom"><a href="lab-schema-evolution.html" class="navigation-links__prev">Laborat&oacute;rio: Evolu&ccedil;&atilde;o de Schema</a><a href="lab-table-maintenance.html" class="navigation-links__next">Laborat&oacute;rio: Manuten&ccedil;&atilde;o de Tabelas</a></div></article><div id="disqus_thread"></div></div></section></main></div><script src="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.js"></script></body></html>
