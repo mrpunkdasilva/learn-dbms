@@ -1,7 +1,7 @@
 # Laboratório: Manipulação de Dados
 
 ## Objetivo
-Praticar operações CRUD (Create, Read, Update, Delete) em um banco de dados relacional, aplicando boas práticas de manipulação de dados e garantindo a integridade dos dados.
+Praticar operações DML (Data Manipulation Language) básicas em um banco de dados relacional, aplicando boas práticas de manipulação de dados.
 
 ## Cenário
 Você é um desenvolvedor de banco de dados em uma empresa de e-commerce que precisa implementar operações de manipulação de dados para o sistema de gerenciamento de pedidos.
@@ -46,9 +46,7 @@ VALUES
     ('PROD006', 'Mouse Sem Fio', 'Mouse ergonômico', 89.90, 60, 'Periféricos'),
     ('PROD007', 'Caixa de Som', 'Caixa de som bluetooth', 159.90, 25, 'Acessórios');
 
--- Inserir um pedido com seus itens (transação)
-BEGIN;
-
+-- Inserir um pedido com seus itens
 INSERT INTO lab_workspace.pedidos (cliente_id, observacoes)
 VALUES (1, 'Entrega prioritária');
 
@@ -64,8 +62,6 @@ SET valor_total = (
     WHERE pedido_id = 1
 )
 WHERE id = 1;
-
-COMMIT;
 ```
 
 ### 1.2 Consulta de Dados
@@ -134,86 +130,17 @@ WHERE estoque = 0 AND id NOT IN (
     SELECT produto_id FROM lab_workspace.itens_pedido
 );
 
--- Exclusão em cascata (com transação)
-BEGIN;
-
+-- Exclusão em cascata
 DELETE FROM lab_workspace.itens_pedido
 WHERE pedido_id = 1;
 
 DELETE FROM lab_workspace.pedidos
 WHERE id = 1;
-
-COMMIT;
 ```
 
-## Parte 2: Transações e Consistência
+## Parte 2: Manipulação em Lote
 
-### 2.1 Transações Básicas
-
-```sql
--- Transação com rollback
-BEGIN;
-
-UPDATE lab_workspace.produtos
-SET estoque = estoque - 5
-WHERE id = 1;
-
--- Verificar estoque
-SELECT nome, estoque FROM lab_workspace.produtos WHERE id = 1;
-
--- Desfazer alterações
-ROLLBACK;
-
--- Verificar estoque novamente
-SELECT nome, estoque FROM lab_workspace.produtos WHERE id = 1;
-```
-
-### 2.2 Savepoints
-
-```sql
--- Transação com savepoints
-BEGIN;
-
-INSERT INTO lab_workspace.clientes (nome, email, segmento)
-VALUES ('Gabriel Lima', 'gabriel@email.com', 'Varejo');
-
-SAVEPOINT novo_cliente;
-
-UPDATE lab_workspace.produtos
-SET estoque = -10
-WHERE id = 1;
-
--- Ops, valor inválido!
-ROLLBACK TO novo_cliente;
-
-INSERT INTO lab_workspace.pedidos (cliente_id, status)
-VALUES ((SELECT id FROM lab_workspace.clientes WHERE nome = 'Gabriel Lima'), 'Novo');
-
-COMMIT;
-```
-
-### 2.3 Controle de Concorrência
-
-```sql
--- Sessão 1
-BEGIN;
-SELECT * FROM lab_workspace.produtos WHERE id = 1 FOR UPDATE;
--- Simular processamento
--- (Aguardar 10 segundos)
-UPDATE lab_workspace.produtos SET estoque = estoque - 1 WHERE id = 1;
-COMMIT;
-
--- Sessão 2 (executar simultaneamente)
-BEGIN;
-SELECT * FROM lab_workspace.produtos WHERE id = 1 FOR UPDATE;
--- Esta operação aguardará até que a Sessão 1 faça COMMIT
-UPDATE lab_workspace.produtos SET estoque = estoque - 2 WHERE id = 1;
-COMMIT;
-```
-
-## Parte 3: Manipulação em Lote
-
-### 3.1 Inserção em Lote
+### 2.1 Inserção em Lote
 
 ```sql
 -- Inserir múltiplos clientes
@@ -225,223 +152,47 @@ SELECT
          WHEN i % 3 = 1 THEN 'Atacado' 
          ELSE 'Corporativo' END,
     1000 * (i % 10 + 1)
-FROM generate_series(1, 100) i;
+FROM generate_series(1, 10) i;
 
 -- Verificar inserção
 SELECT COUNT(*) FROM lab_workspace.clientes;
 ```
 
-### 3.2 Atualização em Lote
+### 2.2 Atualização em Lote
 
 ```sql
 -- Atualizar status de múltiplos pedidos
 UPDATE lab_workspace.pedidos
 SET status = 'Processando'
-WHERE status = 'Pendente'
-AND data_pedido < CURRENT_TIMESTAMP - INTERVAL '1 day';
+WHERE status = 'Pendente';
 
 -- Atualizar preços com base na categoria
-UPDATE lab_workspace.produtos p
-SET preco = preco * 
-    CASE 
-        WHEN p.categoria = 'Eletrônicos' THEN 0.95  -- 5% desconto
-        WHEN p.categoria = 'Informática' THEN 0.90  -- 10% desconto
-        ELSE 0.97  -- 3% desconto
-    END
-WHERE p.id IN (
-    SELECT id FROM lab_workspace.produtos
-    WHERE estoque > 50
-);
+UPDATE lab_workspace.produtos
+SET preco = preco * 0.95  -- 5% desconto
+WHERE categoria = 'Eletrônicos';
 ```
 
-### 3.3 Exclusão em Lote
+### 2.3 Exclusão em Lote
 
 ```sql
 -- Excluir pedidos antigos
 DELETE FROM lab_workspace.itens_pedido
 WHERE pedido_id IN (
     SELECT id FROM lab_workspace.pedidos
-    WHERE data_pedido < CURRENT_DATE - INTERVAL '1 year'
+    WHERE status = 'Cancelado'
 );
 
 DELETE FROM lab_workspace.pedidos
-WHERE data_pedido < CURRENT_DATE - INTERVAL '1 year';
-
--- Excluir produtos sem movimento
-DELETE FROM lab_workspace.produtos
-WHERE id NOT IN (
-    SELECT DISTINCT produto_id FROM lab_workspace.itens_pedido
-)
-AND data_cadastro < CURRENT_DATE - INTERVAL '6 months';
-```
-
-## Parte 4: Manipulação Avançada
-
-### 4.1 Inserção Condicional
-
-```sql
--- Inserir cliente apenas se não existir
-INSERT INTO lab_workspace.clientes (nome, email, segmento, limite_credito)
-SELECT 'Henrique Dias', 'henrique@email.com', 'Varejo', 2500.00
-WHERE NOT EXISTS (
-    SELECT 1 FROM lab_workspace.clientes WHERE email = 'henrique@email.com'
-);
-
--- Inserir ou atualizar produto (UPSERT)
-INSERT INTO lab_workspace.produtos (codigo, nome, descricao, preco, estoque, categoria)
-VALUES ('PROD008', 'Tablet Pro', 'Tablet de alta performance', 1899.90, 15, 'Eletrônicos')
-ON CONFLICT (codigo) DO UPDATE
-SET 
-    nome = EXCLUDED.nome,
-    descricao = EXCLUDED.descricao,
-    preco = EXCLUDED.preco,
-    estoque = lab_workspace.produtos.estoque + EXCLUDED.estoque;
-```
-
-### 4.2 Atualização com JOIN
-
-```sql
--- Atualizar preços de produtos com base em vendas
-UPDATE lab_workspace.produtos p
-SET preco = p.preco * 1.10  -- Aumento de 10%
-FROM (
-    SELECT produto_id, SUM(quantidade) as total_vendido
-    FROM lab_workspace.itens_pedido
-    GROUP BY produto_id
-) as vendas
-WHERE p.id = vendas.produto_id
-AND vendas.total_vendido > 10;
-
--- Atualizar limite de crédito com base em histórico de pedidos
-UPDATE lab_workspace.clientes c
-SET limite_credito = limite_credito * 1.20  -- Aumento de 20%
-FROM (
-    SELECT cliente_id, COUNT(*) as total_pedidos, SUM(valor_total) as valor_total
-    FROM lab_workspace.pedidos
-    WHERE status = 'Finalizado'
-    GROUP BY cliente_id
-) as historico
-WHERE c.id = historico.cliente_id
-AND historico.total_pedidos >= 3
-AND historico.valor_total > 5000;
-```
-
-### 4.3 Manipulação com CTE
-
-```sql
--- Atualizar estoque e registrar movimentação usando CTE
-WITH produtos_atualizados AS (
-    UPDATE lab_workspace.produtos
-    SET estoque = estoque - 5
-    WHERE categoria = 'Eletrônicos'
-    RETURNING id, nome, estoque
-)
-INSERT INTO lab_workspace.movimentacao_estoque (produto_id, quantidade, tipo_movimento, observacao)
-SELECT 
-    id, 
-    5, 
-    'Saída', 
-    'Ajuste de inventário para produtos eletrônicos'
-FROM produtos_atualizados;
-
--- Identificar e marcar produtos sem movimento
-WITH produtos_sem_movimento AS (
-    SELECT p.id
-    FROM lab_workspace.produtos p
-    LEFT JOIN lab_workspace.itens_pedido ip ON p.id = ip.produto_id
-    WHERE ip.produto_id IS NULL
-)
-UPDATE lab_workspace.produtos p
-SET status = 'Inativo'
-FROM produtos_sem_movimento psm
-WHERE p.id = psm.id;
-```
-
-## Parte 5: Técnicas de Otimização
-
-### 5.1 Inserção em Massa Otimizada
-
-```sql
--- Inserção em massa com valores múltiplos
-INSERT INTO lab_workspace.produtos_temp (codigo, nome, preco, estoque, categoria)
-VALUES 
-    ('TEMP001', 'Produto Temp 1', 99.90, 10, 'Diversos'),
-    ('TEMP002', 'Produto Temp 2', 199.90, 20, 'Diversos'),
-    ('TEMP003', 'Produto Temp 3', 299.90, 30, 'Diversos'),
-    ('TEMP004', 'Produto Temp 4', 399.90, 40, 'Diversos'),
-    ('TEMP005', 'Produto Temp 5', 499.90, 50, 'Diversos');
-
--- Mover dados da tabela temporária para a tabela principal
-INSERT INTO lab_workspace.produtos (codigo, nome, preco, estoque, categoria)
-SELECT codigo, nome, preco, estoque, categoria
-FROM lab_workspace.produtos_temp
-ON CONFLICT (codigo) DO NOTHING;
-```
-
-### 5.2 Atualização em Lotes
-
-```sql
--- Atualizar em lotes pequenos para evitar bloqueios longos
-DO $$
-DECLARE
-    batch_size INTEGER := 100;
-    total_rows INTEGER;
-    processed_rows INTEGER := 0;
-BEGIN
-    SELECT COUNT(*) INTO total_rows FROM lab_workspace.produtos WHERE categoria = 'Diversos';
-    
-    WHILE processed_rows < total_rows LOOP
-        UPDATE lab_workspace.produtos
-        SET preco = preco * 0.9
-        WHERE id IN (
-            SELECT id FROM lab_workspace.produtos
-            WHERE categoria = 'Diversos'
-            ORDER BY id
-            LIMIT batch_size
-            OFFSET processed_rows
-        );
-        
-        processed_rows := processed_rows + batch_size;
-        COMMIT;
-    END LOOP;
-END $$;
-```
-
-### 5.3 Consultas Otimizadas
-
-```sql
--- Consulta com filtros eficientes
-SELECT 
-    p.id,
-    p.nome,
-    p.preco,
-    p.estoque
-FROM lab_workspace.produtos p
-WHERE p.categoria = 'Eletrônicos'
-AND p.preco > 1000
-AND p.estoque > 0;
-
--- Consulta com agregações otimizadas
-SELECT 
-    categoria,
-    COUNT(*) as total_produtos,
-    SUM(estoque) as estoque_total,
-    AVG(preco) as preco_medio
-FROM lab_workspace.produtos
-WHERE estoque > 0
-GROUP BY categoria
-HAVING COUNT(*) > 1
-ORDER BY estoque_total DESC;
+WHERE status = 'Cancelado';
 ```
 
 ## Conclusão
 
-Neste laboratório, você praticou diversas técnicas de manipulação de dados em SQL, incluindo:
+Neste laboratório, você praticou as operações DML básicas:
 
-- Operações CRUD básicas (INSERT, SELECT, UPDATE, DELETE)
-- Transações e controle de concorrência (BEGIN, COMMIT, ROLLBACK, SAVEPOINT)
-- Manipulação em lote
-- Técnicas avançadas como UPSERT, CTEs e manipulação com JOIN
-- Otimização de operações de manipulação de dados
+- Inserção de dados (INSERT)
+- Consulta de dados (SELECT)
+- Atualização de dados (UPDATE)
+- Exclusão de dados (DELETE)
 
-Estas habilidades são essenciais para desenvolvedores de banco de dados que precisam implementar operações eficientes e seguras em sistemas de produção.
+Estas operações são fundamentais para qualquer sistema de banco de dados e formam a base para manipulação de dados em aplicações.

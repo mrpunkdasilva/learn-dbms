@@ -1,76 +1,98 @@
 # Exercícios Avançados de DML
 
-## Exercício 1: Operações em Lote com MERGE
+## Exercício 1: Operações de Sincronização de Dados
 
 ### Descrição
-Implemente operações de sincronização de dados entre tabelas usando MERGE.
+Pratique operações de sincronização entre tabelas e esquemas.
 
 ### Requisitos
-- Sincronização de dados entre tabelas
-- Inserção, atualização ou exclusão condicional
-- Tratamento de exceções
-- Logging de operações
+- Sincronização bidirecional
+- Detecção e resolução de conflitos
+- Sincronização seletiva
+- Registro de auditoria
 
 ### Solução
 ```sql
--- Tabela de destino
-CREATE TABLE IF NOT EXISTS pratica.produtos_atual (
-    id INTEGER PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    preco DECIMAL(10,2) NOT NULL,
-    estoque INTEGER DEFAULT 0,
-    ultima_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Tabela de origem (novos dados)
-CREATE TABLE IF NOT EXISTS pratica.produtos_novos (
-    id INTEGER PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    preco DECIMAL(10,2) NOT NULL,
-    estoque INTEGER DEFAULT 0
-);
-
--- Tabela de log
-CREATE TABLE IF NOT EXISTS pratica.log_sincronizacao (
-    id SERIAL PRIMARY KEY,
-    tabela VARCHAR(50),
-    operacao VARCHAR(20),
-    registro_id INTEGER,
-    detalhes JSONB,
-    data_operacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Operação MERGE (sintaxe PostgreSQL)
-WITH operacoes AS (
-    MERGE INTO pratica.produtos_atual pa
-    USING pratica.produtos_novos pn
-    ON (pa.id = pn.id)
-    WHEN MATCHED AND (
-        pa.nome != pn.nome OR 
-        pa.preco != pn.preco OR 
-        pa.estoque != pn.estoque
-    ) THEN
-        UPDATE SET 
-            nome = pn.nome,
-            preco = pn.preco,
-            estoque = pn.estoque,
+-- Sincronização bidirecional
+WITH 
+    origem_alteracoes AS (
+        SELECT id, nome, preco, estoque, ultima_atualizacao
+        FROM pratica.produtos_origem
+        WHERE ultima_atualizacao > (SELECT MAX(ultima_sincronizacao) FROM pratica.controle_sync)
+    ),
+    destino_alteracoes AS (
+        SELECT id, nome, preco, estoque, ultima_atualizacao
+        FROM pratica.produtos_destino
+        WHERE ultima_atualizacao > (SELECT MAX(ultima_sincronizacao) FROM pratica.controle_sync)
+    ),
+    conflitos AS (
+        SELECT o.id
+        FROM origem_alteracoes o
+        JOIN destino_alteracoes d ON o.id = d.id
+    ),
+    atualizacoes_origem AS (
+        UPDATE pratica.produtos_destino pd
+        SET 
+            nome = po.nome,
+            preco = po.preco,
+            estoque = po.estoque,
             ultima_atualizacao = CURRENT_TIMESTAMP
-    WHEN NOT MATCHED THEN
-        INSERT (id, nome, preco, estoque)
-        VALUES (pn.id, pn.nome, pn.preco, pn.estoque)
-    RETURNING pa.id, 
-        CASE 
-            WHEN NOT EXISTS (SELECT 1 FROM pratica.produtos_atual WHERE id = pa.id) THEN 'INSERT'
-            ELSE 'UPDATE'
-        END as operacao
-)
-INSERT INTO pratica.log_sincronizacao (tabela, operacao, registro_id, detalhes)
-SELECT 'produtos_atual', operacao, id, 
-    jsonb_build_object(
-        'timestamp', CURRENT_TIMESTAMP,
-        'usuario', current_user
+        FROM pratica.produtos_origem po
+        WHERE pd.id = po.id
+        AND po.ultima_atualizacao > pd.ultima_atualizacao
+        AND po.id NOT IN (SELECT id FROM conflitos)
+        RETURNING pd.id
+    ),
+    atualizacoes_destino AS (
+        UPDATE pratica.produtos_origem po
+        SET 
+            nome = pd.nome,
+            preco = pd.preco,
+            estoque = pd.estoque,
+            ultima_atualizacao = CURRENT_TIMESTAMP
+        FROM pratica.produtos_destino pd
+        WHERE po.id = pd
+        AND pd.ultima_atualizacao > po.ultima_atualizacao
+        AND pd.id NOT IN (SELECT id FROM conflitos)
+        RETURNING po.id
+    ),
+    insercoes_origem AS (
+        INSERT INTO pratica.produtos_destino (id, nome, preco, estoque, ultima_atualizacao)
+        SELECT id, nome, preco, estoque, ultima_atualizacao
+        FROM origem_alteracoes
+        WHERE id NOT IN (SELECT id FROM destino_alteracoes)
+        RETURNING id
+    ),
+    insercoes_destino AS (
+        INSERT INTO pratica.produtos_origem (id, nome, preco, estoque, ultima_atualizacao)
+        SELECT id, nome, preco, estoque, ultima_atualizacao
+        FROM destino_alteracoes
+        WHERE id NOT IN (SELECT id FROM origem_alteracoes)
+        RETURNING id
     )
-FROM operacoes;
+SELECT 
+    'Atualizou produtos origem' as operacao,
+    atualizacoes_origem
+FROM atualizacoes_origem
+UNION ALL
+SELECT 
+    'Atualizou produtos destino' as operacao,
+    atualizacoes_destino
+FROM atualizacoes_destino
+UNION ALL
+SELECT 
+    'Inseriu produtos origem' as operacao,
+    insercoes_origem
+FROM insercoes_origem
+UNION ALL
+SELECT 
+    'Inseriu produtos destino' as operacao,
+    insercoes_destino
+FROM insercoes_destino;
+
+-- Atualização do controle de sincronização
+UPDATE pratica.controle_sync
+SET ultima_sincronizacao = CURRENT_TIMESTAMP;
 ```
 
 ## Exercício 2: Manipulação de Dados JSON/JSONB
@@ -536,4 +558,40 @@ CREATE EXTENSION IF NOT EXISTS postgis;
 CREATE TABLE IF NOT EXISTS pratica.locais (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
-    tipo VARCHAR(50) NOT NULL
+    tipo VARCHAR(50) NOT NULL,
+    geom GEOMETRY(Point, 4326) NOT NULL
+);
+
+-- Inserção de locais
+INSERT INTO pratica.locais (nome, tipo, geom)
+VALUES 
+    ('Parque Central', 'Parque', ST_SetSRID(ST_MakePoint(-46.6333, -23.5505), 4326)),
+    ('Museu de Arte', 'Museu', ST_SetSRID(ST_MakePoint(-46.6358, -23.5515), 4326)),
+    ('Teatro Municipal', 'Teatro', ST_SetSRID(ST_MakePoint(-46.6345, -23.5520), 4326));
+
+-- Consulta de locais próximos
+SELECT 
+    nome,
+    tipo,
+    ST_Distance(geom, ST_SetSRID(ST_MakePoint(-46.6333, -23.5505), 4326)) as distancia_km
+FROM pratica.locais
+ORDER BY distancia_km;
+
+-- Cálculo de área de um polígono
+CREATE TABLE IF NOT EXISTS pratica.poligonos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    geom GEOMETRY(Polygon, 4326) NOT NULL
+);
+
+INSERT INTO pratica.poligonos (nome, geom)
+VALUES (
+    'Área Turística',
+    ST_SetSRID(ST_GeomFromText('POLYGON((-46.6333 -23.5505, -46.6358 -23.5515, -46.6345 -23.5520, -46.6333 -23.5505))'), 4326)
+);
+
+SELECT 
+    nome,
+    ST_Area(geom) as area_km2
+FROM pratica.poligonos;
+```

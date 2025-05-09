@@ -6,30 +6,26 @@
 Pratique consultas básicas para recuperar dados das tabelas.
 
 ### Requisitos
-- Selecionar todos os clientes
-- Filtrar produtos por preço
+- Selecionar todos os registros
+- Selecionar colunas específicas
+- Filtrar com WHERE
 - Ordenar resultados
-- Limitar número de registros
 
 ### Solução
 ```sql
--- Selecionar todos os clientes
+-- Selecionar todos os registros
 SELECT * FROM pratica.clientes;
 
--- Filtrar produtos por preço
-SELECT nome, preco 
-FROM pratica.produtos 
+-- Selecionar colunas específicas
+SELECT nome, email FROM pratica.produtos;
+
+-- Filtrar com WHERE
+SELECT * FROM pratica.produtos
 WHERE preco < 1000;
 
 -- Ordenar resultados
-SELECT nome, preco 
-FROM pratica.produtos 
-ORDER BY preco DESC;
-
--- Limitar número de registros
-SELECT nome, email 
-FROM pratica.clientes 
-LIMIT 5;
+SELECT * FROM pratica.clientes
+ORDER BY nome ASC;
 ```
 
 ## Exercício 2: Inserção de Dados
@@ -38,23 +34,22 @@ LIMIT 5;
 Pratique a inserção de novos registros nas tabelas.
 
 ### Requisitos
-- Inserir um único cliente
-- Inserir múltiplos produtos
+- Inserir um único registro
+- Inserir múltiplos registros
 - Inserir com valores padrão
 - Inserir com subconsulta
 
 ### Solução
 ```sql
--- Inserir um único cliente
+-- Inserir um único registro
 INSERT INTO pratica.clientes (nome, email)
 VALUES ('Daniel Santos', 'daniel@email.com');
 
--- Inserir múltiplos produtos
+-- Inserir múltiplos registros
 INSERT INTO pratica.produtos (nome, preco, estoque)
 VALUES 
-    ('Mouse', 89.90, 30),
-    ('Teclado', 149.90, 25),
-    ('Monitor', 899.90, 10);
+    ('Tablet', 899.99, 30),
+    ('Mouse', 49.99, 100);
 
 -- Inserir com valores padrão
 INSERT INTO pratica.clientes (nome)
@@ -132,217 +127,240 @@ AND data_pedido < CURRENT_DATE - INTERVAL '30 days';
 
 -- Excluir com subconsulta
 DELETE FROM pratica.itens_pedido
-WHERE pedido_id IN (
-    SELECT id FROM pratica.pedidos
-    WHERE status = 'Cancelado'
+WHERE produto_id IN (
+    SELECT id FROM pratica.produtos
+    WHERE preco > 3000
 );
 ```
 
-## Exercício 5: Consultas com Junções
+## Exercício 5: Consultas com Funções
 
 ### Descrição
-Pratique consultas que relacionam dados de múltiplas tabelas.
+Pratique consultas utilizando funções SQL básicas.
 
 ### Requisitos
-- Junção interna (INNER JOIN)
-- Junção externa (LEFT JOIN)
-- Múltiplas junções
-- Filtros em junções
+- Funções de agregação
+- Funções de string
+- Funções de data
+- Funções matemáticas
 
 ### Solução
 ```sql
--- Junção interna
-SELECT c.nome, p.id as pedido_id
+-- Funções de agregação
+SELECT 
+    COUNT(*) as total_clientes,
+    MAX(data_cadastro) as cadastro_mais_recente
+FROM pratica.clientes;
+
+-- Funções de string
+SELECT 
+    UPPER(nome) as nome_maiusculo,
+    LENGTH(email) as tamanho_email
+FROM pratica.clientes;
+
+-- Funções de data
+SELECT 
+    id,
+    data_pedido,
+    EXTRACT(MONTH FROM data_pedido) as mes,
+    EXTRACT(YEAR FROM data_pedido) as ano
+FROM pratica.pedidos;
+
+-- Funções matemáticas
+SELECT 
+    nome,
+    preco,
+    ROUND(preco * 0.9, 2) as preco_com_desconto
+FROM pratica.produtos;
+```
+
+## Exercício 6: Consultas com GROUP BY
+
+### Descrição
+Pratique consultas com agrupamento de dados.
+
+### Requisitos
+- Agrupar por uma coluna
+- Agrupar por múltiplas colunas
+- Filtrar grupos com HAVING
+- Ordenar grupos
+
+### Solução
+```sql
+-- Agrupar por uma coluna
+SELECT 
+    status,
+    COUNT(*) as total_pedidos
+FROM pratica.pedidos
+GROUP BY status;
+
+-- Agrupar por múltiplas colunas
+SELECT 
+    EXTRACT(YEAR FROM data_pedido) as ano,
+    EXTRACT(MONTH FROM data_pedido) as mes,
+    status,
+    COUNT(*) as total_pedidos
+FROM pratica.pedidos
+GROUP BY ano, mes, status;
+
+-- Filtrar grupos com HAVING
+SELECT 
+    cliente_id,
+    COUNT(*) as total_pedidos
+FROM pratica.pedidos
+GROUP BY cliente_id
+HAVING COUNT(*) > 3;
+
+-- Ordenar grupos
+SELECT 
+    status,
+    COUNT(*) as total_pedidos
+FROM pratica.pedidos
+GROUP BY status
+ORDER BY total_pedidos DESC;
+```
+
+## Exercício 7: Consultas com JOIN
+
+### Descrição
+Pratique consultas que relacionam múltiplas tabelas.
+
+### Requisitos
+- INNER JOIN
+- LEFT JOIN
+- Múltiplos JOINs
+- Filtros com JOIN
+
+### Solução
+```sql
+-- INNER JOIN
+SELECT 
+    c.nome as cliente,
+    p.id as pedido_id,
+    p.data_pedido
 FROM pratica.clientes c
 INNER JOIN pratica.pedidos p ON c.id = p.cliente_id;
 
--- Junção externa
-SELECT c.nome, p.id as pedido_id
+-- LEFT JOIN
+SELECT 
+    c.nome as cliente,
+    COUNT(p.id) as total_pedidos
 FROM pratica.clientes c
-LEFT JOIN pratica.pedidos p ON c.id = p.cliente_id;
+LEFT JOIN pratica.pedidos p ON c.id = p.cliente_id
+GROUP BY c.nome;
 
--- Múltiplas junções
-SELECT c.nome, p.id as pedido_id, pr.nome as produto
+-- Múltiplos JOINs
+SELECT 
+    c.nome as cliente,
+    p.id as pedido_id,
+    pr.nome as produto,
+    ip.quantidade
 FROM pratica.clientes c
 JOIN pratica.pedidos p ON c.id = p.cliente_id
 JOIN pratica.itens_pedido ip ON p.id = ip.pedido_id
 JOIN pratica.produtos pr ON ip.produto_id = pr.id;
 
--- Filtros em junções
-SELECT c.nome, p.id as pedido_id
+-- Filtros com JOIN
+SELECT 
+    c.nome as cliente,
+    p.id as pedido_id
 FROM pratica.clientes c
 JOIN pratica.pedidos p ON c.id = p.cliente_id
 WHERE p.status = 'Aprovado'
-AND c.data_cadastro > '2023-01-01';
+AND p.data_pedido > CURRENT_DATE - INTERVAL '7 days';
 ```
 
-## Exercício 6: Funções Agregadas
+## Exercício 8: Subconsultas
 
 ### Descrição
-Pratique o uso de funções agregadas para análise de dados.
-
-### Requisitos
-- Contagem de registros
-- Soma de valores
-- Média, mínimo e máximo
-- Agrupamento de resultados
-
-### Solução
-```sql
--- Contagem de registros
-SELECT COUNT(*) as total_clientes
-FROM pratica.clientes;
-
--- Soma de valores
-SELECT SUM(estoque) as estoque_total
-FROM pratica.produtos;
-
--- Média, mínimo e máximo
-SELECT 
-    AVG(preco) as preco_medio,
-    MIN(preco) as preco_minimo,
-    MAX(preco) as preco_maximo
-FROM pratica.produtos;
-
--- Agrupamento de resultados
-SELECT status, COUNT(*) as quantidade
-FROM pratica.pedidos
-GROUP BY status
-ORDER BY quantidade DESC;
-```
-
-## Exercício 7: Subconsultas
-
-### Descrição
-Pratique o uso de subconsultas para operações mais complexas.
+Pratique o uso de subconsultas em operações DML.
 
 ### Requisitos
 - Subconsulta no WHERE
 - Subconsulta no FROM
 - Subconsulta no SELECT
-- Subconsulta com EXISTS
+- Subconsulta com operadores de comparação
 
 ### Solução
 ```sql
 -- Subconsulta no WHERE
-SELECT nome
-FROM pratica.clientes
+SELECT * FROM pratica.clientes
 WHERE id IN (
-    SELECT cliente_id
+    SELECT DISTINCT cliente_id
     FROM pratica.pedidos
     WHERE status = 'Aprovado'
 );
 
 -- Subconsulta no FROM
-SELECT temp.status, temp.total
+SELECT 
+    cliente,
+    total_pedidos
 FROM (
-    SELECT status, COUNT(*) as total
-    FROM pratica.pedidos
-    GROUP BY status
-) as temp
-WHERE temp.total > 5;
+    SELECT 
+        c.nome as cliente,
+        COUNT(p.id) as total_pedidos
+    FROM pratica.clientes c
+    LEFT JOIN pratica.pedidos p ON c.id = p.cliente_id
+    GROUP BY c.nome
+) as resumo
+WHERE total_pedidos > 0;
 
 -- Subconsulta no SELECT
 SELECT 
-    nome,
-    (SELECT COUNT(*) FROM pratica.pedidos WHERE cliente_id = c.id) as total_pedidos
-FROM pratica.clientes c;
+    p.id,
+    p.nome,
+    p.preco,
+    (SELECT AVG(preco) FROM pratica.produtos) as preco_medio,
+    p.preco - (SELECT AVG(preco) FROM pratica.produtos) as diferenca
+FROM pratica.produtos p;
 
--- Subconsulta com EXISTS
-SELECT nome
-FROM pratica.produtos p
-WHERE EXISTS (
-    SELECT 1 
-    FROM pratica.itens_pedido ip
-    WHERE ip.produto_id = p.id
-    AND ip.quantidade > 5
+-- Subconsulta com operadores de comparação
+SELECT * FROM pratica.produtos
+WHERE preco > (
+    SELECT AVG(preco) FROM pratica.produtos
 );
 ```
 
-## Exercício 8: Operações com Datas
+## Exercício 9: Operadores de Conjunto
 
 ### Descrição
-Pratique operações e manipulações com campos de data.
+Pratique o uso de operadores de conjunto em consultas.
 
 ### Requisitos
-- Filtrar por data
-- Calcular diferença entre datas
-- Extrair componentes de data
-- Agrupar por período
+- UNION
+- INTERSECT
+- EXCEPT
+- Combinação de operadores
 
 ### Solução
 ```sql
--- Filtrar por data
-SELECT *
-FROM pratica.pedidos
-WHERE data_pedido >= '2023-01-01'
-AND data_pedido < '2023-02-01';
-
--- Calcular diferença entre datas
-SELECT 
-    id,
-    data_pedido,
-    CURRENT_DATE as hoje,
-    CURRENT_DATE - data_pedido::date as dias_decorridos
-FROM pratica.pedidos;
-
--- Extrair componentes de data
-SELECT 
-    id,
-    data_pedido,
-    EXTRACT(YEAR FROM data_pedido) as ano,
-    EXTRACT(MONTH FROM data_pedido) as mes,
-    EXTRACT(DAY FROM data_pedido) as dia
-FROM pratica.pedidos;
-
--- Agrupar por período
-SELECT 
-    EXTRACT(MONTH FROM data_pedido) as mes,
-    COUNT(*) as total_pedidos
-FROM pratica.pedidos
-GROUP BY mes
-ORDER BY mes;
-```
-
-## Exercício 9: Operações com Strings
-
-### Descrição
-Pratique operações e manipulações com campos de texto.
-
-### Requisitos
-- Concatenação de strings
-- Conversão de maiúsculas/minúsculas
-- Extração de substrings
-- Busca por padrões
-
-### Solução
-```sql
--- Concatenação de strings
-SELECT 
-    nome,
-    email,
-    nome || ' <' || email || '>' as contato
-FROM pratica.clientes;
-
--- Conversão de maiúsculas/minúsculas
-SELECT 
-    nome,
-    UPPER(nome) as nome_maiusculo,
-    LOWER(email) as email_minusculo
-FROM pratica.clientes;
-
--- Extração de substrings
-SELECT 
-    nome,
-    SUBSTRING(nome FROM 1 FOR 3) as iniciais,
-    SUBSTRING(email FROM POSITION('@' IN email) + 1) as dominio
-FROM pratica.clientes;
-
--- Busca por padrões
-SELECT nome, email
+-- UNION
+SELECT nome, email, 'Cliente' as tipo
 FROM pratica.clientes
-WHERE nome LIKE 'A%'
-OR email LIKE '%@gmail.com';
+UNION
+SELECT nome, 'N/A', 'Produto' as tipo
+FROM pratica.produtos;
+
+-- INTERSECT
+SELECT cliente_id
+FROM pratica.pedidos
+WHERE status = 'Aprovado'
+INTERSECT
+SELECT cliente_id
+FROM pratica.pedidos
+WHERE status = 'Entregue';
+
+-- EXCEPT
+SELECT id FROM pratica.clientes
+EXCEPT
+SELECT cliente_id FROM pratica.pedidos;
+
+-- Combinação de operadores
+(SELECT cliente_id FROM pratica.pedidos WHERE status = 'Aprovado')
+UNION
+(SELECT cliente_id FROM pratica.pedidos WHERE status = 'Entregue')
+EXCEPT
+(SELECT cliente_id FROM pratica.pedidos WHERE status = 'Cancelado');
 ```
 
 ## Exercício 10: Transações
@@ -390,11 +408,12 @@ VALUES ('Gabriela Lima', 'gabriela@email.com');
 SAVEPOINT novo_cliente;
 
 UPDATE pratica.produtos
-SET estoque = -10;
+SET estoque = 0;
 
--- Erro no estoque, voltar ao savepoint
+-- Ops, não queremos zerar o estoque!
 ROLLBACK TO novo_cliente;
 
+-- Continuar com outras operações
 INSERT INTO pratica.pedidos (cliente_id, status)
 VALUES ((SELECT id FROM pratica.clientes WHERE nome = 'Gabriela Lima'), 'Novo');
 
@@ -403,11 +422,11 @@ COMMIT;
 
 ## Critérios de Avaliação
 
-- Sintaxe SQL correta
-- Uso apropriado dos comandos DML
+- Sintaxe correta
+- Uso adequado de cláusulas e operadores
 - Eficiência das consultas
-- Tratamento adequado de erros
-- Uso de transações quando necessário
+- Integridade dos dados após manipulação
+- Aplicação de boas práticas
 
 ## Dicas de Estudo
 

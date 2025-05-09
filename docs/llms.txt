@@ -24644,9 +24644,9 @@ VALUES
 
 * [Exercícios Básicos](basic-dml-exercises.html)
 
-* [Exercícios Intermediários](null)
+* [Exercícios Intermediários](intermediate-dml-exercises.html)
 
-* [Exercícios Avançados](null)
+* [Exercícios Avançados](advanced-dml-exercises.html)
 
 ## Dicas de Estudo
 
@@ -24723,34 +24723,30 @@ Pratique consultas básicas para recuperar dados das tabelas.
 
 ### Requisitos
 
-* Selecionar todos os clientes
+* Selecionar todos os registros
 
-* Filtrar produtos por preço
+* Selecionar colunas específicas
+
+* Filtrar com WHERE
 
 * Ordenar resultados
-
-* Limitar número de registros
 
 ### Solução
 
 ```SQL
--- Selecionar todos os clientes
+-- Selecionar todos os registros
 SELECT * FROM pratica.clientes;
 
--- Filtrar produtos por preço
-SELECT nome, preco 
-FROM pratica.produtos 
+-- Selecionar colunas específicas
+SELECT nome, email FROM pratica.produtos;
+
+-- Filtrar com WHERE
+SELECT * FROM pratica.produtos
 WHERE preco < 1000;
 
 -- Ordenar resultados
-SELECT nome, preco 
-FROM pratica.produtos 
-ORDER BY preco DESC;
-
--- Limitar número de registros
-SELECT nome, email 
-FROM pratica.clientes 
-LIMIT 5;
+SELECT * FROM pratica.clientes
+ORDER BY nome ASC;
 ```
 
 ## Exercício 2: Inserção de Dados
@@ -24761,9 +24757,9 @@ Pratique a inserção de novos registros nas tabelas.
 
 ### Requisitos
 
-* Inserir um único cliente
+* Inserir um único registro
 
-* Inserir múltiplos produtos
+* Inserir múltiplos registros
 
 * Inserir com valores padrão
 
@@ -24772,16 +24768,15 @@ Pratique a inserção de novos registros nas tabelas.
 ### Solução
 
 ```SQL
--- Inserir um único cliente
+-- Inserir um único registro
 INSERT INTO pratica.clientes (nome, email)
 VALUES ('Daniel Santos', 'daniel@email.com');
 
--- Inserir múltiplos produtos
+-- Inserir múltiplos registros
 INSERT INTO pratica.produtos (nome, preco, estoque)
 VALUES 
-    ('Mouse', 89.90, 30),
-    ('Teclado', 149.90, 25),
-    ('Monitor', 899.90, 10);
+    ('Tablet', 899.99, 30),
+    ('Mouse', 49.99, 100);
 
 -- Inserir com valores padrão
 INSERT INTO pratica.clientes (nome)
@@ -24871,102 +24866,172 @@ AND data_pedido < CURRENT_DATE - INTERVAL '30 days';
 
 -- Excluir com subconsulta
 DELETE FROM pratica.itens_pedido
-WHERE pedido_id IN (
-    SELECT id FROM pratica.pedidos
-    WHERE status = 'Cancelado'
+WHERE produto_id IN (
+    SELECT id FROM pratica.produtos
+    WHERE preco > 3000
 );
 ```
 
-## Exercício 5: Consultas com Junções
+## Exercício 5: Consultas com Funções
 
 ### Descrição
 
-Pratique consultas que relacionam dados de múltiplas tabelas.
+Pratique consultas utilizando funções SQL básicas.
 
 ### Requisitos
 
-* Junção interna (INNER JOIN)
+* Funções de agregação
 
-* Junção externa (LEFT JOIN)
+* Funções de string
 
-* Múltiplas junções
+* Funções de data
 
-* Filtros em junções
+* Funções matemáticas
 
 ### Solução
 
 ```SQL
--- Junção interna
-SELECT c.nome, p.id as pedido_id
+-- Funções de agregação
+SELECT 
+    COUNT(*) as total_clientes,
+    MAX(data_cadastro) as cadastro_mais_recente
+FROM pratica.clientes;
+
+-- Funções de string
+SELECT 
+    UPPER(nome) as nome_maiusculo,
+    LENGTH(email) as tamanho_email
+FROM pratica.clientes;
+
+-- Funções de data
+SELECT 
+    id,
+    data_pedido,
+    EXTRACT(MONTH FROM data_pedido) as mes,
+    EXTRACT(YEAR FROM data_pedido) as ano
+FROM pratica.pedidos;
+
+-- Funções matemáticas
+SELECT 
+    nome,
+    preco,
+    ROUND(preco * 0.9, 2) as preco_com_desconto
+FROM pratica.produtos;
+```
+
+## Exercício 6: Consultas com GROUP BY
+
+### Descrição
+
+Pratique consultas com agrupamento de dados.
+
+### Requisitos
+
+* Agrupar por uma coluna
+
+* Agrupar por múltiplas colunas
+
+* Filtrar grupos com HAVING
+
+* Ordenar grupos
+
+### Solução
+
+```SQL
+-- Agrupar por uma coluna
+SELECT 
+    status,
+    COUNT(*) as total_pedidos
+FROM pratica.pedidos
+GROUP BY status;
+
+-- Agrupar por múltiplas colunas
+SELECT 
+    EXTRACT(YEAR FROM data_pedido) as ano,
+    EXTRACT(MONTH FROM data_pedido) as mes,
+    status,
+    COUNT(*) as total_pedidos
+FROM pratica.pedidos
+GROUP BY ano, mes, status;
+
+-- Filtrar grupos com HAVING
+SELECT 
+    cliente_id,
+    COUNT(*) as total_pedidos
+FROM pratica.pedidos
+GROUP BY cliente_id
+HAVING COUNT(*) > 3;
+
+-- Ordenar grupos
+SELECT 
+    status,
+    COUNT(*) as total_pedidos
+FROM pratica.pedidos
+GROUP BY status
+ORDER BY total_pedidos DESC;
+```
+
+## Exercício 7: Consultas com JOIN
+
+### Descrição
+
+Pratique consultas que relacionam múltiplas tabelas.
+
+### Requisitos
+
+* INNER JOIN
+
+* LEFT JOIN
+
+* Múltiplos JOINs
+
+* Filtros com JOIN
+
+### Solução
+
+```SQL
+-- INNER JOIN
+SELECT 
+    c.nome as cliente,
+    p.id as pedido_id,
+    p.data_pedido
 FROM pratica.clientes c
 INNER JOIN pratica.pedidos p ON c.id = p.cliente_id;
 
--- Junção externa
-SELECT c.nome, p.id as pedido_id
+-- LEFT JOIN
+SELECT 
+    c.nome as cliente,
+    COUNT(p.id) as total_pedidos
 FROM pratica.clientes c
-LEFT JOIN pratica.pedidos p ON c.id = p.cliente_id;
+LEFT JOIN pratica.pedidos p ON c.id = p.cliente_id
+GROUP BY c.nome;
 
--- Múltiplas junções
-SELECT c.nome, p.id as pedido_id, pr.nome as produto
+-- Múltiplos JOINs
+SELECT 
+    c.nome as cliente,
+    p.id as pedido_id,
+    pr.nome as produto,
+    ip.quantidade
 FROM pratica.clientes c
 JOIN pratica.pedidos p ON c.id = p.cliente_id
 JOIN pratica.itens_pedido ip ON p.id = ip.pedido_id
 JOIN pratica.produtos pr ON ip.produto_id = pr.id;
 
--- Filtros em junções
-SELECT c.nome, p.id as pedido_id
+-- Filtros com JOIN
+SELECT 
+    c.nome as cliente,
+    p.id as pedido_id
 FROM pratica.clientes c
 JOIN pratica.pedidos p ON c.id = p.cliente_id
 WHERE p.status = 'Aprovado'
-AND c.data_cadastro > '2023-01-01';
+AND p.data_pedido > CURRENT_DATE - INTERVAL '7 days';
 ```
 
-## Exercício 6: Funções Agregadas
+## Exercício 8: Subconsultas
 
 ### Descrição
 
-Pratique o uso de funções agregadas para análise de dados.
-
-### Requisitos
-
-* Contagem de registros
-
-* Soma de valores
-
-* Média, mínimo e máximo
-
-* Agrupamento de resultados
-
-### Solução
-
-```SQL
--- Contagem de registros
-SELECT COUNT(*) as total_clientes
-FROM pratica.clientes;
-
--- Soma de valores
-SELECT SUM(estoque) as estoque_total
-FROM pratica.produtos;
-
--- Média, mínimo e máximo
-SELECT 
-    AVG(preco) as preco_medio,
-    MIN(preco) as preco_minimo,
-    MAX(preco) as preco_maximo
-FROM pratica.produtos;
-
--- Agrupamento de resultados
-SELECT status, COUNT(*) as quantidade
-FROM pratica.pedidos
-GROUP BY status
-ORDER BY quantidade DESC;
-```
-
-## Exercício 7: Subconsultas
-
-### Descrição
-
-Pratique o uso de subconsultas para operações mais complexas.
+Pratique o uso de subconsultas em operações DML.
 
 ### Requisitos
 
@@ -24976,142 +25041,95 @@ Pratique o uso de subconsultas para operações mais complexas.
 
 * Subconsulta no SELECT
 
-* Subconsulta com EXISTS
+* Subconsulta com operadores de comparação
 
 ### Solução
 
 ```SQL
 -- Subconsulta no WHERE
-SELECT nome
-FROM pratica.clientes
+SELECT * FROM pratica.clientes
 WHERE id IN (
-    SELECT cliente_id
+    SELECT DISTINCT cliente_id
     FROM pratica.pedidos
     WHERE status = 'Aprovado'
 );
 
 -- Subconsulta no FROM
-SELECT temp.status, temp.total
+SELECT 
+    cliente,
+    total_pedidos
 FROM (
-    SELECT status, COUNT(*) as total
-    FROM pratica.pedidos
-    GROUP BY status
-) as temp
-WHERE temp.total > 5;
+    SELECT 
+        c.nome as cliente,
+        COUNT(p.id) as total_pedidos
+    FROM pratica.clientes c
+    LEFT JOIN pratica.pedidos p ON c.id = p.cliente_id
+    GROUP BY c.nome
+) as resumo
+WHERE total_pedidos > 0;
 
 -- Subconsulta no SELECT
 SELECT 
-    nome,
-    (SELECT COUNT(*) FROM pratica.pedidos WHERE cliente_id = c.id) as total_pedidos
-FROM pratica.clientes c;
+    p.id,
+    p.nome,
+    p.preco,
+    (SELECT AVG(preco) FROM pratica.produtos) as preco_medio,
+    p.preco - (SELECT AVG(preco) FROM pratica.produtos) as diferenca
+FROM pratica.produtos p;
 
--- Subconsulta com EXISTS
-SELECT nome
-FROM pratica.produtos p
-WHERE EXISTS (
-    SELECT 1 
-    FROM pratica.itens_pedido ip
-    WHERE ip.produto_id = p.id
-    AND ip.quantidade > 5
+-- Subconsulta com operadores de comparação
+SELECT * FROM pratica.produtos
+WHERE preco > (
+    SELECT AVG(preco) FROM pratica.produtos
 );
 ```
 
-## Exercício 8: Operações com Datas
+## Exercício 9: Operadores de Conjunto
 
 ### Descrição
 
-Pratique operações e manipulações com campos de data.
+Pratique o uso de operadores de conjunto em consultas.
 
 ### Requisitos
 
-* Filtrar por data
+* UNION
 
-* Calcular diferença entre datas
+* INTERSECT
 
-* Extrair componentes de data
+* EXCEPT
 
-* Agrupar por período
+* Combinação de operadores
 
 ### Solução
 
 ```SQL
--- Filtrar por data
-SELECT *
-FROM pratica.pedidos
-WHERE data_pedido >= '2023-01-01'
-AND data_pedido < '2023-02-01';
-
--- Calcular diferença entre datas
-SELECT 
-    id,
-    data_pedido,
-    CURRENT_DATE as hoje,
-    CURRENT_DATE - data_pedido::date as dias_decorridos
-FROM pratica.pedidos;
-
--- Extrair componentes de data
-SELECT 
-    id,
-    data_pedido,
-    EXTRACT(YEAR FROM data_pedido) as ano,
-    EXTRACT(MONTH FROM data_pedido) as mes,
-    EXTRACT(DAY FROM data_pedido) as dia
-FROM pratica.pedidos;
-
--- Agrupar por período
-SELECT 
-    EXTRACT(MONTH FROM data_pedido) as mes,
-    COUNT(*) as total_pedidos
-FROM pratica.pedidos
-GROUP BY mes
-ORDER BY mes;
-```
-
-## Exercício 9: Operações com Strings
-
-### Descrição
-
-Pratique operações e manipulações com campos de texto.
-
-### Requisitos
-
-* Concatenação de strings
-
-* Conversão de maiúsculas/minúsculas
-
-* Extração de substrings
-
-* Busca por padrões
-
-### Solução
-
-```SQL
--- Concatenação de strings
-SELECT 
-    nome,
-    email,
-    nome || ' <' || email || '>' as contato
-FROM pratica.clientes;
-
--- Conversão de maiúsculas/minúsculas
-SELECT 
-    nome,
-    UPPER(nome) as nome_maiusculo,
-    LOWER(email) as email_minusculo
-FROM pratica.clientes;
-
--- Extração de substrings
-SELECT 
-    nome,
-    SUBSTRING(nome FROM 1 FOR 3) as iniciais,
-    SUBSTRING(email FROM POSITION('@' IN email) + 1) as dominio
-FROM pratica.clientes;
-
--- Busca por padrões
-SELECT nome, email
+-- UNION
+SELECT nome, email, 'Cliente' as tipo
 FROM pratica.clientes
-WHERE nome LIKE 'A%'
-OR email LIKE '%@gmail.com';
+UNION
+SELECT nome, 'N/A', 'Produto' as tipo
+FROM pratica.produtos;
+
+-- INTERSECT
+SELECT cliente_id
+FROM pratica.pedidos
+WHERE status = 'Aprovado'
+INTERSECT
+SELECT cliente_id
+FROM pratica.pedidos
+WHERE status = 'Entregue';
+
+-- EXCEPT
+SELECT id FROM pratica.clientes
+EXCEPT
+SELECT cliente_id FROM pratica.pedidos;
+
+-- Combinação de operadores
+(SELECT cliente_id FROM pratica.pedidos WHERE status = 'Aprovado')
+UNION
+(SELECT cliente_id FROM pratica.pedidos WHERE status = 'Entregue')
+EXCEPT
+(SELECT cliente_id FROM pratica.pedidos WHERE status = 'Cancelado');
 ```
 
 ## Exercício 10: Transações
@@ -25165,11 +25183,12 @@ VALUES ('Gabriela Lima', 'gabriela@email.com');
 SAVEPOINT novo_cliente;
 
 UPDATE pratica.produtos
-SET estoque = -10;
+SET estoque = 0;
 
--- Erro no estoque, voltar ao savepoint
+-- Ops, não queremos zerar o estoque!
 ROLLBACK TO novo_cliente;
 
+-- Continuar com outras operações
 INSERT INTO pratica.pedidos (cliente_id, status)
 VALUES ((SELECT id FROM pratica.clientes WHERE nome = 'Gabriela Lima'), 'Novo');
 
@@ -25178,15 +25197,15 @@ COMMIT;
 
 ## Critérios de Avaliação
 
-* Sintaxe SQL correta
+* Sintaxe correta
 
-* Uso apropriado dos comandos DML
+* Uso adequado de cláusulas e operadores
 
 * Eficiência das consultas
 
-* Tratamento adequado de erros
+* Integridade dos dados após manipulação
 
-* Uso de transações quando necessário
+* Aplicação de boas práticas
 
 ## Dicas de Estudo
 
@@ -25203,6 +25222,3847 @@ COMMIT;
 Tip:
 
 Nota: Estes exercícios são fundamentais para construir uma base sólida em manipulação de dados. Certifique-se de compreender completamente cada conceito antes de avançar para os exercícios intermediários.
+
+
+
+# Exercícios Intermediários de DML
+
+## Exercício 1: Operações em Lote
+
+### Descrição
+
+Pratique operações DML em lote para manipular múltiplos registros de forma eficiente.
+
+### Requisitos
+
+* Inserção em lote com SELECT
+
+* Atualização em lote com JOIN
+
+* Exclusão em lote com subconsulta
+
+* Operações condicionais em lote
+
+### Solução
+
+```SQL
+-- Inserção em lote com SELECT
+INSERT INTO pratica.controle_exercicios (exercicio, completado)
+SELECT 'Exercício ' || id, false
+FROM generate_series(1, 10) as id;
+
+-- Atualização em lote com JOIN
+UPDATE pratica.produtos p
+SET estoque = p.estoque - ip.quantidade
+FROM pratica.itens_pedido ip
+JOIN pratica.pedidos pe ON ip.pedido_id = pe.id
+WHERE ip.produto_id = p.id
+AND pe.status = 'Aprovado'
+AND pe.data_pedido >= CURRENT_DATE - INTERVAL '1 day';
+
+-- Exclusão em lote com subconsulta
+DELETE FROM pratica.itens_pedido
+WHERE pedido_id IN (
+    SELECT id
+    FROM pratica.pedidos
+    WHERE status = 'Cancelado'
+    AND data_pedido < CURRENT_DATE - INTERVAL '90 days'
+);
+
+-- Operações condicionais em lote
+UPDATE pratica.produtos
+SET 
+    preco = CASE
+        WHEN estoque > 100 THEN preco * 0.9  -- Desconto para produtos com muito estoque
+        WHEN estoque < 10 THEN preco * 1.1   -- Aumento para produtos com pouco estoque
+        ELSE preco                           -- Mantém o preço para estoque normal
+    END,
+    nome = CASE
+        WHEN nome NOT LIKE '%Novo%' AND data_cadastro > CURRENT_DATE - INTERVAL '30 days'
+        THEN nome || ' (Novo)'
+        ELSE nome
+    END;
+```
+
+## Exercício 2: Consultas Avançadas com JOIN
+
+### Descrição
+
+Pratique consultas mais complexas utilizando diferentes tipos de JOIN.
+
+### Requisitos
+
+* INNER JOIN com múltiplas tabelas
+
+* LEFT/RIGHT JOIN com condições
+
+* FULL OUTER JOIN
+
+* CROSS JOIN
+
+### Solução
+
+```SQL
+-- INNER JOIN com múltiplas tabelas
+SELECT 
+    c.nome as cliente,
+    p.id as pedido_id,
+    p.data_pedido,
+    SUM(ip.quantidade * ip.preco_unitario) as valor_total
+FROM pratica.clientes c
+JOIN pratica.pedidos p ON c.id = p.cliente_id
+JOIN pratica.itens_pedido ip ON p.id = ip.pedido_id
+GROUP BY c.nome, p.id, p.data_pedido
+ORDER BY p.data_pedido DESC;
+
+-- LEFT/RIGHT JOIN com condições
+SELECT 
+    c.nome as cliente,
+    COUNT(p.id) as total_pedidos,
+    COALESCE(SUM(ip.quantidade * ip.preco_unitario), 0) as valor_total_compras
+FROM pratica.clientes c
+LEFT JOIN pratica.pedidos p ON c.id = p.cliente_id AND p.status != 'Cancelado'
+LEFT JOIN pratica.itens_pedido ip ON p.id = ip.pedido_id
+GROUP BY c.nome
+ORDER BY valor_total_compras DESC;
+
+-- FULL OUTER JOIN
+SELECT 
+    c.nome as cliente,
+    p.id as pedido_id,
+    p.status
+FROM pratica.clientes c
+FULL OUTER JOIN pratica.pedidos p ON c.id = p.cliente_id
+WHERE c.id IS NULL OR p.id IS NULL;
+
+-- CROSS JOIN
+SELECT 
+    c.nome as cliente,
+    pr.nome as produto,
+    'Potencial interesse' as status
+FROM pratica.clientes c
+CROSS JOIN pratica.produtos pr
+WHERE pr.categoria = 'Eletrônicos'
+AND NOT EXISTS (
+    SELECT 1 FROM pratica.pedidos p
+    JOIN pratica.itens_pedido ip ON p.id = ip.pedido_id
+    WHERE p.cliente_id = c.id
+    AND ip.produto_id = pr.id
+);
+```
+
+## Exercício 3: Subconsultas Correlacionadas
+
+### Descrição
+
+Pratique o uso de subconsultas correlacionadas para resolver problemas complexos.
+
+### Requisitos
+
+* Subconsulta correlacionada no WHERE
+
+* Subconsulta correlacionada no SELECT
+
+* Subconsulta com EXISTS/NOT EXISTS
+
+* Subconsulta com operadores de comparação
+
+### Solução
+
+```SQL
+-- Subconsulta correlacionada no WHERE
+SELECT c.nome, c.email
+FROM pratica.clientes c
+WHERE (
+    SELECT COUNT(*)
+    FROM pratica.pedidos p
+    WHERE p.cliente_id = c.id
+) > 3;
+
+-- Subconsulta correlacionada no SELECT
+SELECT 
+    p.nome as produto,
+    p.preco,
+    (
+        SELECT AVG(ip.preco_unitario)
+        FROM pratica.itens_pedido ip
+        WHERE ip.produto_id = p.id
+    ) as preco_medio_vendido
+FROM pratica.produtos p;
+
+-- Subconsulta com EXISTS/NOT EXISTS
+SELECT c.nome
+FROM pratica.clientes c
+WHERE EXISTS (
+    SELECT 1
+    FROM pratica.pedidos p
+    JOIN pratica.itens_pedido ip ON p.id = ip.pedido_id
+    JOIN pratica.produtos pr ON ip.produto_id = pr.id
+    WHERE p.cliente_id = c.id
+    AND pr.preco > 1000
+);
+
+-- Subconsulta com operadores de comparação
+SELECT p.nome, p.preco
+FROM pratica.produtos p
+WHERE p.preco > ALL (
+    SELECT AVG(preco)
+    FROM pratica.produtos
+    GROUP BY categoria
+);
+```
+
+## Exercício 4: Expressões de Tabela Comuns (CTE)
+
+### Descrição
+
+Pratique o uso de CTEs para simplificar consultas complexas.
+
+### Requisitos
+
+* CTE básica
+
+* CTE com múltiplas referências
+
+* CTE recursiva
+
+* CTE com operações DML
+
+### Solução
+
+```SQL
+-- CTE básica
+WITH pedidos_recentes AS (
+    SELECT *
+    FROM pratica.pedidos
+    WHERE data_pedido >= CURRENT_DATE - INTERVAL '30 days'
+)
+SELECT 
+    c.nome as cliente,
+    COUNT(pr.id) as total_pedidos_recentes
+FROM pratica.clientes c
+LEFT JOIN pedidos_recentes pr ON c.id = pr.cliente_id
+GROUP BY c.nome;
+
+-- CTE com múltiplas referências
+WITH 
+    pedidos_por_cliente AS (
+        SELECT 
+            cliente_id,
+            COUNT(*) as total_pedidos,
+            SUM(valor_total) as valor_total
+        FROM pratica.pedidos
+        GROUP BY cliente_id
+    ),
+    clientes_vip AS (
+        SELECT cliente_id
+        FROM pedidos_por_cliente
+        WHERE total_pedidos >= 5 OR valor_total >= 5000
+    )
+SELECT 
+    c.nome,
+    c.email,
+    'VIP' as status
+FROM pratica.clientes c
+JOIN clientes_vip vip ON c.id = vip.cliente_id;
+
+-- CTE recursiva
+WITH RECURSIVE hierarquia_categorias AS (
+    -- Caso base: categorias raiz (sem pai)
+    SELECT id, nome, 0 as nivel
+    FROM pratica.categorias
+    WHERE categoria_pai_id IS NULL
+    
+    UNION ALL
+    
+    -- Caso recursivo: categorias filhas
+    SELECT c.id, c.nome, h.nivel + 1
+    FROM pratica.categorias c
+    JOIN hierarquia_categorias h ON c.categoria_pai_id = h.id
+)
+SELECT 
+    REPEAT('  ', nivel) || nome as categoria_hierarquia,
+    nivel
+FROM hierarquia_categorias
+ORDER BY nivel, nome;
+
+-- CTE com operações DML
+WITH produtos_sem_movimento AS (
+    SELECT p.id
+    FROM pratica.produtos p
+    LEFT JOIN pratica.itens_pedido ip ON p.id = ip.produto_id
+    WHERE ip.produto_id IS NULL
+    AND p.data_cadastro < CURRENT_DATE - INTERVAL '180 days'
+)
+UPDATE pratica.produtos
+SET estoque = 0
+WHERE id IN (SELECT id FROM produtos_sem_movimento);
+```
+
+## Exercício 5: Operações com MERGE (UPSERT)
+
+### Descrição
+
+Pratique operações de inserção/atualização condicional.
+
+### Requisitos
+
+* INSERT ... ON CONFLICT (PostgreSQL)
+
+* MERGE (SQL Server/Oracle)
+
+* Atualização condicional
+
+* Inserção condicional
+
+### Solução
+
+```SQL
+-- INSERT ... ON CONFLICT (PostgreSQL)
+INSERT INTO pratica.produtos (codigo, nome, preco, estoque)
+VALUES 
+    ('PROD001', 'Smartphone X', 1299.99, 50),
+    ('PROD008', 'Câmera Digital', 899.99, 25)
+ON CONFLICT (codigo) 
+DO UPDATE SET
+    nome = EXCLUDED.nome,
+    preco = EXCLUDED.preco,
+    estoque = pratica.produtos.estoque + EXCLUDED.estoque;
+
+-- Simulação de MERGE para bancos que não suportam nativamente
+-- Atualização condicional
+WITH dados_novos (codigo, nome, preco, estoque) AS (
+    VALUES 
+        ('PROD001', 'Smartphone X Pro', 1499.99, 10),
+        ('PROD009', 'Smartwatch', 399.99, 30)
+)
+UPDATE pratica.produtos p
+SET 
+    nome = d.nome,
+    preco = d.preco,
+    estoque = p.estoque + d.estoque
+FROM dados_novos d
+WHERE p.codigo = d.codigo;
+
+-- Inserção condicional
+WITH dados_novos (codigo, nome, preco, estoque) AS (
+    VALUES 
+        ('PROD001', 'Smartphone X Pro', 1499.99, 10),
+        ('PROD009', 'Smartwatch', 399.99, 30)
+),
+atualizados AS (
+    UPDATE pratica.produtos p
+    SET 
+        nome = d.nome,
+        preco = d.preco,
+        estoque = p.estoque + d.estoque
+    FROM dados_novos d
+    WHERE p.codigo = d.codigo
+    RETURNING p.codigo
+)
+INSERT INTO pratica.produtos (codigo, nome, preco, estoque)
+SELECT d.codigo, d.nome, d.preco, d.estoque
+FROM dados_novos d
+WHERE NOT EXISTS (
+    SELECT 1 FROM atualizados a
+    WHERE a.codigo = d.codigo
+);
+```
+
+## Exercício 6: Manipulação de Dados Temporais
+
+### Descrição
+
+Pratique operações DML com dados temporais.
+
+### Requisitos
+
+* Filtros por data/hora
+
+* Cálculos com intervalos de tempo
+
+* Agrupamento por períodos
+
+* Comparações temporais
+
+### Solução
+
+```SQL
+-- Filtros por data/hora
+SELECT *
+FROM pratica.pedidos
+WHERE 
+    data_pedido >= CURRENT_DATE - INTERVAL '30 days'
+    AND EXTRACT(HOUR FROM data_pedido) BETWEEN 9 AND 18;
+
+-- Cálculos com intervalos de tempo
+SELECT 
+    id,
+    data_pedido,
+    data_entrega,
+    data_entrega - data_pedido AS tempo_processamento,
+    EXTRACT(DAY FROM (data_entrega - data_pedido)) AS dias_processamento
+FROM pratica.pedidos
+WHERE status = 'Entregue';
+
+-- Agrupamento por períodos
+SELECT 
+    DATE_TRUNC('month', data_pedido) AS mes,
+    COUNT(*) AS total_pedidos,
+    SUM(valor_total) AS valor_total,
+    AVG(valor_total) AS ticket_medio
+FROM pratica.pedidos
+WHERE data_pedido >= CURRENT_DATE - INTERVAL '1 year'
+GROUP BY mes
+ORDER BY mes;
+
+-- Comparações temporais
+UPDATE pratica.pedidos
+SET status = 'Atrasado'
+WHERE 
+    status = 'Em Processamento'
+    AND data_pedido < CURRENT_DATE - INTERVAL '3 days';
+```
+
+## Exercício 7: Operações com JSON
+
+### Descrição
+
+Pratique operações DML com dados em formato JSON.
+
+### Requisitos
+
+* Consulta de dados JSON
+
+* Atualização de dados JSON
+
+* Filtragem por valores JSON
+
+* Transformação JSON para tabela
+
+### Solução
+
+```SQL
+-- Consulta de dados JSON
+SELECT 
+    id,
+    nome,
+    dados_adicionais->>'endereco' AS endereco,
+    dados_adicionais->'contatos'->>'telefone' AS telefone
+FROM pratica.clientes
+WHERE dados_adicionais->>'tipo' = 'Pessoa Física';
+
+-- Atualização de dados JSON
+UPDATE pratica.clientes
+SET dados_adicionais = jsonb_set(
+    dados_adicionais,
+    '{endereco}',
+    '"Rua Nova, 123"'::jsonb
+)
+WHERE id = 1;
+
+-- Filtragem por valores JSON
+SELECT *
+FROM pratica.produtos
+WHERE 
+    dados_tecnicos->'dimensoes'->>'altura' > '10'
+    AND dados_tecnicos->'compatibilidade' ? 'Android';
+
+-- Transformação JSON para tabela
+SELECT 
+    p.id,
+    p.nome,
+    a.valor->>'nome' AS atributo_nome,
+    a.valor->>'valor' AS atributo_valor
+FROM 
+    pratica.produtos p,
+    jsonb_array_elements(p.atributos) WITH ORDINALITY AS a(valor, idx)
+ORDER BY p.id, a.idx;
+```
+
+## Exercício 8: Operações com Dados Geoespaciais
+
+### Descrição
+
+Pratique operações DML com dados geoespaciais.
+
+### Requisitos
+
+* Consulta por proximidade
+
+* Cálculo de distâncias
+
+* Filtragem por região
+
+* Agrupamento por área
+
+### Solução
+
+```SQL
+-- Consulta por proximidade
+SELECT 
+    id,
+    nome,
+    ST_Distance(
+        localizacao,
+        ST_SetSRID(ST_MakePoint(-23.5505, -46.6333), 4326)
+    ) AS distancia_km
+FROM pratica.lojas
+ORDER BY distancia_km
+LIMIT 5;
+
+-- Cálculo de distâncias
+UPDATE pratica.entregas
+SET 
+    distancia_km = ST_Distance(
+        origem::geography,
+        destino::geography
+    ) / 1000,
+    valor_frete = (ST_Distance(
+        origem::geography,
+        destino::geography
+    ) / 1000) * 2.50  -- R$ 2,50 por km
+WHERE status = 'Pendente';
+
+-- Filtragem por região
+SELECT 
+    c.nome,
+    c.email
+FROM pratica.clientes c
+WHERE ST_Contains(
+    (SELECT area FROM pratica.regioes WHERE nome = 'Zona Sul'),
+    c.endereco_geo
+);
+
+-- Agrupamento por área
+SELECT 
+    r.nome AS regiao,
+    COUNT(c.id) AS total_clientes,
+    AVG(c.limite_credito) AS limite_medio
+FROM pratica.regioes r
+JOIN pratica.clientes c ON ST_Contains(r.area, c.endereco_geo)
+GROUP BY r.nome
+ORDER BY total_clientes DESC;
+```
+
+## Critérios de Avaliação
+
+* Sintaxe correta e otimizada
+
+* Uso adequado de recursos intermediários
+
+* Eficiência das consultas
+
+* Integridade dos dados após manipulação
+
+* Aplicação de boas práticas
+
+## Dicas de Estudo
+
+* Analise o plano de execução das consultas
+
+* Compare diferentes abordagens para o mesmo problema
+
+* Teste com conjuntos de dados maiores
+
+* Verifique o impacto de índices nas consultas
+
+* Pratique a escrita de consultas sem consultar exemplos
+
+
+
+# Exercícios Avançados de DML
+
+## Exercício 1: Operações de Sincronização de Dados
+
+### Descrição
+
+Pratique operações de sincronização entre tabelas e esquemas.
+
+### Requisitos
+
+* Sincronização bidirecional
+
+* Detecção e resolução de conflitos
+
+* Sincronização seletiva
+
+* Registro de auditoria
+
+### Solução
+
+```SQL
+-- Sincronização bidirecional
+WITH 
+    origem_alteracoes AS (
+        SELECT id, nome, preco, estoque, ultima_atualizacao
+        FROM pratica.produtos_origem
+        WHERE ultima_atualizacao > (SELECT MAX(ultima_sincronizacao) FROM pratica.controle_sync)
+    ),
+    destino_alteracoes AS (
+        SELECT id, nome, preco, estoque, ultima_atualizacao
+        FROM pratica.produtos_destino
+        WHERE ultima_atualizacao > (SELECT MAX(ultima_sincronizacao) FROM pratica.controle_sync)
+    ),
+    conflitos AS (
+        SELECT o.id
+        FROM origem_alteracoes o
+        JOIN destino_alteracoes d ON o.id = d.id
+    ),
+    atualizacoes_origem AS (
+        UPDATE pratica.produtos_destino pd
+        SET 
+            nome = po.nome,
+            preco = po.preco,
+            estoque = po.estoque,
+            ultima_atualizacao = CURRENT_TIMESTAMP
+        FROM pratica.produtos_origem po
+        WHERE pd.id = po.id
+        AND po.ultima_atualizacao > pd.ultima_atualizacao
+        AND po.id NOT IN (SELECT id FROM conflitos)
+        RETURNING pd.id
+    ),
+    atualizacoes_destino AS (
+        UPDATE pratica.produtos_origem po
+        SET 
+            nome = pd.nome,
+            preco = pd.preco,
+            estoque = pd.estoque,
+            ultima_atualizacao = CURRENT_TIMESTAMP
+        FROM pratica.produtos_destino pd
+        WHERE po.id = pd
+        AND pd.ultima_atualizacao > po.ultima_atualizacao
+        AND pd.id NOT IN (SELECT id FROM conflitos)
+        RETURNING po.id
+    ),
+    insercoes_origem AS (
+        INSERT INTO pratica.produtos_destino (id, nome, preco, estoque, ultima_atualizacao)
+        SELECT id, nome, preco, estoque, ultima_atualizacao
+        FROM origem_alteracoes
+        WHERE id NOT IN (SELECT id FROM destino_alteracoes)
+        RETURNING id
+    ),
+    insercoes_destino AS (
+        INSERT INTO pratica.produtos_origem (id, nome, preco, estoque, ultima_atualizacao)
+        SELECT id, nome, preco, estoque, ultima_atualizacao
+        FROM destino_alteracoes
+        WHERE id NOT IN (SELECT id FROM origem_alteracoes)
+        RETURNING id
+    )
+SELECT 
+    'Atualizou produtos origem' as operacao,
+    atualizacoes_origem
+FROM atualizacoes_origem
+UNION ALL
+SELECT 
+    'Atualizou produtos destino' as operacao,
+    atualizacoes_destino
+FROM atualizacoes_destino
+UNION ALL
+SELECT 
+    'Inseriu produtos origem' as operacao,
+    insercoes_origem
+FROM insercoes_origem
+UNION ALL
+SELECT 
+    'Inseriu produtos destino' as operacao,
+    insercoes_destino
+FROM insercoes_destino;
+
+-- Atualização do controle de sincronização
+UPDATE pratica.controle_sync
+SET ultima_sincronizacao = CURRENT_TIMESTAMP;
+```
+
+## Exercício 2: Manipulação de Dados JSON/JSONB
+
+### Descrição
+
+Trabalhe com armazenamento e manipulação de dados em formato JSON.
+
+### Requisitos
+
+* Armazenamento de estruturas complexas
+
+* Consultas em dados JSON
+
+* Modificação de estruturas JSON
+
+* Indexação de campos JSON
+
+### Solução
+
+```SQL
+-- Tabela com dados JSON
+CREATE TABLE pratica.configuracoes (
+    id SERIAL PRIMARY KEY,
+    aplicacao VARCHAR(50) NOT NULL,
+    config JSONB NOT NULL,
+    ultima_modificacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Inserção de dados JSON
+INSERT INTO pratica.configuracoes (aplicacao, config)
+VALUES (
+    'sistema_vendas',
+    '{
+        "database": {
+            "host": "db.example.com",
+            "port": 5432,
+            "credentials": {
+                "username": "app_user",
+                "password": "encrypted:abc123"
+            }
+        },
+        "features": ["vendas", "estoque", "relatorios"],
+        "limits": {
+            "max_users": 100,
+            "max_transactions": 10000
+        },
+        "logging": {
+            "level": "info",
+            "retention_days": 30
+        }
+    }'::jsonb
+);
+
+-- Consultas em dados JSON
+SELECT 
+    aplicacao,
+    config->'database'->>'host' as db_host,
+    config->'database'->>'port' as db_port,
+    config->'features' as recursos_ativos,
+    jsonb_array_length(config->'features') as total_recursos
+FROM pratica.configuracoes
+WHERE config->'limits'->>'max_users' = '100';
+
+-- Atualização de dados JSON
+UPDATE pratica.configuracoes
+SET 
+    config = jsonb_set(
+        jsonb_set(
+            config, 
+            '{database,host}', 
+            '"new-db.example.com"'
+        ),
+        '{limits,max_users}', 
+        '200'
+    ),
+    ultima_modificacao = CURRENT_TIMESTAMP
+WHERE aplicacao = 'sistema_vendas';
+
+-- Adição de elementos em arrays JSON
+UPDATE pratica.configuracoes
+SET 
+    config = jsonb_set(
+        config, 
+        '{features}', 
+        config->'features' || '"financeiro"'::jsonb
+    ),
+    ultima_modificacao = CURRENT_TIMESTAMP
+WHERE aplicacao = 'sistema_vendas';
+
+-- Índice para consultas em JSON
+CREATE INDEX idx_config_features ON pratica.configuracoes 
+USING gin (config->'features');
+```
+
+## Exercício 3: Operações com Window Functions
+
+### Descrição
+
+Utilize window functions para análises avançadas de dados.
+
+### Requisitos
+
+* Cálculo de métricas por janela
+
+* Ranking e particionamento
+
+* Análises cumulativas
+
+* Comparações com períodos anteriores
+
+### Solução
+
+```SQL
+-- Tabela de vendas para análise
+CREATE TABLE IF NOT EXISTS pratica.vendas_mensais (
+    id SERIAL PRIMARY KEY,
+    produto_id INTEGER NOT NULL,
+    categoria_id INTEGER NOT NULL,
+    regiao VARCHAR(50) NOT NULL,
+    data_venda DATE NOT NULL,
+    quantidade INTEGER NOT NULL,
+    valor_total DECIMAL(12,2) NOT NULL
+);
+
+-- Ranking de produtos por região
+SELECT 
+    regiao,
+    produto_id,
+    SUM(valor_total) as total_vendas,
+    RANK() OVER (PARTITION BY regiao ORDER BY SUM(valor_total) DESC) as ranking_regional,
+    DENSE_RANK() OVER (ORDER BY SUM(valor_total) DESC) as ranking_geral
+FROM pratica.vendas_mensais
+GROUP BY regiao, produto_id;
+
+-- Análise de tendências com janelas móveis
+SELECT 
+    data_venda,
+    categoria_id,
+    SUM(valor_total) as vendas_diarias,
+    AVG(SUM(valor_total)) OVER (
+        PARTITION BY categoria_id 
+        ORDER BY data_venda 
+        ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
+    ) as media_movel_7dias,
+    SUM(SUM(valor_total)) OVER (
+        PARTITION BY categoria_id 
+        ORDER BY data_venda 
+        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+    ) as vendas_acumuladas
+FROM pratica.vendas_mensais
+GROUP BY data_venda, categoria_id
+ORDER BY categoria_id, data_venda;
+
+-- Comparação com período anterior
+SELECT 
+    EXTRACT(YEAR FROM data_venda) as ano,
+    EXTRACT(MONTH FROM data_venda) as mes,
+    SUM(valor_total) as vendas_mes,
+    LAG(SUM(valor_total), 1) OVER (
+        PARTITION BY EXTRACT(MONTH FROM data_venda) 
+        ORDER BY EXTRACT(YEAR FROM data_venda)
+    ) as vendas_mes_ano_anterior,
+    SUM(valor_total) - LAG(SUM(valor_total), 1) OVER (
+        PARTITION BY EXTRACT(MONTH FROM data_venda) 
+        ORDER BY EXTRACT(YEAR FROM data_venda)
+    ) as diferenca,
+    CASE 
+        WHEN LAG(SUM(valor_total), 1) OVER (
+            PARTITION BY EXTRACT(MONTH FROM data_venda) 
+            ORDER BY EXTRACT(YEAR FROM data_venda)
+        ) > 0 THEN
+            ROUND(
+                (SUM(valor_total) - LAG(SUM(valor_total), 1) OVER (
+                    PARTITION BY EXTRACT(MONTH FROM data_venda) 
+                    ORDER BY EXTRACT(YEAR FROM data_venda)
+                )) / LAG(SUM(valor_total), 1) OVER (
+                    PARTITION BY EXTRACT(MONTH FROM data_venda) 
+                    ORDER BY EXTRACT(YEAR FROM data_venda)
+                ) * 100
+            )
+        ELSE NULL
+    END as variacao_percentual
+FROM pratica.vendas_mensais
+GROUP BY ano, mes
+ORDER BY ano, mes;
+```
+
+## Exercício 4: Operações com Common Table Expressions (CTEs)
+
+### Descrição
+
+Utilize CTEs para consultas complexas e recursivas.
+
+### Requisitos
+
+* CTEs para modularização de consultas
+
+* CTEs recursivas para estruturas hierárquicas
+
+* CTEs para operações em múltiplas etapas
+
+* Análise de caminhos em grafos
+
+### Solução
+
+```SQL
+-- Tabela de categorias hierárquicas
+CREATE TABLE IF NOT EXISTS pratica.categorias (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    categoria_pai_id INTEGER REFERENCES pratica.categorias(id)
+);
+
+-- CTE recursiva para hierarquia de categorias
+WITH RECURSIVE hierarquia AS (
+    -- Caso base: categorias raiz
+    SELECT 
+        id, 
+        nome, 
+        categoria_pai_id, 
+        1 as nivel,
+        ARRAY[id] as caminho,
+        nome as caminho_nome
+    FROM pratica.categorias
+    WHERE categoria_pai_id IS NULL
+    
+    UNION ALL
+    
+    -- Caso recursivo: categorias filhas
+    SELECT 
+        c.id, 
+        c.nome, 
+        c.categoria_pai_id, 
+        h.nivel + 1,
+        h.caminho || c.id,
+        h.caminho_nome || ' > ' || c.nome
+    FROM pratica.categorias c
+    JOIN hierarquia h ON c.categoria_pai_id = h.id
+)
+SELECT 
+    id,
+    nome,
+    nivel,
+    caminho,
+    caminho_nome
+FROM hierarquia
+ORDER BY caminho;
+
+-- CTE para análise de vendas em múltiplas etapas
+WITH vendas_mensais AS (
+    SELECT 
+        EXTRACT(YEAR FROM data_venda) as ano,
+        EXTRACT(MONTH FROM data_venda) as mes,
+        categoria_id,
+        SUM(valor_total) as total_vendas
+    FROM pratica.vendas_mensais
+    GROUP BY ano, mes, categoria_id
+),
+ranking_mensal AS (
+    SELECT 
+        ano,
+        mes,
+        categoria_id,
+        total_vendas,
+        RANK() OVER (PARTITION BY ano, mes ORDER BY total_vendas DESC) as ranking
+    FROM vendas_mensais
+),
+top_categorias AS (
+    SELECT 
+        ano,
+        mes,
+        categoria_id,
+        total_vendas
+    FROM ranking_mensal
+    WHERE ranking <= 3
+)
+SELECT 
+    tc.ano,
+    tc.mes,
+    tc.categoria_id,
+    c.nome as categoria,
+    tc.total_vendas,
+    ROUND(tc.total_vendas / SUM(vm.total_vendas) OVER (PARTITION BY tc.ano, tc.mes) * 100, 2) as percentual_total
+FROM top_categorias tc
+JOIN pratica.categorias c ON tc.categoria_id = c.id
+JOIN vendas_mensais vm ON tc.ano = vm.ano AND tc.mes = vm.mes
+ORDER BY tc.ano, tc.mes, tc.total_vendas DESC;
+```
+
+## Exercício 5: Operações com Pivotamento de Dados
+
+### Descrição
+
+Transforme dados de formato linha para coluna e vice-versa.
+
+### Requisitos
+
+* Pivotamento dinâmico de linhas para colunas
+
+* Despivotamento de colunas para linhas
+
+* Agregações em pivotamento
+
+* Formatação de relatórios
+
+### Solução
+
+```SQL
+-- Tabela de vendas por região e produto
+CREATE TABLE IF NOT EXISTS pratica.vendas_regiao (
+    id SERIAL PRIMARY KEY,
+    data_venda DATE NOT NULL,
+    regiao VARCHAR(50) NOT NULL,
+    produto_id INTEGER NOT NULL,
+    quantidade INTEGER NOT NULL,
+    valor_total DECIMAL(12,2) NOT NULL
+);
+
+-- Pivotamento de linhas para colunas (vendas por região)
+SELECT 
+    data_venda,
+    produto_id,
+    SUM(CASE WHEN regiao = 'Norte' THEN valor_total ELSE 0 END) as norte,
+    SUM(CASE WHEN regiao = 'Sul' THEN valor_total ELSE 0 END) as sul,
+    SUM(CASE WHEN regiao = 'Leste' THEN valor_total ELSE 0 END) as leste,
+    SUM(CASE WHEN regiao = 'Oeste' THEN valor_total ELSE 0 END) as oeste,
+    SUM(valor_total) as total_geral
+FROM pratica.vendas_regiao
+GROUP BY data_venda, produto_id
+ORDER BY data_venda, produto_id;
+
+-- Pivotamento dinâmico usando crosstab (PostgreSQL)
+CREATE EXTENSION IF NOT EXISTS tablefunc;
+
+SELECT * FROM crosstab(
+    'SELECT 
+        produto_id, 
+        regiao, 
+        SUM(valor_total)
+     FROM pratica.vendas_regiao
+     WHERE data_venda BETWEEN ''2023-01-01'' AND ''2023-01-31''
+     GROUP BY produto_id, regiao
+     ORDER BY 1, 2',
+    'SELECT DISTINCT regiao FROM pratica.vendas_regiao ORDER BY 1'
+) AS ct (
+    produto_id INTEGER,
+    norte DECIMAL,
+    sul DECIMAL,
+    leste DECIMAL,
+    oeste DECIMAL
+);
+
+-- Despivotamento de colunas para linhas
+CREATE TABLE IF NOT EXISTS pratica.relatorio_mensal (
+    produto_id INTEGER NOT NULL,
+    mes DATE NOT NULL,
+    norte DECIMAL(12,2),
+    sul DECIMAL(12,2),
+    leste DECIMAL(12,2),
+    oeste DECIMAL(12,2),
+    PRIMARY KEY (produto_id, mes)
+);
+
+-- Despivotamento (PostgreSQL)
+SELECT 
+    produto_id,
+    mes,
+    regiao,
+    valor
+FROM pratica.relatorio_mensal
+CROSS JOIN LATERAL (
+    VALUES 
+        ('Norte', norte),
+        ('Sul', sul),
+        ('Leste', leste),
+        ('Oeste', oeste)
+) as regioes(regiao, valor)
+WHERE valor > 0
+ORDER BY produto_id, mes, regiao;
+```
+
+## Exercício 6: Operações com Dados Temporais
+
+### Descrição
+
+Trabalhe com análises temporais avançadas.
+
+### Requisitos
+
+* Análise de séries temporais
+
+* Cálculo de períodos de negócio
+
+* Detecção de padrões temporais
+
+* Agregações por intervalos customizados
+
+### Solução
+
+```SQL
+-- Tabela de eventos temporais
+CREATE TABLE IF NOT EXISTS pratica.eventos_sistema (
+    id SERIAL PRIMARY KEY,
+    tipo_evento VARCHAR(50) NOT NULL,
+    timestamp TIMESTAMP NOT NULL,
+    usuario_id INTEGER,
+    duracao_ms INTEGER,
+    detalhes JSONB
+);
+
+-- Análise de distribuição por hora do dia
+SELECT 
+    EXTRACT(HOUR FROM timestamp) as hora,
+    COUNT(*) as total_eventos,
+    AVG(duracao_ms) as duracao_media,
+    COUNT(*) * 100.0 / SUM(COUNT(*)) OVER () as percentual
+FROM pratica.eventos_sistema
+WHERE timestamp >= CURRENT_DATE - INTERVAL '30 days'
+GROUP BY hora
+ORDER BY hora;
+
+-- Cálculo de tempo entre eventos (lag/lead)
+SELECT 
+    id,
+    tipo_evento,
+    timestamp,
+    usuario_id,
+    EXTRACT(EPOCH FROM (timestamp - LAG(timestamp) OVER (
+        PARTITION BY usuario_id 
+        ORDER BY timestamp
+    ))) as segundos_desde_ultimo_evento,
+    EXTRACT(EPOCH FROM (LEAD(timestamp) OVER (
+        PARTITION BY usuario_id 
+        ORDER BY timestamp
+    ) - timestamp)) as segundos_ate_proximo_evento
+FROM pratica.eventos_sistema
+WHERE usuario_id = 123
+ORDER BY timestamp;
+
+-- Agregação por intervalos customizados (15 minutos)
+SELECT 
+    DATE_TRUNC('day', timestamp) as dia,
+    (EXTRACT(HOUR FROM timestamp) * 4 + 
+     FLOOR(EXTRACT(MINUTE FROM timestamp) / 15)) * 15 as minuto_do_dia,
+    COUNT(*) as total_eventos,
+    SUM(duracao_ms) as duracao_total
+FROM pratica.eventos_sistema
+WHERE timestamp >= CURRENT_DATE - INTERVAL '7 days'
+GROUP BY dia, minuto_do_dia
+ORDER BY dia, minuto_do_dia;
+
+-- Detecção de padrões temporais (3 falhas em 5 minutos)
+WITH eventos_falha AS (
+    SELECT 
+        timestamp,
+        usuario_id,
+        tipo_evento,
+        COUNT(*) OVER (
+            PARTITION BY usuario_id 
+            ORDER BY timestamp 
+            RANGE BETWEEN INTERVAL '5 minutes' PRECEDING AND CURRENT ROW
+        ) as falhas_recentes
+    FROM pratica.eventos_sistema
+    WHERE tipo_evento = 'login_falha'
+)
+SELECT DISTINCT
+    usuario_id,
+    MIN(timestamp) OVER (PARTITION BY usuario_id) as primeira_falha,
+    COUNT(*) OVER (PARTITION BY usuario_id) as total_falhas
+FROM eventos_falha
+WHERE falhas_recentes >= 3
+ORDER BY usuario_id;
+```
+
+## Exercício 7: Operações com Dados Geoespaciais
+
+### Descrição
+
+Trabalhe com dados geoespaciais para análises baseadas em localização.
+
+### Requisitos
+
+* Armazenamento de coordenadas
+
+* Cálculo de distâncias
+
+* Consultas por proximidade
+
+* Análises de áreas
+
+### Solução
+
+```SQL
+-- Extensão PostGIS (PostgreSQL)
+CREATE EXTENSION IF NOT EXISTS postgis;
+
+-- Tabela de locais
+CREATE TABLE IF NOT EXISTS pratica.locais (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    tipo VARCHAR(50) NOT NULL,
+    geom GEOMETRY(Point, 4326) NOT NULL
+);
+
+-- Inserção de locais
+INSERT INTO pratica.locais (nome, tipo, geom)
+VALUES 
+    ('Parque Central', 'Parque', ST_SetSRID(ST_MakePoint(-46.6333, -23.5505), 4326)),
+    ('Museu de Arte', 'Museu', ST_SetSRID(ST_MakePoint(-46.6358, -23.5515), 4326)),
+    ('Teatro Municipal', 'Teatro', ST_SetSRID(ST_MakePoint(-46.6345, -23.5520), 4326));
+
+-- Consulta de locais próximos
+SELECT 
+    nome,
+    tipo,
+    ST_Distance(geom, ST_SetSRID(ST_MakePoint(-46.6333, -23.5505), 4326)) as distancia_km
+FROM pratica.locais
+ORDER BY distancia_km;
+
+-- Cálculo de área de um polígono
+CREATE TABLE IF NOT EXISTS pratica.poligonos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    geom GEOMETRY(Polygon, 4326) NOT NULL
+);
+
+INSERT INTO pratica.poligonos (nome, geom)
+VALUES (
+    'Área Turística',
+    ST_SetSRID(ST_GeomFromText('POLYGON((-46.6333 -23.5505, -46.6358 -23.5515, -46.6345 -23.5520, -46.6333 -23.5505))'), 4326)
+);
+
+SELECT 
+    nome,
+    ST_Area(geom) as area_km2
+FROM pratica.poligonos;
+```
+
+
+
+# Laboratórios de DML
+
+## Visão Geral
+
+Os laboratórios práticos de DML (Data Manipulation Language) são projetados para fornecer experiência hands-on com operações de manipulação de dados em ambientes PostgreSQL. Cada laboratório apresenta cenários reais e desafios práticos comumente encontrados em ambientes de produção.
+
+## Estrutura dos Laboratórios
+
+Cada laboratório segue uma estrutura consistente:
+
+1. Preparação do Ambiente
+
+* Configuração inicial
+
+* Pré-requisitos
+
+* Scripts de setup
+
+2. Objetivos de Aprendizado
+
+* Conceitos principais
+
+* Habilidades técnicas
+
+* Resultados esperados
+
+3. Roteiro Prático
+
+* Instruções passo a passo
+
+* Comandos e scripts
+
+* Pontos de verificação
+
+4. Avaliação
+
+* Critérios de conclusão
+
+* Testes de validação
+
+* Métricas de sucesso
+
+## Ambiente de Laboratório
+
+```SQL
+-- Criar database dedicado para laboratórios
+CREATE DATABASE lab_dml;
+
+-- Schema para isolamento de exercícios
+CREATE SCHEMA lab_workspace;
+
+-- Tabelas para os laboratórios
+CREATE TABLE lab_workspace.clientes (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    data_cadastro DATE DEFAULT CURRENT_DATE,
+    status VARCHAR(20) DEFAULT 'Ativo',
+    segmento VARCHAR(50),
+    limite_credito DECIMAL(10,2) DEFAULT 1000.00
+);
+
+CREATE TABLE lab_workspace.produtos (
+    id SERIAL PRIMARY KEY,
+    codigo VARCHAR(20) UNIQUE,
+    nome VARCHAR(100) NOT NULL,
+    descricao TEXT,
+    preco DECIMAL(10,2) NOT NULL CHECK (preco > 0),
+    estoque INTEGER DEFAULT 0,
+    categoria VARCHAR(50),
+    data_cadastro DATE DEFAULT CURRENT_DATE,
+    status VARCHAR(20) DEFAULT 'Ativo'
+);
+
+CREATE TABLE lab_workspace.pedidos (
+    id SERIAL PRIMARY KEY,
+    cliente_id INTEGER REFERENCES lab_workspace.clientes(id),
+    data_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    valor_total DECIMAL(10,2) DEFAULT 0,
+    status VARCHAR(20) DEFAULT 'Pendente',
+    observacoes TEXT
+);
+
+CREATE TABLE lab_workspace.itens_pedido (
+    pedido_id INTEGER REFERENCES lab_workspace.pedidos(id),
+    produto_id INTEGER REFERENCES lab_workspace.produtos(id),
+    quantidade INTEGER CHECK (quantidade > 0),
+    preco_unitario DECIMAL(10,2) NOT NULL,
+    desconto DECIMAL(10,2) DEFAULT 0,
+    PRIMARY KEY (pedido_id, produto_id)
+);
+
+-- Tabela de controle de progresso
+CREATE TABLE lab_workspace.lab_progress (
+    lab_id SERIAL PRIMARY KEY,
+    lab_name VARCHAR(100),
+    start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    completion_time TIMESTAMP,
+    status VARCHAR(20) DEFAULT 'IN_PROGRESS',
+    notes TEXT
+);
+```
+
+## Laboratórios Disponíveis
+
+### 1. Manipulação de Dados
+
+* Operações CRUD básicas
+
+* Transações e consistência
+
+* Manipulação em lote
+
+* Validação de dados
+
+### 2. Análise de Dados
+
+* Consultas analíticas
+
+* Agregações e agrupamentos
+
+* Funções de janela
+
+* Relatórios dinâmicos
+
+### 3. Transformação de Dados
+
+* Conversão de formatos
+
+* Limpeza de dados
+
+* Normalização e desnormalização
+
+* Enriquecimento de dados
+
+### 4. Integração de Dados
+
+* Importação e exportação
+
+* Sincronização entre tabelas
+
+* Migração de dados
+
+* Validação de integridade
+
+## Fluxo de Trabalho Recomendado
+
+```MERMAID
+graph TD
+    A[Preparação] --> B[Execução]
+    B --> C[Validação]
+    C --> D[Documentação]
+    D --> E[Revisão]
+    E --> F[Conclusão]
+```
+
+## Boas Práticas
+
+```
+╔════════════════════════════════════════════╗
+║  DIRETRIZES DE LABORATÓRIO:               ║
+║  ✓ Sempre trabalhar em transações         ║
+║  ✓ Verificar resultados após cada etapa   ║
+║  ✓ Documentar todas as operações          ║
+║  ✓ Testar com diferentes conjuntos        ║
+║  ✓ Manter scripts de rollback             ║
+╚════════════════════════════════════════════╝
+```
+
+## Ferramentas Necessárias
+
+1. PostgreSQL Client
+
+* psql
+
+* pgAdmin 4
+
+* DBeaver
+
+2. Utilitários
+
+* pg_dump (para backup)
+
+* COPY (para importação/exportação)
+
+* Ferramentas de análise de plano de execução
+
+3. Scripts de Suporte
+
+```SQL
+-- Script de verificação de ambiente
+CREATE OR REPLACE FUNCTION lab_workspace.check_environment()
+RETURNS TABLE (
+    check_item VARCHAR,
+    status VARCHAR,
+    details TEXT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 'Database Version'::VARCHAR,
+           version()::VARCHAR,
+           'Verificação da versão do PostgreSQL'::TEXT
+    UNION ALL
+    SELECT 'Available Tables',
+           (SELECT string_agg(table_name, ', ') FROM information_schema.tables 
+            WHERE table_schema = 'lab_workspace'),
+           'Tabelas disponíveis no schema lab_workspace';
+END;
+$$ LANGUAGE plpgsql;
+```
+
+## Navegação dos Laboratórios
+
+* [Laboratório de Manipulação de Dados](lab-data-manipulation.html)
+
+* [Laboratório de Análise de Dados](lab-data-analysis.html)
+
+* [Laboratório de Transformação de Dados](lab-data-transformation.html)
+
+* [Laboratório de Integração de Dados](lab-data-integration.html)
+
+## Suporte e Recursos
+
+### Documentação
+
+* [PostgreSQL Official Documentation](https://www.postgresql.org/docs/)
+
+* [DML Reference Guide](https://www.postgresql.org/docs/current/dml.html)
+
+* [Data Manipulation Best Practices](https://www.postgresql.org/docs/current/sql-commands.html)
+
+### Comunidade
+
+* Fórum PostgreSQL
+
+* Stack Overflow
+
+* GitHub Discussions
+
+## Conclusão
+
+Os laboratórios DML fornecem uma base prática essencial para o desenvolvimento de habilidades em manipulação de dados. A prática regular destes exercícios contribuirá significativamente para sua expertise em operações de banco de dados PostgreSQL.
+
+## Próximos Passos
+
+1. Preparação
+
+* Configure seu ambiente local
+
+* Revise os pré-requisitos
+
+* Familiarize-se com as ferramentas
+
+2. Execução
+
+* Siga os laboratórios em ordem
+
+* Complete todos os exercícios
+
+* Documente seus resultados
+
+3. Avançado
+
+* Explore variações dos exercícios
+
+* Crie seus próprios cenários
+
+* Compartilhe experiências
+
+Tip:
+
+Nota: Certifique-se de manter backups e usar ambientes de teste apropriados durante a execução dos laboratórios. As operações DML podem modificar dados permanentemente.
+
+
+
+# Laboratório: Manipulação de Dados
+
+## Objetivo
+
+Praticar operações DML (Data Manipulation Language) básicas em um banco de dados relacional, aplicando boas práticas de manipulação de dados.
+
+## Cenário
+
+Você é um desenvolvedor de banco de dados em uma empresa de e-commerce que precisa implementar operações de manipulação de dados para o sistema de gerenciamento de pedidos.
+
+## Setup Inicial
+
+```SQL
+-- Carregar dados de exemplo
+INSERT INTO lab_workspace.clientes (nome, email, segmento, limite_credito)
+VALUES 
+    ('Ana Silva', 'ana.silva@email.com', 'Varejo', 2000.00),
+    ('Bruno Costa', 'bruno@email.com', 'Atacado', 5000.00),
+    ('Carla Mendes', 'carla@email.com', 'Varejo', 1500.00),
+    ('Daniel Oliveira', 'daniel@email.com', 'Corporativo', 10000.00),
+    ('Elena Santos', 'elena@email.com', 'Varejo', 2500.00);
+
+INSERT INTO lab_workspace.produtos (codigo, nome, descricao, preco, estoque, categoria)
+VALUES 
+    ('PROD001', 'Smartphone X', 'Smartphone avançado com câmera de alta resolução', 1299.99, 50, 'Eletrônicos'),
+    ('PROD002', 'Notebook Pro', 'Notebook para uso profissional', 3499.99, 20, 'Informática'),
+    ('PROD003', 'Fones Bluetooth', 'Fones de ouvido sem fio', 199.99, 100, 'Acessórios'),
+    ('PROD004', 'Monitor 24"', 'Monitor LED Full HD', 799.99, 30, 'Informática'),
+    ('PROD005', 'Teclado Mecânico', 'Teclado para gamers', 249.99, 45, 'Periféricos');
+
+-- Registrar início do laboratório
+INSERT INTO lab_workspace.lab_progress (lab_name)
+VALUES ('Manipulação de Dados');
+```
+
+## Parte 1: Operações CRUD Básicas
+
+### 1.1 Inserção de Dados
+
+```SQL
+-- Inserir um novo cliente
+INSERT INTO lab_workspace.clientes (nome, email, segmento, limite_credito)
+VALUES ('Fernando Gomes', 'fernando@email.com', 'Varejo', 3000.00);
+
+-- Inserir múltiplos produtos
+INSERT INTO lab_workspace.produtos (codigo, nome, descricao, preco, estoque, categoria)
+VALUES 
+    ('PROD006', 'Mouse Sem Fio', 'Mouse ergonômico', 89.90, 60, 'Periféricos'),
+    ('PROD007', 'Caixa de Som', 'Caixa de som bluetooth', 159.90, 25, 'Acessórios');
+
+-- Inserir um pedido com seus itens
+INSERT INTO lab_workspace.pedidos (cliente_id, observacoes)
+VALUES (1, 'Entrega prioritária');
+
+INSERT INTO lab_workspace.itens_pedido (pedido_id, produto_id, quantidade, preco_unitario)
+VALUES 
+    (1, 1, 1, 1299.99),
+    (1, 3, 2, 199.99);
+
+UPDATE lab_workspace.pedidos
+SET valor_total = (
+    SELECT SUM(quantidade * preco_unitario)
+    FROM lab_workspace.itens_pedido
+    WHERE pedido_id = 1
+)
+WHERE id = 1;
+```
+
+### 1.2 Consulta de Dados
+
+```SQL
+-- Consulta simples
+SELECT * FROM lab_workspace.clientes WHERE segmento = 'Varejo';
+
+-- Consulta com JOIN
+SELECT 
+    p.id as pedido_id,
+    c.nome as cliente,
+    p.data_pedido,
+    p.valor_total,
+    p.status
+FROM lab_workspace.pedidos p
+JOIN lab_workspace.clientes c ON p.cliente_id = c.id;
+
+-- Consulta detalhada de pedido
+SELECT 
+    p.id as pedido_id,
+    c.nome as cliente,
+    pr.nome as produto,
+    ip.quantidade,
+    ip.preco_unitario,
+    (ip.quantidade * ip.preco_unitario) as subtotal
+FROM lab_workspace.pedidos p
+JOIN lab_workspace.clientes c ON p.cliente_id = c.id
+JOIN lab_workspace.itens_pedido ip ON p.id = ip.pedido_id
+JOIN lab_workspace.produtos pr ON ip.produto_id = pr.id
+WHERE p.id = 1;
+```
+
+### 1.3 Atualização de Dados
+
+```SQL
+-- Atualização simples
+UPDATE lab_workspace.clientes
+SET email = 'ana.silva.nova@email.com'
+WHERE id = 1;
+
+-- Atualização com cálculo
+UPDATE lab_workspace.produtos
+SET preco = preco * 1.05
+WHERE categoria = 'Eletrônicos';
+
+-- Atualização com subconsulta
+UPDATE lab_workspace.pedidos
+SET status = 'Aprovado'
+WHERE cliente_id IN (
+    SELECT id FROM lab_workspace.clientes
+    WHERE limite_credito > 2000.00
+);
+```
+
+### 1.4 Exclusão de Dados
+
+```SQL
+-- Exclusão simples
+DELETE FROM lab_workspace.itens_pedido
+WHERE pedido_id = 1 AND produto_id = 3;
+
+-- Exclusão com subconsulta
+DELETE FROM lab_workspace.produtos
+WHERE estoque = 0 AND id NOT IN (
+    SELECT produto_id FROM lab_workspace.itens_pedido
+);
+
+-- Exclusão em cascata
+DELETE FROM lab_workspace.itens_pedido
+WHERE pedido_id = 1;
+
+DELETE FROM lab_workspace.pedidos
+WHERE id = 1;
+```
+
+## Parte 2: Manipulação em Lote
+
+### 2.1 Inserção em Lote
+
+```SQL
+-- Inserir múltiplos clientes
+INSERT INTO lab_workspace.clientes (nome, email, segmento, limite_credito)
+SELECT 
+    'Cliente ' || i,
+    'cliente' || i || '@email.com',
+    CASE WHEN i % 3 = 0 THEN 'Varejo' 
+         WHEN i % 3 = 1 THEN 'Atacado' 
+         ELSE 'Corporativo' END,
+    1000 * (i % 10 + 1)
+FROM generate_series(1, 10) i;
+
+-- Verificar inserção
+SELECT COUNT(*) FROM lab_workspace.clientes;
+```
+
+### 2.2 Atualização em Lote
+
+```SQL
+-- Atualizar status de múltiplos pedidos
+UPDATE lab_workspace.pedidos
+SET status = 'Processando'
+WHERE status = 'Pendente';
+
+-- Atualizar preços com base na categoria
+UPDATE lab_workspace.produtos
+SET preco = preco * 0.95  -- 5% desconto
+WHERE categoria = 'Eletrônicos';
+```
+
+### 2.3 Exclusão em Lote
+
+```SQL
+-- Excluir pedidos antigos
+DELETE FROM lab_workspace.itens_pedido
+WHERE pedido_id IN (
+    SELECT id FROM lab_workspace.pedidos
+    WHERE status = 'Cancelado'
+);
+
+DELETE FROM lab_workspace.pedidos
+WHERE status = 'Cancelado';
+```
+
+## Conclusão
+
+Neste laboratório, você praticou as operações DML básicas:
+
+* Inserção de dados (INSERT)
+
+* Consulta de dados (SELECT)
+
+* Atualização de dados (UPDATE)
+
+* Exclusão de dados (DELETE)
+
+Estas operações são fundamentais para qualquer sistema de banco de dados e formam a base para manipulação de dados em aplicações.
+
+
+
+# Laboratório: Análise de Dados
+
+## Objetivo
+
+Desenvolver habilidades avançadas de análise de dados utilizando SQL, incluindo agregações, funções de janela, agrupamentos e técnicas de relatórios dinâmicos.
+
+## Cenário
+
+Você é um analista de dados em uma empresa de varejo que precisa extrair insights valiosos dos dados de vendas, clientes e produtos para apoiar decisões estratégicas.
+
+## Setup Inicial
+
+```SQL
+-- Criar tabelas adicionais para análise
+CREATE TABLE lab_workspace.vendas (
+    id SERIAL PRIMARY KEY,
+    data_venda DATE NOT NULL,
+    cliente_id INTEGER REFERENCES lab_workspace.clientes(id),
+    vendedor_id INTEGER,
+    loja_id INTEGER,
+    valor_total DECIMAL(10,2) NOT NULL,
+    desconto DECIMAL(10,2) DEFAULT 0,
+    metodo_pagamento VARCHAR(50),
+    parcelas INTEGER DEFAULT 1
+);
+
+CREATE TABLE lab_workspace.itens_venda (
+    id SERIAL PRIMARY KEY,
+    venda_id INTEGER REFERENCES lab_workspace.vendas(id),
+    produto_id INTEGER REFERENCES lab_workspace.produtos(id),
+    quantidade INTEGER NOT NULL,
+    preco_unitario DECIMAL(10,2) NOT NULL
+);
+
+CREATE TABLE lab_workspace.lojas (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    regiao VARCHAR(50),
+    tipo VARCHAR(50),
+    data_inauguracao DATE,
+    tamanho_m2 INTEGER
+);
+
+CREATE TABLE lab_workspace.vendedores (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    loja_id INTEGER REFERENCES lab_workspace.lojas(id),
+    data_contratacao DATE,
+    meta_mensal DECIMAL(10,2),
+    status VARCHAR(20) DEFAULT 'Ativo'
+);
+
+-- Carregar dados de exemplo
+INSERT INTO lab_workspace.lojas (nome, regiao, tipo, data_inauguracao, tamanho_m2)
+VALUES 
+    ('Loja Centro', 'Sul', 'Shopping', '2020-01-15', 500),
+    ('Loja Norte', 'Norte', 'Rua', '2019-05-20', 350),
+    ('Loja Shopping Plaza', 'Leste', 'Shopping', '2021-03-10', 600),
+    ('Loja Beira Mar', 'Nordeste', 'Shopping', '2018-11-05', 450),
+    ('Loja Parque', 'Centro-Oeste', 'Rua', '2022-02-28', 300);
+
+INSERT INTO lab_workspace.vendedores (nome, email, loja_id, data_contratacao, meta_mensal)
+VALUES 
+    ('Carlos Souza', 'carlos@email.com', 1, '2020-02-01', 20000.00),
+    ('Mariana Lima', 'mariana@email.com', 1, '2020-03-15', 18000.00),
+    ('Paulo Mendes', 'paulo@email.com', 2, '2019-06-10', 15000.00),
+    ('Juliana Costa', 'juliana@email.com', 3, '2021-04-05', 22000.00),
+    ('Roberto Silva', 'roberto@email.com', 4, '2019-01-10', 19000.00),
+    ('Amanda Oliveira', 'amanda@email.com', 5, '2022-03-01', 16000.00);
+
+-- Inserir dados de vendas (últimos 6 meses)
+INSERT INTO lab_workspace.vendas (data_venda, cliente_id, vendedor_id, loja_id, valor_total, desconto, metodo_pagamento, parcelas)
+SELECT
+    CURRENT_DATE - (random() * 180)::integer AS data_venda,
+    (random() * 50 + 1)::integer AS cliente_id,
+    (random() * 6 + 1)::integer AS vendedor_id,
+    (random() * 5 + 1)::integer AS loja_id,
+    (random() * 1000 + 100)::numeric(10,2) AS valor_total,
+    (random() * 100)::numeric(10,2) AS desconto,
+    (ARRAY['Crédito', 'Débito', 'Dinheiro', 'Pix', 'Boleto'])[floor(random() * 5 + 1)] AS metodo_pagamento,
+    (ARRAY[1, 2, 3, 6, 10, 12])[floor(random() * 6 + 1)] AS parcelas
+FROM generate_series(1, 1000);
+
+-- Inserir itens de venda
+INSERT INTO lab_workspace.itens_venda (venda_id, produto_id, quantidade, preco_unitario)
+SELECT
+    v.id AS venda_id,
+    (random() * 100 + 1)::integer AS produto_id,
+    (random() * 5 + 1)::integer AS quantidade,
+    (random() * 200 + 50)::numeric(10,2) AS preco_unitario
+FROM lab_workspace.vendas v
+CROSS JOIN generate_series(1, 3) AS num_items
+ORDER BY v.id;
+
+-- Registrar início do laboratório
+INSERT INTO lab_workspace.lab_progress (lab_name)
+VALUES ('Análise de Dados');
+```
+
+## Parte 1: Agregações Básicas
+
+### 1.1 Contagem e Somatórios
+
+```SQL
+-- Total de vendas por loja
+SELECT 
+    l.nome as loja,
+    COUNT(v.id) as total_vendas,
+    SUM(v.valor_total) as valor_total
+FROM lab_workspace.vendas v
+JOIN lab_workspace.lojas l ON v.loja_id = l.id
+GROUP BY l.nome
+ORDER BY valor_total DESC;
+
+-- Média de vendas por dia da semana
+SELECT 
+    TO_CHAR(data_venda, 'Day') as dia_semana,
+    COUNT(id) as total_vendas,
+    ROUND(AVG(valor_total), 2) as ticket_medio
+FROM lab_workspace.vendas
+GROUP BY dia_semana
+ORDER BY ticket_medio DESC;
+
+-- Produtos mais vendidos
+SELECT 
+    p.nome as produto,
+    SUM(iv.quantidade) as quantidade_total,
+    SUM(iv.quantidade * iv.preco_unitario) as valor_total
+FROM lab_workspace.itens_venda iv
+JOIN lab_workspace.produtos p ON iv.produto_id = p.id
+GROUP BY p.nome
+ORDER BY quantidade_total DESC
+LIMIT 10;
+```
+
+### 1.2 Funções de Agregação Avançadas
+
+```SQL
+-- Estatísticas de vendas
+SELECT 
+    COUNT(*) as total_vendas,
+    MIN(valor_total) as menor_venda,
+    MAX(valor_total) as maior_venda,
+    ROUND(AVG(valor_total), 2) as media_vendas,
+    PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY valor_total) as mediana_vendas,
+    ROUND(STDDEV(valor_total), 2) as desvio_padrao
+FROM lab_workspace.vendas;
+
+-- Distribuição de vendas por faixa de valor
+SELECT 
+    CASE 
+        WHEN valor_total < 200 THEN 'Até R$ 200'
+        WHEN valor_total < 500 THEN 'R$ 200 a R$ 500'
+        WHEN valor_total < 800 THEN 'R$ 500 a R$ 800'
+        ELSE 'Acima de R$ 800'
+    END as faixa_valor,
+    COUNT(*) as total_vendas,
+    ROUND(AVG(valor_total), 2) as valor_medio,
+    SUM(valor_total) as valor_total
+FROM lab_workspace.vendas
+GROUP BY faixa_valor
+ORDER BY MIN(valor_total);
+
+-- Análise de métodos de pagamento
+SELECT 
+    metodo_pagamento,
+    COUNT(*) as total_vendas,
+    ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM lab_workspace.vendas), 2) as percentual,
+    SUM(valor_total) as valor_total
+FROM lab_workspace.vendas
+GROUP BY metodo_pagamento
+ORDER BY total_vendas DESC;
+```
+
+## Parte 2: Análise Temporal
+
+### 2.1 Tendências por Período
+
+```SQL
+-- Vendas por mês
+SELECT 
+    TO_CHAR(data_venda, 'YYYY-MM') as mes,
+    COUNT(*) as total_vendas,
+    SUM(valor_total) as valor_total,
+    ROUND(AVG(valor_total), 2) as ticket_medio
+FROM lab_workspace.vendas
+GROUP BY mes
+ORDER BY mes;
+
+-- Vendas por semana
+SELECT 
+    TO_CHAR(data_venda, 'YYYY-IW') as semana,
+    COUNT(*) as total_vendas,
+    SUM(valor_total) as valor_total
+FROM lab_workspace.vendas
+GROUP BY semana
+ORDER BY semana;
+
+-- Comparação dia a dia (últimos 14 dias)
+SELECT 
+    data_venda,
+    COUNT(*) as total_vendas,
+    SUM(valor_total) as valor_total,
+    LAG(SUM(valor_total), 1) OVER (ORDER BY data_venda) as valor_dia_anterior,
+    ROUND(
+        (SUM(valor_total) - LAG(SUM(valor_total), 1) OVER (ORDER BY data_venda)) / 
+        NULLIF(LAG(SUM(valor_total), 1) OVER (ORDER BY data_venda), 0) * 100, 
+    2) as variacao_percentual
+FROM lab_workspace.vendas
+WHERE data_venda >= CURRENT_DATE - INTERVAL '14 days'
+GROUP BY data_venda
+ORDER BY data_venda;
+```
+
+### 2.2 Análise de Sazonalidade
+
+```SQL
+-- Vendas por hora do dia
+SELECT 
+    EXTRACT(HOUR FROM data_venda::timestamp) as hora,
+    COUNT(*) as total_vendas,
+    SUM(valor_total) as valor_total
+FROM lab_workspace.vendas
+GROUP BY hora
+ORDER BY hora;
+
+-- Vendas por dia da semana
+SELECT 
+    EXTRACT(DOW FROM data_venda) as dia_semana_num,
+    TO_CHAR(data_venda, 'Day') as dia_semana,
+    COUNT(*) as total_vendas,
+    SUM(valor_total) as valor_total
+FROM lab_workspace.vendas
+GROUP BY dia_semana_num, dia_semana
+ORDER BY dia_semana_num;
+
+-- Análise de fim de semana vs. dia de semana
+SELECT 
+    CASE 
+        WHEN EXTRACT(DOW FROM data_venda) IN (0, 6) THEN 'Fim de Semana'
+        ELSE 'Dia de Semana'
+    END as tipo_dia,
+    COUNT(*) as total_vendas,
+    ROUND(AVG(valor_total), 2) as ticket_medio,
+    SUM(valor_total) as valor_total
+FROM lab_workspace.vendas
+GROUP BY tipo_dia;
+```
+
+## Parte 3: Funções de Janela (Window Functions)
+
+### 3.1 Rankings e Partições
+
+```SQL
+-- Ranking de vendedores por valor total
+SELECT 
+    v.nome as vendedor,
+    COUNT(vd.id) as total_vendas,
+    SUM(vd.valor_total) as valor_total,
+    RANK() OVER (ORDER BY SUM(vd.valor_total) DESC) as ranking
+FROM lab_workspace.vendas vd
+JOIN lab_workspace.vendedores v ON vd.vendedor_id = v.id
+GROUP BY v.nome
+ORDER BY ranking;
+
+-- Top 3 produtos por loja
+WITH produtos_por_loja AS (
+    SELECT 
+        l.nome as loja,
+        p.nome as produto,
+        SUM(iv.quantidade) as quantidade_total,
+        RANK() OVER (PARTITION BY l.id ORDER BY SUM(iv.quantidade) DESC) as ranking
+    FROM lab_workspace.itens_venda iv
+    JOIN lab_workspace.vendas v ON iv.venda_id = v.id
+    JOIN lab_workspace.lojas l ON v.loja_id = l.id
+    JOIN lab_workspace.produtos p ON iv.produto_id = p.id
+    GROUP BY l.id, l.nome, p.nome
+)
+SELECT loja, produto, quantidade_total, ranking
+FROM produtos_por_loja
+WHERE ranking <= 3
+ORDER BY loja, ranking;
+
+-- Percentual de vendas por vendedor dentro de cada loja
+SELECT 
+    l.nome as loja,
+    v.nome as vendedor,
+    COUNT(vd.id) as total_vendas,
+    SUM(vd.valor_total) as valor_total,
+    ROUND(
+        SUM(vd.valor_total) * 100.0 / 
+        SUM(SUM(vd.valor_total)) OVER (PARTITION BY l.id),
+    2) as percentual_loja
+FROM lab_workspace.vendas vd
+JOIN lab_workspace.vendedores v ON vd.vendedor_id = v.id
+JOIN lab_workspace.lojas l ON vd.loja_id = l.id
+GROUP BY l.id, l.nome, v.nome
+ORDER BY l.nome, percentual_loja DESC;
+```
+
+### 3.2 Análises Cumulativas
+
+```SQL
+-- Vendas cumulativas por mês
+SELECT 
+    TO_CHAR(data_venda, 'YYYY-MM') as mes,
+    SUM(valor_total) as valor_mensal,
+    SUM(SUM(valor_total)) OVER (ORDER BY TO_CHAR(data_venda, 'YYYY-MM')) as valor_acumulado
+FROM lab_workspace.vendas
+GROUP BY mes
+ORDER BY mes;
+
+-- Média móvel de 7 dias
+SELECT 
+    data_venda,
+    SUM(valor_total) as valor_diario,
+    ROUND(
+        AVG(SUM(valor_total)) OVER (
+            ORDER BY data_venda 
+            ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
+        ), 
+    2) as media_movel_7dias
+FROM lab_workspace.vendas
+GROUP BY data_venda
+ORDER BY data_venda;
+
+-- Análise de crescimento percentual
+SELECT 
+    TO_CHAR(data_venda, 'YYYY-MM') as mes,
+    SUM(valor_total) as valor_total,
+    LAG(SUM(valor_total), 1) OVER (ORDER BY TO_CHAR(data_venda, 'YYYY-MM')) as valor_mes_anterior,
+    ROUND(
+        (SUM(valor_total) - LAG(SUM(valor_total), 1) OVER (ORDER BY TO_CHAR(data_venda, 'YYYY-MM'))) / 
+        NULLIF(LAG(SUM(valor_total), 1) OVER (ORDER BY TO_CHAR(data_venda, 'YYYY-MM')), 0) * 100, 
+    2) as crescimento_percentual
+FROM lab_workspace.vendas
+GROUP BY mes
+ORDER BY mes;
+```
+
+## Parte 4: Relatórios Dinâmicos
+
+### 4.1 Pivotamento de Dados
+
+```SQL
+-- Vendas por loja e método de pagamento (pivot)
+SELECT 
+    l.nome as loja,
+    SUM(CASE WHEN v.metodo_pagamento = 'Crédito' THEN v.valor_total ELSE 0 END) as credito,
+    SUM(CASE WHEN v.metodo_pagamento = 'Débito' THEN v.valor_total ELSE 0 END) as debito,
+    SUM(CASE WHEN v.metodo_pagamento = 'Dinheiro' THEN v.valor_total ELSE 0 END) as dinheiro,
+    SUM(CASE WHEN v.metodo_pagamento = 'Pix' THEN v.valor_total ELSE 0 END) as pix,
+    SUM(CASE WHEN v.metodo_pagamento = 'Boleto' THEN v.valor_total ELSE 0 END) as boleto,
+    SUM(v.valor_total) as total
+FROM lab_workspace.vendas v
+JOIN lab_workspace.lojas l ON v.loja_id = l.id
+GROUP BY l.nome
+ORDER BY total DESC;
+
+-- Vendas por categoria de produto e mês
+SELECT 
+    p.categoria,
+    SUM(CASE WHEN TO_CHAR(v.data_venda, 'MM') = '01' THEN iv.quantidade ELSE 0 END) as jan,
+    SUM(CASE WHEN TO_CHAR(v.data_venda, 'MM') = '02' THEN iv.quantidade ELSE 0 END) as fev,
+    SUM(CASE WHEN TO_CHAR(v.data_venda, 'MM') = '03' THEN iv.quantidade ELSE 0 END) as mar,
+    SUM(CASE WHEN TO_CHAR(v.data_venda, 'MM') = '04' THEN iv.quantidade ELSE 0 END) as abr,
+    SUM(CASE WHEN TO_CHAR(v.data_venda, 'MM') = '05' THEN iv.quantidade ELSE 0 END) as mai,
+    SUM(CASE WHEN TO_CHAR(v.data_venda, 'MM') = '06' THEN iv.quantidade ELSE 0 END) as jun,
+    SUM(iv.quantidade) as total
+FROM lab_workspace.itens_venda iv
+JOIN lab_workspace.vendas v ON iv.venda_id = v.id
+JOIN lab_workspace.produtos p ON iv.produto_id = p.id
+GROUP BY p.categoria
+ORDER BY total DESC;
+```
+
+### 4.2 Análise de Correlação
+
+```SQL
+-- Correlação entre tamanho da loja e vendas
+SELECT 
+    l.nome as loja,
+    l.tamanho_m2,
+    COUNT(v.id) as total_vendas,
+    SUM(v.valor_total) as valor_total,
+    ROUND(SUM(v.valor_total) / l.tamanho_m2, 2) as venda_por_m2
+FROM lab_workspace.vendas v
+JOIN lab_workspace.lojas l ON v.loja_id = l.id
+GROUP BY l.nome, l.tamanho_m2
+ORDER BY venda_por_m2 DESC;
+
+-- Análise de vendas por tempo de experiência do vendedor
+SELECT 
+    v.nome as vendedor,
+    EXTRACT(YEAR FROM AGE(CURRENT_DATE, v.data_contratacao)) as anos_experiencia,
+    COUNT(vd.id) as total_vendas,
+    SUM(vd.valor_total) as valor_total,
+    ROUND(AVG(vd.valor_total), 2) as ticket_medio
+FROM lab_workspace.vendas vd
+JOIN lab_workspace.vendedores v ON vd.vendedor_id = v.id
+GROUP BY v.nome, anos_experiencia
+ORDER BY anos_experiencia DESC;
+
+-- Correlação entre métodos de pagamento e valor médio
+SELECT 
+    metodo_pagamento,
+    COUNT(*) as total_vendas,
+    ROUND(AVG(valor_total), 2) as valor_medio,
+    ROUND(AVG(parcelas), 2) as media_parcelas
+FROM lab_workspace.vendas
+GROUP BY metodo_pagamento
+ORDER BY valor_medio DESC;
+```
+
+### 4.3 Análise de Segmentação
+
+```SQL
+-- Segmentação de clientes por valor
+WITH vendas_por_cliente AS (
+    SELECT 
+        c.id,
+        c.nome,
+        COUNT(v.id) as total_compras,
+        SUM(v.valor_total) as valor_total,
+        MAX(v.data_venda) as ultima_compra
+    FROM lab_workspace.vendas v
+    JOIN lab_workspace.clientes c ON v.cliente_id = c.id
+    GROUP BY c.id, c.nome
+)
+SELECT 
+    nome as cliente,
+    total_compras,
+    valor_total,
+    ultima_compra,
+    CASE 
+        WHEN valor_total > 5000 THEN 'Premium'
+        WHEN valor_total > 2000 THEN 'Regular'
+        ELSE 'Básico'
+    END as segmento,
+    CASE 
+        WHEN CURRENT_DATE - ultima_compra <= 30 THEN 'Ativo'
+        WHEN CURRENT_DATE - ultima_compra <= 90 THEN 'Em risco'
+        ELSE 'Inativo'
+    END as status_atividade
+FROM vendas_por_cliente
+ORDER BY valor_total DESC;
+
+-- Análise de produtos por margem de contribuição
+SELECT 
+    p.nome as produto,
+    p.categoria,
+    SUM(iv.quantidade) as quantidade_vendida,
+    SUM(iv.quantidade * iv.preco_unitario) as receita_total,
+    ROUND(
+        SUM(iv.quantidade * iv.preco_unitario) / 
+        NULLIF(SUM(iv.quantidade), 0),
+    2) as preco_medio_venda,
+    p.preco as preco_atual,
+    ROUND(
+        (p.preco - (SUM(iv.quantidade * iv.preco_unitario) / NULLIF(SUM(iv.quantidade), 0))) / 
+        p.preco * 100,
+    2) as variacao_percentual
+FROM lab_workspace.itens_venda iv
+JOIN lab_workspace.produtos p ON iv.produto_id = p.id
+GROUP BY p.nome, p.categoria, p.preco
+ORDER BY quantidade_vendida DESC;
+```
+
+## Parte 5: Análise Avançada
+
+### 5.1 Detecção de Anomalias
+
+```SQL
+-- Identificação de vendas atípicas (outliers)
+WITH estatisticas_vendas AS (
+    SELECT 
+        AVG(valor_total) as media,
+        STDDEV(valor_total) as desvio_padrao
+    FROM lab_workspace.vendas
+)
+SELECT 
+    v.id,
+    v.data_venda,
+    c.nome as cliente,
+    vd.nome as vendedor,
+    v.valor_total,
+    ROUND((v.valor_total - e.media) / e.desvio_padrao, 2) as z_score
+FROM lab_workspace.vendas v
+JOIN lab_workspace.clientes c ON v.cliente_id = c.id
+JOIN lab_workspace.vendedores vd ON v.vendedor_id = vd.id
+CROSS JOIN estatisticas_vendas e
+WHERE ABS((v.valor_total - e.media) / e.desvio_padrao) > 2
+ORDER BY ABS((v.valor_total - e.media) / e.desvio_padrao) DESC;
+
+-- Detecção de padrões incomuns de compra
+SELECT 
+    v.cliente_id,
+    c.nome as cliente,
+    COUNT(v.id) as total_compras,
+    COUNT(DISTINCT v.data_venda) as dias_distintos,
+    ROUND(COUNT(v.id)::NUMERIC / COUNT(DISTINCT v.data_venda), 2) as compras_por_dia,
+    SUM(v.valor_total) as valor_total
+FROM lab_workspace.vendas v
+JOIN lab_workspace.clientes c ON v.cliente_id = c.id
+GROUP BY v.cliente_id, c.nome
+HAVING COUNT(v.id) > 10 AND COUNT(v.id)::NUMERIC / COUNT(DISTINCT v.data_venda) > 1.5
+ORDER BY compras_por_dia DESC;
+```
+
+### 5.2 Análise Preditiva
+
+```SQL
+-- Previsão simples de vendas futuras (média móvel)
+WITH vendas_diarias AS (
+    SELECT 
+        data_venda,
+        SUM(valor_total) as valor_diario
+    FROM lab_workspace.vendas
+    GROUP BY data_venda
+    ORDER BY data_venda
+)
+SELECT 
+    data_venda,
+    valor_diario,
+    ROUND(
+        AVG(valor_diario) OVER (
+            ORDER BY data_venda 
+            ROWS BETWEEN 7 PRECEDING AND 1 PRECEDING
+        ), 
+    2) as previsao_media_movel,
+    ROUND(
+        valor_diario - AVG(valor_diario) OVER (
+            ORDER BY data_venda 
+            ROWS BETWEEN 7 PRECEDING AND 1 PRECEDING
+        ), 
+    2) as erro_previsao
+FROM vendas_diarias
+WHERE data_venda > (SELECT MIN(data_venda) + 7 FROM lab_workspace.vendas)
+ORDER BY data_venda;
+
+-- Tendência de crescimento por categoria
+WITH vendas_mensais AS (
+    SELECT 
+        TO_CHAR(v.data_venda, 'YYYY-MM') as mes,
+        p.categoria,
+        SUM(iv.quantidade * iv.preco_unitario) as valor_total
+    FROM lab_workspace.itens_venda iv
+    JOIN lab_workspace.vendas v ON iv.venda_id = v.id
+    JOIN lab_workspace.produtos p ON iv.produto_id = p.id
+    GROUP BY mes, p.categoria
+    ORDER BY mes, p.categoria
+)
+SELECT 
+    categoria,
+    CORR(
+        EXTRACT(EPOCH FROM TO_DATE(mes, 'YYYY-MM')),
+        valor_total
+    ) as correlacao_temporal,
+    CASE 
+        WHEN CORR(
+            EXTRACT(EPOCH FROM TO_DATE(mes, 'YYYY-MM')),
+            valor_total
+        ) > 0.7 THEN 'Forte crescimento'
+        WHEN CORR(
+            EXTRACT(EPOCH FROM TO_DATE(mes, 'YYYY-MM')),
+            valor_total
+        ) > 0.3 THEN 'Crescimento moderado'
+        WHEN CORR(
+            EXTRACT(EPOCH FROM TO_DATE(mes, 'YYYY-MM')),
+            valor_total
+        ) > -0.3 THEN 'Estável'
+        WHEN CORR(
+            EXTRACT(EPOCH FROM TO_DATE(mes, 'YYYY-MM')),
+            valor_total
+        ) > -0.7 THEN 'Declínio moderado'
+        ELSE 'Forte declínio'
+    END as tendencia
+FROM vendas_mensais
+GROUP BY categoria
+ORDER BY correlacao_temporal DESC;
+```
+
+### 5.3 Análise de Coorte
+
+```SQL
+-- Análise de coorte por mês de primeira compra
+WITH primeira_compra AS (
+    SELECT 
+        cliente_id,
+        MIN(TO_CHAR(data_venda, 'YYYY-MM')) as coorte
+    FROM lab_workspace.vendas
+    GROUP BY cliente_id
+),
+compras_mensais AS (
+    SELECT 
+        pc.coorte,
+        TO_CHAR(v.data_venda, 'YYYY-MM') as mes,
+        COUNT(DISTINCT v.cliente_id) as clientes_ativos,
+        SUM(v.valor_total) as valor_total
+    FROM lab_workspace.vendas v
+    JOIN primeira_compra pc ON v.cliente_id = pc.cliente_id
+    GROUP BY pc.coorte, mes
+    ORDER BY pc.coorte, mes
+)
+SELECT 
+    coorte,
+    mes,
+    clientes_ativos,
+    valor_total,
+    ROUND(
+        valor_total / clientes_ativos,
+    2) as valor_medio_por_cliente,
+    ROUND(
+        100.0 * clientes_ativos / (
+            SELECT COUNT(DISTINCT cliente_id) 
+            FROM primeira_compra 
+            WHERE coorte = cm.coorte
+        ),
+    2) as retencao_percentual
+FROM compras_mensais cm
+ORDER BY coorte, mes;
+```
+
+## Parte 6: Visualização e Exportação
+
+### 6.1 Preparação de Dados para Visualização
+
+```SQL
+-- Dados para gráfico de barras (vendas por região)
+SELECT 
+    l.regiao,
+    COUNT(v.id) as total_vendas,
+    SUM(v.valor_total) as valor_total,
+    ROUND(AVG(v.valor_total), 2) as ticket_medio
+FROM lab_workspace.vendas v
+JOIN lab_workspace.lojas l ON v.loja_id = l.id
+GROUP BY l.regiao
+ORDER BY valor_total DESC;
+
+-- Dados para gráfico de linha (tendência temporal)
+SELECT 
+    TO_CHAR(data_venda, 'YYYY-MM-DD') as data,
+    COUNT(*) as total_vendas,
+    SUM(valor_total) as valor_total
+FROM lab_workspace.vendas
+WHERE data_venda >= CURRENT_DATE - INTERVAL '30 days'
+GROUP BY data
+ORDER BY data;
+
+-- Dados para gráfico de pizza (distribuição por categoria)
+SELECT 
+    p.categoria,
+    COUNT(iv.venda_id) as total_vendas,
+    SUM(iv.quantidade * iv.preco_unitario) as valor_total,
+    ROUND(
+        SUM(iv.quantidade * iv.preco_unitario) * 100.0 / 
+        (SELECT SUM(quantidade * preco_unitario) FROM lab_workspace.itens_venda),
+    2) as percentual
+FROM lab_workspace.itens_venda iv
+JOIN lab_workspace.produtos p ON iv.produto_id = p.id
+GROUP BY p.categoria
+ORDER BY valor_total DESC;
+```
+
+### 6.2 Exportação de Dados
+
+```SQL
+-- Exportar resultados para CSV
+COPY (
+    SELECT 
+        v.id,
+        v.data_venda,
+        c.nome as cliente,
+        vd.nome as vendedor,
+        l.nome as loja,
+        v.valor_total,
+        v.metodo_pagamento
+    FROM lab_workspace.vendas v
+    JOIN lab_workspace.clientes c ON v.cliente_id = c.id
+    JOIN lab_workspace.vendedores vd ON v.vendedor_id = vd.id
+    JOIN lab_workspace.lojas l ON v.loja_id = l.id
+    ORDER BY v.data_venda DESC
+) TO '/tmp/relatorio_vendas.csv' WITH CSV HEADER;
+
+-- Exportar relatório de desempenho por vendedor
+COPY (
+    SELECT 
+        vd.nome as vendedor,
+        l.nome as loja,
+        COUNT(v.id) as total_vendas,
+        SUM(v.valor_total) as valor_total,
+        ROUND(AVG(v.valor_total), 2) as ticket_medio,
+        ROUND(
+            SUM(v.valor_total) * 100.0 / NULLIF(vd.meta_mensal, 0),
+        2) as percentual_meta
+    FROM lab_workspace.vendas v
+    JOIN lab_workspace.vendedores vd ON v.vendedor_id = vd.id
+    JOIN lab_workspace.lojas l ON v.loja_id = l.id
+    WHERE TO_CHAR(v.data_venda, 'YYYY-MM') = TO_CHAR(CURRENT_DATE, 'YYYY-MM')
+    GROUP BY vd.nome, l.nome, vd.meta_mensal
+    ORDER BY percentual_meta DESC
+) TO '/tmp/desempenho_vendedores.csv' WITH CSV HEADER;
+```
+
+## Conclusão do Laboratório
+
+```SQL
+-- Registrar conclusão do laboratório
+UPDATE lab_workspace.lab_progress
+SET 
+    completion_time = CURRENT_TIMESTAMP,
+    status = 'COMPLETED',
+    notes = 'Laboratório de análise de dados concluído com sucesso. Foram realizadas análises de agregação, temporais, funções de janela, relatórios dinâmicos e análises avançadas.'
+WHERE lab_name = 'Análise de Dados'
+AND completion_time IS NULL;
+```
+
+## Desafios Adicionais
+
+1. Análise de RFM (Recência, Frequência, Monetário)
+
+* Segmente clientes com base em padrões de compra
+
+* Identifique clientes de alto valor
+
+2. Análise de Cesta de Compras
+
+* Descubra produtos frequentemente comprados juntos
+
+* Identifique oportunidades de cross-selling
+
+3. Previsão de Demanda
+
+* Utilize técnicas de séries temporais
+
+* Projete vendas futuras por categoria
+
+4. Dashboard Interativo
+
+* Crie visualizações dinâmicas
+
+* Implemente filtros e parâmetros
+
+## Recursos Adicionais
+
+* [PostgreSQL Window Functions](https://www.postgresql.org/docs/current/tutorial-window.html)
+
+* [PostgreSQL Aggregation](https://www.postgresql.org/docs/current/functions-aggregate.html)
+
+* [Data Analysis with SQL](https://mode.com/sql-tutorial/sql-data-analysis/)
+
+* [Advanced SQL for Data Analysis](https://www.datacamp.com/courses/advanced-sql)
+
+Tip:
+
+Nota: Este laboratório fornece uma base sólida para análise de dados com SQL. As técnicas aprendidas aqui podem ser aplicadas em cenários reais de negócios para extrair insights valiosos e apoiar a tomada de decisões baseada em dados.
+
+
+
+# Laboratório: Transformação de Dados
+
+## Objetivo
+
+Desenvolver habilidades de transformação e manipulação de dados utilizando SQL, incluindo conversão de formatos, limpeza, normalização e enriquecimento de dados.
+
+## Cenário
+
+Você é um engenheiro de dados em uma empresa que precisa preparar dados brutos para análise, integrando múltiplas fontes e garantindo a qualidade dos dados.
+
+## Setup Inicial
+
+```SQL
+-- Criar tabelas para dados brutos
+CREATE TABLE lab_workspace.dados_brutos_clientes (
+    id VARCHAR(20),
+    nome_completo TEXT,
+    email TEXT,
+    telefone VARCHAR(50),
+    endereco TEXT,
+    data_cadastro VARCHAR(30),
+    status VARCHAR(20),
+    observacoes TEXT
+);
+
+CREATE TABLE lab_workspace.dados_brutos_vendas (
+    id_venda VARCHAR(20),
+    data_hora VARCHAR(30),
+    cliente_id VARCHAR(20),
+    itens TEXT,
+    valor_total VARCHAR(20),
+    desconto VARCHAR(20),
+    forma_pagamento TEXT,
+    status_pagamento TEXT,
+    status_entrega TEXT
+);
+
+CREATE TABLE lab_workspace.dados_brutos_produtos (
+    codigo VARCHAR(20),
+    nome TEXT,
+    descricao TEXT,
+    categoria TEXT,
+    subcategoria TEXT,
+    fornecedor TEXT,
+    preco VARCHAR(20),
+    estoque VARCHAR(10),
+    unidade_medida VARCHAR(10),
+    dimensoes TEXT,
+    peso VARCHAR(20),
+    data_cadastro VARCHAR(30)
+);
+
+-- Carregar dados de exemplo com problemas comuns
+INSERT INTO lab_workspace.dados_brutos_clientes
+VALUES 
+    ('CLI-001', 'Silva, João Carlos', 'joao.silva@email.com', '(11) 98765-4321', 'Rua das Flores, 123 - São Paulo, SP', '15/03/2022', 'ATIVO', NULL),
+    ('CLI-002', 'Maria Souza', 'maria.souza@email.com', '11987654322', 'Av. Paulista, 1000, Apto 501, São Paulo - SP', '2022-04-20', 'ativo', 'Cliente VIP'),
+    ('CLI-003', 'PEDRO SANTOS', 'pedro@email', '(21)87654323', 'Rua Ipanema 45, Rio de Janeiro RJ', '05/05/2022', 'INATIVO', 'Bloqueado por inadimplência'),
+    ('CLI-004', 'Ana Paula  Oliveira', 'ana.oliveira@email.com', '(31) 9876-54324', 'Av. Amazonas, 500 - Belo Horizonte - MG', '10/06/2022', 'ATIVO', NULL),
+    ('CLI-005', 'Carlos Eduardo da Silva', 'carlos@email.com.br', '(41)998765325', 'R. XV de Novembro, 200 - Curitiba PR', '2022/07/15', 'PENDENTE', 'Aguardando confirmação de email');
+
+INSERT INTO lab_workspace.dados_brutos_vendas
+VALUES 
+    ('V-2022-001', '15/04/2022 14:30:25', 'CLI-001', 'PROD-001:2,PROD-003:1', 'R$ 1.299,90', '10%', 'CARTÃO DE CRÉDITO', 'APROVADO', 'ENTREGUE'),
+    ('V-2022-002', '2022-05-20 09:45:12', 'CLI-002', 'PROD-002:1', '2499.90', '0', 'PIX', 'APROVADO', 'EM TRANSPORTE'),
+    ('V-2022-003', '25/05/2022 18:20:45', 'CLI-001', 'PROD-005:3,PROD-004:1', 'R$1.549,97', 'R$ 100,00', 'BOLETO', 'APROVADO', 'PENDENTE'),
+    ('V-2022-004', '30/05/2022 10:15:30', 'CLI-003', 'PROD-001:1', 'R$ 599,90', 'R$ 0,00', 'DÉBITO', 'APROVADO', 'ENTREGUE'),
+    ('V-2022-005', '2022-06-10T08:45:12Z', 'CLI-002', 'PROD-003:2', '1400', '5%', 'CRÉDITO', 'APROVADO', 'ENTREGUE');
+
+INSERT INTO lab_workspace.dados_brutos_produtos
+VALUES 
+    ('PROD-001', 'Smartphone XYZ', 'Smartphone com 128GB de memória', 'Eletrônicos', 'Celulares', 'Tech Inc.', 'R$ 599,90', '15', 'un', '15x7x1 cm', '180g', '10/01/2022'),
+    ('PROD-002', 'Notebook Ultra', 'Notebook com processador i7', 'Eletrônicos', 'Computadores', 'Tech Inc.', '2499.90', '8', 'un', NULL, '1,5 kg', '2022-01-15'),
+    ('PROD-003', 'Fone de Ouvido Bluetooth', 'Fone sem fio com cancelamento de ruído', 'Eletrônicos', 'Acessórios', 'AudioTech', 'R$699,95', '25', 'un', '18x18x5 cm', '200 g', '20/01/2022'),
+    ('PROD-004', 'Mouse Gamer', 'Mouse com 6 botões e LED RGB', 'Eletrônicos', 'Acessórios', 'GamerTech', 'R$ 149,99', '30', 'un', '12x7x4 cm', '100g', '25/01/2022'),
+    ('PROD-005', 'Teclado Mecânico', 'Teclado com switches blue', 'Eletrônicos', 'Acessórios', 'GamerTech', 'R$ 299,99', '20', 'un', '44x14x4 cm', '850 g', '2022/01/30');
+
+-- Criar tabela de progresso do laboratório
+CREATE TABLE IF NOT EXISTS lab_workspace.lab_progress (
+    lab_name VARCHAR(100) PRIMARY KEY,
+    start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    completion_time TIMESTAMP,
+    status VARCHAR(20) DEFAULT 'IN_PROGRESS',
+    notes TEXT
+);
+
+-- Registrar início do laboratório
+INSERT INTO lab_workspace.lab_progress (lab_name)
+VALUES ('Transformação de Dados');
+```
+
+## Parte 1: Limpeza e Padronização
+
+### 1.1 Padronização de Nomes
+
+```SQL
+-- Criar tabela normalizada para clientes
+CREATE TABLE lab_workspace.clientes (
+    id VARCHAR(20) PRIMARY KEY,
+    nome_primeiro VARCHAR(50),
+    nome_ultimo VARCHAR(50),
+    email VARCHAR(100),
+    telefone VARCHAR(20),
+    data_cadastro DATE,
+    status VARCHAR(20),
+    observacoes TEXT
+);
+
+-- Padronizar e separar nomes
+INSERT INTO lab_workspace.clientes (
+    id,
+    nome_primeiro,
+    nome_ultimo,
+    email,
+    telefone,
+    data_cadastro,
+    status,
+    observacoes
+)
+SELECT
+    id,
+    -- Padronizar e extrair primeiro nome
+    CASE
+        WHEN nome_completo LIKE '%,%' THEN 
+            TRIM(SPLIT_PART(nome_completo, ',', 2))
+        ELSE
+            TRIM(SPLIT_PART(nome_completo, ' ', 1))
+    END AS nome_primeiro,
+    
+    -- Padronizar e extrair último nome
+    CASE
+        WHEN nome_completo LIKE '%,%' THEN 
+            TRIM(SPLIT_PART(nome_completo, ',', 1))
+        ELSE
+            CASE
+                WHEN ARRAY_LENGTH(STRING_TO_ARRAY(nome_completo, ' '), 1) > 1 THEN
+                    TRIM(SPLIT_PART(nome_completo, ' ', ARRAY_LENGTH(STRING_TO_ARRAY(nome_completo, ' '), 1)))
+                ELSE
+                    NULL
+            END
+    END AS nome_ultimo,
+    
+    -- Manter email original por enquanto
+    email,
+    
+    -- Padronizar telefone (remover formatação)
+    REGEXP_REPLACE(telefone, '[^0-9]', '', 'g') AS telefone,
+    
+    -- Converter data para formato padrão
+    CASE
+        WHEN data_cadastro ~ '^[0-9]{2}/[0-9]{2}/[0-9]{4}$' THEN 
+            TO_DATE(data_cadastro, 'DD/MM/YYYY')
+        WHEN data_cadastro ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' THEN 
+            TO_DATE(data_cadastro, 'YYYY-MM-DD')
+        WHEN data_cadastro ~ '^[0-9]{4}/[0-9]{2}/[0-9]{2}$' THEN 
+            TO_DATE(data_cadastro, 'YYYY/MM/DD')
+        ELSE NULL
+    END AS data_cadastro,
+    
+    -- Padronizar status (primeira letra maiúscula, resto minúscula)
+    INITCAP(LOWER(status)) AS status,
+    
+    observacoes
+FROM lab_workspace.dados_brutos_clientes;
+
+-- Verificar resultados
+SELECT * FROM lab_workspace.clientes;
+```
+
+### 1.2 Validação e Correção de Dados
+
+```SQL
+-- Validar e corrigir emails
+UPDATE lab_workspace.clientes
+SET email = 
+    CASE
+        WHEN email NOT LIKE '%@%.%' THEN email || '@dominio.com'
+        ELSE email
+    END
+WHERE email NOT LIKE '%@%.%';
+
+-- Validar e padronizar telefones
+UPDATE lab_workspace.clientes
+SET telefone = 
+    CASE
+        WHEN LENGTH(telefone) = 10 THEN 
+            SUBSTRING(telefone, 1, 2) || '9' || SUBSTRING(telefone, 3)
+        ELSE telefone
+    END
+WHERE LENGTH(telefone) = 10;
+
+-- Verificar registros com problemas
+SELECT id, email, telefone
+FROM lab_workspace.clientes
+WHERE 
+    email !~ '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$' OR
+    telefone !~ '^[0-9]{10,11}$';
+```
+
+### 1.3 Normalização de Endereços
+
+```SQL
+-- Criar tabela normalizada para endereços
+CREATE TABLE lab_workspace.enderecos (
+    id SERIAL PRIMARY KEY,
+    cliente_id VARCHAR(20) REFERENCES lab_workspace.clientes(id),
+    logradouro VARCHAR(100),
+    numero VARCHAR(20),
+    complemento VARCHAR(50),
+    bairro VARCHAR(50),
+    cidade VARCHAR(50),
+    estado CHAR(2),
+    cep VARCHAR(8)
+);
+
+-- Extrair e normalizar componentes de endereço
+INSERT INTO lab_workspace.enderecos (
+    cliente_id,
+    logradouro,
+    numero,
+    complemento,
+    cidade,
+    estado
+)
+SELECT
+    id AS cliente_id,
+    -- Extrair logradouro (até o número)
+    REGEXP_REPLACE(
+        SPLIT_PART(
+            SPLIT_PART(endereco, ',', 1), 
+            ' - ', 
+            1
+        ),
+        '[0-9]+$', 
+        ''
+    ) AS logradouro,
+    
+    -- Extrair número
+    REGEXP_REPLACE(
+        SPLIT_PART(
+            SPLIT_PART(endereco, ',', 1), 
+            ' - ', 
+            1
+        ),
+        '^.*?([0-9]+)$', 
+        '\1'
+    ) AS numero,
+    
+    -- Extrair complemento (se existir)
+    CASE
+        WHEN endereco LIKE '%Apto%' THEN 
+            REGEXP_REPLACE(
+                SPLIT_PART(endereco, ',', 2),
+                '.*Apto ([0-9]+).*',
+                'Apto \1'
+            )
+        ELSE NULL
+    END AS complemento,
+    
+    -- Extrair cidade
+    TRIM(SPLIT_PART(
+        SPLIT_PART(endereco, ' - ', 2),
+        '-',
+        1
+    )) AS cidade,
+    
+    -- Extrair estado
+    TRIM(REGEXP_REPLACE(
+        SPLIT_PART(endereco, ' - ', 2),
+        '.*([A-Z]{2})$',
+        '\1'
+    )) AS estado
+FROM lab_workspace.dados_brutos_clientes;
+
+-- Verificar resultados
+SELECT c.id, c.nome_primeiro, c.nome_ultimo, e.logradouro, e.numero, e.cidade, e.estado
+FROM lab_workspace.clientes c
+JOIN lab_workspace.enderecos e ON c.id = e.cliente_id;
+```
+
+## Parte 2: Conversão de Tipos e Formatos
+
+### 2.1 Normalização de Produtos
+
+```SQL
+-- Criar tabela normalizada para produtos
+CREATE TABLE lab_workspace.produtos (
+    id VARCHAR(20) PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    descricao TEXT,
+    categoria VARCHAR(50),
+    subcategoria VARCHAR(50),
+    fornecedor VARCHAR(50),
+    preco DECIMAL(10,2) NOT NULL,
+    estoque INTEGER NOT NULL,
+    unidade_medida VARCHAR(10),
+    peso DECIMAL(10,2),
+    peso_unidade VARCHAR(5),
+    data_cadastro DATE
+);
+
+-- Converter e normalizar dados de produtos
+INSERT INTO lab_workspace.produtos (
+    id,
+    nome,
+    descricao,
+    categoria,
+    subcategoria,
+    fornecedor,
+    preco,
+    estoque,
+    unidade_medida,
+    peso,
+    peso_unidade,
+    data_cadastro
+)
+SELECT
+    codigo AS id,
+    nome,
+    descricao,
+    categoria,
+    subcategoria,
+    fornecedor,
+    
+    -- Converter preço para decimal
+    CASE
+        WHEN preco LIKE 'R$%' THEN 
+            REPLACE(REPLACE(REPLACE(preco, 'R$', ''), '.', ''), ',', '.')::DECIMAL(10,2)
+        ELSE
+            REPLACE(preco, ',', '.')::DECIMAL(10,2)
+    END AS preco,
+    
+    -- Converter estoque para inteiro
+    estoque::INTEGER,
+    
+    unidade_medida,
+    
+    -- Extrair valor numérico do peso
+    CASE
+        WHEN peso LIKE '%kg%' THEN 
+            REPLACE(REPLACE(peso, 'kg', ''), ',', '.')::DECIMAL(10,2) * 1000
+        WHEN peso LIKE '%g%' THEN 
+            REPLACE(REPLACE(peso, 'g', ''), ',', '.')::DECIMAL(10,2)
+        ELSE NULL
+    END AS peso,
+    
+    -- Extrair unidade do peso
+    'g' AS peso_unidade,
+    
+    -- Converter data para formato padrão
+    CASE
+        WHEN data_cadastro ~ '^[0-9]{2}/[0-9]{2}/[0-9]{4}$' THEN 
+            TO_DATE(data_cadastro, 'DD/MM/YYYY')
+        WHEN data_cadastro ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' THEN 
+            TO_DATE(data_cadastro, 'YYYY-MM-DD')
+        WHEN data_cadastro ~ '^[0-9]{4}/[0-9]{2}/[0-9]{2}$' THEN 
+            TO_DATE(data_cadastro, 'YYYY/MM/DD')
+        ELSE NULL
+    END AS data_cadastro
+FROM lab_workspace.dados_brutos_produtos;
+
+-- Verificar resultados
+SELECT id, nome, preco, estoque, peso, data_cadastro
+FROM lab_workspace.produtos;
+```
+
+### 2.2 Normalização de Vendas
+
+```SQL
+-- Criar tabela normalizada para vendas
+CREATE TABLE lab_workspace.vendas (
+    id VARCHAR(20) PRIMARY KEY,
+    data_hora TIMESTAMP NOT NULL,
+    cliente_id VARCHAR(20) REFERENCES lab_workspace.clientes(id),
+    valor_total DECIMAL(10,2) NOT NULL,
+    desconto DECIMAL(10,2),
+    forma_pagamento VARCHAR(50),
+    status_pagamento VARCHAR(20),
+    status_entrega VARCHAR(20)
+);
+
+-- Converter e normalizar dados de vendas
+INSERT INTO lab_workspace.vendas (
+    id,
+    data_hora,
+    cliente_id,
+    valor_total,
+    desconto,
+    forma_pagamento,
+    status_pagamento,
+    status_entrega
+)
+SELECT
+    id_venda AS id,
+    
+    -- Converter data_hora para timestamp
+    CASE
+        WHEN data_hora ~ '^[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2}$' THEN 
+            TO_TIMESTAMP(data_hora, 'DD/MM/YYYY HH24:MI:SS')
+        WHEN data_hora ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$' THEN 
+            TO_TIMESTAMP(data_hora, 'YYYY-MM-DD HH24:MI:SS')
+        ELSE
+            TO_TIMESTAMP(data_hora, 'YYYY-MM-DDTHH24:MI:SSZ')
+    END AS data_hora,
+    
+    cliente_id,
+    
+    -- Converter valor_total para decimal
+    CASE
+        WHEN valor_total LIKE 'R$%' THEN 
+            REPLACE(REPLACE(REPLACE(valor_total, 'R$', ''), '.', ''), ',', '.')::DECIMAL(10,2)
+        ELSE
+            REPLACE(valor_total, ',', '.')::DECIMAL(10,2)
+    END AS valor_total,
+    
+    -- Converter desconto para decimal
+    CASE
+        WHEN desconto LIKE '%%' THEN 
+            REPLACE(desconto, '%', '')::DECIMAL(10,2) / 100
+        ELSE
+            REPLACE(desconto, ',', '.')::DECIMAL(10,2)
+    END AS desconto,
+    
+    forma_pagamento,
+    status_pagamento,
+    status_entrega
+FROM lab_workspace.dados_brutos_vendas;
+
+-- Verificar resultados
+SELECT id, data_hora, cliente_id, valor_total, desconto, forma_pagamento, status_pagamento, status_entrega
+FROM lab_workspace.vendas;
+```
+
+## Parte 3: Enriquecimento de Dados
+
+### 3.1 Adicionar Informações de Geolocalização
+
+```SQL
+-- Criar tabela para armazenar informações de geolocalização
+CREATE TABLE lab_workspace.geolocalizacao (
+    cidade VARCHAR(50),
+    estado CHAR(2),
+    pais VARCHAR(50),
+    latitude DECIMAL(9,6),
+    longitude DECIMAL(9,6)
+);
+
+-- Inserir dados de geolocalização (exemplo)
+INSERT INTO lab_workspace.geolocalizacao (cidade, estado, pais, latitude, longitude)
+VALUES 
+    ('São Paulo', 'SP', 'Brasil', -23.550520, -46.633309),
+    ('Rio de Janeiro', 'RJ', 'Brasil', -22.906847, -43.172897),
+    ('Belo Horizonte', 'MG', 'Brasil', -19.815733, -43.954234),
+    ('Curitiba', 'PR', 'Brasil', -25.428408, -49.273388);
+
+-- Adicionar colunas para geolocalização na tabela de endereços
+ALTER TABLE lab_workspace.enderecos
+ADD COLUMN latitude DECIMAL(9,6),
+ADD COLUMN longitude DECIMAL(9,6);
+
+-- Atualizar endereços com informações de geolocalização
+UPDATE lab_workspace.enderecos e
+SET latitude = g.latitude,
+    longitude = g.longitude
+FROM lab_workspace.geolocalizacao g
+WHERE e.cidade = g.cidade AND e.estado = g.estado;
+
+-- Verificar resultados
+SELECT c.id, c.nome_primeiro, c.nome_ultimo, e.logradouro, e.numero, e.cidade, e.estado, e.latitude, e.longitude
+FROM lab_workspace.clientes c
+JOIN lab_workspace.enderecos e ON c.id = e.cliente_id;
+```
+
+### 3.2 Adicionar Informações de Produtos
+
+```SQL
+-- Criar tabela para armazenar informações adicionais de produtos
+CREATE TABLE lab_workspace.produtos_info (
+    produto_id VARCHAR(20) PRIMARY KEY,
+    marca VARCHAR(50),
+    modelo VARCHAR(50),
+    garantia VARCHAR(50),
+    fabricante VARCHAR(50)
+);
+
+-- Inserir dados de informações de produtos (exemplo)
+INSERT INTO lab_workspace.produtos_info (produto_id, marca, modelo, garantia, fabricante)
+VALUES 
+    ('PROD-001', 'Tech Inc.', 'XYZ', '1 ano', 'Tech Inc.'),
+    ('PROD-002', 'Tech Inc.', 'Ultra', '2 anos', 'Tech Inc.'),
+    ('PROD-003', 'AudioTech', 'Bluetooth', '1 ano', 'AudioTech'),
+    ('PROD-004', 'GamerTech', 'Gamer', '1 ano', 'GamerTech'),
+    ('PROD-005', 'GamerTech', 'Mechanical', '2 anos', 'GamerTech');
+
+-- Adicionar colunas para informações de produtos na tabela de produtos
+ALTER TABLE lab_workspace.produtos
+ADD COLUMN marca VARCHAR(50),
+ADD COLUMN modelo VARCHAR(50),
+ADD COLUMN garantia VARCHAR(50),
+ADD COLUMN fabricante VARCHAR(50);
+
+-- Atualizar produtos com informações adicionais
+UPDATE lab_workspace.produtos p
+SET marca = pi.marca,
+    modelo = pi.modelo,
+    garantia = pi.garantia,
+    fabricante = pi.fabricante
+FROM lab_workspace.produtos_info pi
+WHERE p.id = pi.produto_id;
+
+-- Verificar resultados
+SELECT p.id, p.nome, p.preco, p.estoque, p.peso, p.data_cadastro, p.marca, p.modelo, p.garantia, p.fabricante
+FROM lab_workspace.produtos p;
+```
+
+## Parte 4: Análise e Visualização
+
+### 4.1 Análise de Vendas
+
+```SQL
+-- Calcular o total de vendas por cliente
+SELECT c.id, c.nome_primeiro, c.nome_ultimo, SUM(v.valor_total) AS total_vendas
+FROM lab_workspace.clientes c
+JOIN lab_workspace.vendas v ON c.id = v.cliente_id
+GROUP BY c.id, c.nome_primeiro, c.nome_ultimo
+ORDER BY total_vendas DESC;
+
+-- Calcular o total de vendas por produto
+SELECT p.id, p.nome, SUM(v.valor_total) AS total_vendas
+FROM lab_workspace.produtos p
+JOIN lab_workspace.vendas v ON p.id = v.itens
+GROUP BY p.id, p.nome
+ORDER BY total_vendas DESC;
+
+-- Calcular o total de vendas por mês
+SELECT TO_CHAR(v.data_hora, 'YYYY-MM') AS mes, SUM(v.valor_total) AS total_vendas
+FROM lab_workspace.vendas v
+GROUP BY TO_CHAR(v.data_hora, 'YYYY-MM')
+ORDER BY mes;
+```
+
+### 4.2 Visualização de Dados
+
+Para visualizar os dados, você pode usar ferramentas como Tableau, Power BI ou Google Data Studio. Aqui estão algumas ideias de visualizações:
+
+1. Gráfico de barras para o total de vendas por cliente.
+
+2. Gráfico de pizza para a distribuição de vendas por produto.
+
+3. Gráfico de linha para o total de vendas ao longo do tempo.
+
+4. Mapa para visualizar a distribuição geográfica dos clientes.
+
+Lembre-se de que a visualização de dados é uma parte importante da análise e pode ajudar a identificar tendências e padrões nos dados.
+
+## Conclusão
+
+Neste laboratório, você aprendeu a transformar e manipular dados brutos utilizando SQL, incluindo limpeza, normalização, conversão de formatos e enriquecimento de dados. Você também explorou técnicas de análise e visualização de dados para obter insights valiosos.
+
+## Próximos Passos
+
+Para aprofundar seus conhecimentos, você pode:
+
+1. Explorar mais técnicas de manipulação de dados em SQL.
+
+2. Aprender sobre ferramentas de análise e visualização de dados.
+
+3. Trabalhar com conjuntos de dados maiores e mais complexos.
+
+4. Experimentar diferentes abordagens de limpeza e normalização de dados.
+
+Boa sorte! Se tiver alguma dúvida, sinta-se à vontade para perguntar.
+
+
+
+# Laboratório: Integração de Dados
+
+## Objetivo
+
+Desenvolver habilidades de integração de dados utilizando SQL, incluindo importação, exportação, sincronização entre tabelas, migração e validação de integridade.
+
+## Cenário
+
+Você é um engenheiro de dados responsável por integrar dados de diferentes fontes em um sistema unificado, garantindo consistência e qualidade durante todo o processo.
+
+## Setup Inicial
+
+```SQL
+-- Criar tabelas para o laboratório
+CREATE TABLE lab_workspace.sistema_legado_clientes (
+    cliente_id INTEGER PRIMARY KEY,
+    nome VARCHAR(100),
+    email VARCHAR(100),
+    telefone VARCHAR(20),
+    data_cadastro DATE,
+    ultima_compra DATE,
+    status VARCHAR(20)
+);
+
+CREATE TABLE lab_workspace.sistema_legado_produtos (
+    produto_id INTEGER PRIMARY KEY,
+    nome VARCHAR(100),
+    categoria VARCHAR(50),
+    preco DECIMAL(10,2),
+    estoque INTEGER,
+    fornecedor VARCHAR(100)
+);
+
+CREATE TABLE lab_workspace.sistema_legado_vendas (
+    venda_id INTEGER PRIMARY KEY,
+    cliente_id INTEGER,
+    data_venda DATE,
+    valor_total DECIMAL(10,2),
+    status VARCHAR(20)
+);
+
+CREATE TABLE lab_workspace.sistema_legado_itens_venda (
+    venda_id INTEGER,
+    produto_id INTEGER,
+    quantidade INTEGER,
+    preco_unitario DECIMAL(10,2),
+    PRIMARY KEY (venda_id, produto_id)
+);
+
+-- Criar tabelas do novo sistema
+CREATE TABLE lab_workspace.clientes_novo (
+    id SERIAL PRIMARY KEY,
+    codigo_legado INTEGER UNIQUE,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    telefone VARCHAR(20),
+    data_cadastro DATE,
+    ultima_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(20) DEFAULT 'Ativo',
+    segmento VARCHAR(50),
+    limite_credito DECIMAL(10,2) DEFAULT 1000.00
+);
+
+CREATE TABLE lab_workspace.produtos_novo (
+    id SERIAL PRIMARY KEY,
+    codigo_legado INTEGER UNIQUE,
+    nome VARCHAR(100) NOT NULL,
+    descricao TEXT,
+    categoria VARCHAR(50),
+    subcategoria VARCHAR(50),
+    preco DECIMAL(10,2) NOT NULL,
+    custo DECIMAL(10,2),
+    margem_lucro DECIMAL(5,2),
+    estoque INTEGER DEFAULT 0,
+    estoque_minimo INTEGER DEFAULT 5,
+    fornecedor VARCHAR(100),
+    data_cadastro DATE,
+    ultima_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(20) DEFAULT 'Ativo'
+);
+
+CREATE TABLE lab_workspace.vendas_novo (
+    id SERIAL PRIMARY KEY,
+    codigo_legado INTEGER UNIQUE,
+    cliente_id INTEGER REFERENCES lab_workspace.clientes_novo(id),
+    data_venda TIMESTAMP NOT NULL,
+    valor_subtotal DECIMAL(10,2) NOT NULL,
+    valor_desconto DECIMAL(10,2) DEFAULT 0,
+    valor_frete DECIMAL(10,2) DEFAULT 0,
+    valor_total DECIMAL(10,2) NOT NULL,
+    forma_pagamento VARCHAR(50),
+    status VARCHAR(20) DEFAULT 'Processando',
+    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE lab_workspace.itens_venda_novo (
+    venda_id INTEGER REFERENCES lab_workspace.vendas_novo(id),
+    produto_id INTEGER REFERENCES lab_workspace.produtos_novo(id),
+    quantidade INTEGER NOT NULL CHECK (quantidade > 0),
+    preco_unitario DECIMAL(10,2) NOT NULL,
+    valor_desconto DECIMAL(10,2) DEFAULT 0,
+    valor_total DECIMAL(10,2) NOT NULL,
+    PRIMARY KEY (venda_id, produto_id)
+);
+
+-- Inserir dados de exemplo no sistema legado
+INSERT INTO lab_workspace.sistema_legado_clientes
+VALUES 
+    (1001, 'João Silva', 'joao.silva@email.com', '11987654321', '2020-01-15', '2022-05-10', 'Ativo'),
+    (1002, 'Maria Santos', 'maria.santos@email.com', '21987654321', '2020-02-20', '2022-06-15', 'Ativo'),
+    (1003, 'Pedro Oliveira', 'pedro.oliveira@email.com', '31987654321', '2020-03-25', '2022-04-05', 'Inativo'),
+    (1004, 'Ana Costa', 'ana.costa@email.com', '41987654321', '2020-04-30', '2022-06-20', 'Ativo'),
+    (1005, 'Carlos Souza', 'carlos.souza@email.com', '51987654321', '2020-05-05', '2022-03-10', 'Inativo');
+
+INSERT INTO lab_workspace.sistema_legado_produtos
+VALUES 
+    (2001, 'Notebook Basic', 'Informática', 2499.90, 15, 'Tech Distribuidora'),
+    (2002, 'Smartphone X', 'Eletrônicos', 1899.90, 25, 'Mobile Imports'),
+    (2003, 'Mouse Sem Fio', 'Informática', 89.90, 50, 'Tech Distribuidora'),
+    (2004, 'Teclado Mecânico', 'Informática', 299.90, 30, 'Tech Distribuidora'),
+    (2005, 'Monitor 24"', 'Informática', 899.90, 10, 'Visual Displays');
+
+INSERT INTO lab_workspace.sistema_legado_vendas
+VALUES 
+    (3001, 1001, '2022-05-10', 2589.80, 'Concluída'),
+    (3002, 1002, '2022-06-15', 1899.90, 'Concluída'),
+    (3003, 1003, '2022-04-05', 389.80, 'Concluída'),
+    (3004, 1004, '2022-06-20', 3399.80, 'Concluída'),
+    (3005, 1005, '2022-03-10', 89.90, 'Cancelada');
+
+INSERT INTO lab_workspace.sistema_legado_itens_venda
+VALUES 
+    (3001, 2001, 1, 2499.90),
+    (3001, 2003, 1, 89.90),
+    (3002, 2002, 1, 1899.90),
+    (3003, 2003, 1, 89.90),
+    (3003, 2004, 1, 299.90),
+    (3004, 2001, 1, 2499.90),
+    (3004, 2005, 1, 899.90),
+    (3005, 2003, 1, 89.90);
+
+-- Registrar início do laboratório
+INSERT INTO lab_workspace.lab_progress (lab_name)
+VALUES ('Integração de Dados');
+```
+
+## Parte 1: Importação de Dados
+
+### 1.1 Migração de Clientes
+
+```SQL
+-- Migrar clientes do sistema legado para o novo sistema
+INSERT INTO lab_workspace.clientes_novo (
+    codigo_legado,
+    nome,
+    email,
+    telefone,
+    data_cadastro,
+    ultima_atualizacao,
+    status,
+    segmento,
+    limite_credito
+)
+SELECT
+    cliente_id,
+    nome,
+    email,
+    telefone,
+    data_cadastro,
+    CURRENT_TIMESTAMP,
+    status,
+    CASE
+        WHEN ultima_compra >= CURRENT_DATE - INTERVAL '3 months' THEN 'Frequente'
+        WHEN ultima_compra >= CURRENT_DATE - INTERVAL '6 months' THEN 'Regular'
+        ELSE 'Ocasional'
+    END AS segmento,
+    CASE
+        WHEN ultima_compra >= CURRENT_DATE - INTERVAL '3 months' THEN 2000.00
+        WHEN ultima_compra >= CURRENT_DATE - INTERVAL '6 months' THEN 1500.00
+        ELSE 1000.00
+    END AS limite_credito
+FROM lab_workspace.sistema_legado_clientes;
+
+-- Verificar resultados
+SELECT * FROM lab_workspace.clientes_novo;
+```
+
+### 1.2 Migração de Produtos
+
+```SQL
+-- Migrar produtos do sistema legado para o novo sistema
+INSERT INTO lab_workspace.produtos_novo (
+    codigo_legado,
+    nome,
+    categoria,
+    preco,
+    custo,
+    margem_lucro,
+    estoque,
+    estoque_minimo,
+    fornecedor,
+    data_cadastro,
+    ultima_atualizacao,
+    status
+)
+SELECT
+    produto_id,
+    nome,
+    categoria,
+    preco,
+    preco * 0.7 AS custo, -- Estimativa de custo (70% do preço)
+    0.3 AS margem_lucro, -- Margem de lucro estimada (30%)
+    estoque,
+    CASE
+        WHEN categoria = 'Informática' THEN 10
+        WHEN categoria = 'Eletrônicos' THEN 5
+        ELSE 3
+    END AS estoque_minimo,
+    fornecedor,
+    CURRENT_DATE - INTERVAL '1 year' AS data_cadastro, -- Data estimada
+    CURRENT_TIMESTAMP,
+    'Ativo' AS status
+FROM lab_workspace.sistema_legado_produtos;
+
+-- Adicionar descrições aos produtos
+UPDATE lab_workspace.produtos_novo
+SET descricao = 
+    CASE 
+        WHEN nome LIKE '%Notebook%' THEN 'Notebook para uso pessoal e profissional'
+        WHEN nome LIKE '%Smartphone%' THEN 'Smartphone com câmera de alta resolução'
+        WHEN nome LIKE '%Mouse%' THEN 'Mouse ergonômico com conexão sem fio'
+        WHEN nome LIKE '%Teclado%' THEN 'Teclado mecânico com iluminação RGB'
+        WHEN nome LIKE '%Monitor%' THEN 'Monitor LED com alta definição'
+        ELSE 'Produto eletrônico de alta qualidade'
+    END;
+
+-- Adicionar subcategorias
+UPDATE lab_workspace.produtos_novo
+SET subcategoria = 
+    CASE 
+        WHEN nome LIKE '%Notebook%' THEN 'Laptops'
+        WHEN nome LIKE '%Smartphone%' THEN 'Celulares'
+        WHEN nome LIKE '%Mouse%' THEN 'Periféricos'
+        WHEN nome LIKE '%Teclado%' THEN 'Periféricos'
+        WHEN nome LIKE '%Monitor%' THEN 'Monitores'
+        ELSE 'Outros'
+    END;
+
+-- Verificar resultados
+SELECT * FROM lab_workspace.produtos_novo;
+```
+
+### 1.3 Migração de Vendas
+
+```SQL
+-- Migrar vendas do sistema legado para o novo sistema
+INSERT INTO lab_workspace.vendas_novo (
+    codigo_legado,
+    cliente_id,
+    data_venda,
+    valor_subtotal,
+    valor_desconto,
+    valor_frete,
+    valor_total,
+    forma_pagamento,
+    status,
+    data_atualizacao
+)
+SELECT
+    v.venda_id,
+    c.id AS cliente_id,
+    v.data_venda::TIMESTAMP,
+    v.valor_total AS valor_subtotal,
+    0 AS valor_desconto,
+    0 AS valor_frete,
+    v.valor_total,
+    'Cartão de Crédito' AS forma_pagamento, -- Valor padrão
+    CASE
+        WHEN v.status = 'Concluída' THEN 'Finalizada'
+        WHEN v.status = 'Cancelada' THEN 'Cancelada'
+        ELSE 'Processando'
+    END AS status,
+    CURRENT_TIMESTAMP
+FROM lab_workspace.sistema_legado_vendas v
+JOIN lab_workspace.clientes_novo c ON v.cliente_id = c.codigo_legado;
+
+-- Migrar itens de venda
+INSERT INTO lab_workspace.itens_venda_novo (
+    venda_id,
+    produto_id,
+    quantidade,
+    preco_unitario,
+    valor_desconto,
+    valor_total
+)
+SELECT
+    v.id AS venda_id,
+    p.id AS produto_id,
+    i.quantidade,
+    i.preco_unitario,
+    0 AS valor_desconto,
+    i.quantidade * i.preco_unitario AS valor_total
+FROM lab_workspace.sistema_legado_itens_venda i
+JOIN lab_workspace.vendas_novo v ON i.venda_id = v.codigo_legado
+JOIN lab_workspace.produtos_novo p ON i.produto_id = p.codigo_legado;
+
+-- Verificar resultados
+SELECT * FROM lab_workspace.vendas_novo;
+SELECT * FROM lab_workspace.itens_venda_novo;
+```
+
+## Parte 2: Sincronização de Dados
+
+### 2.1 Criação de Tabelas de Staging
+
+```SQL
+-- Criar tabelas de staging para novos dados
+CREATE TABLE lab_workspace.staging_clientes (
+    cliente_id INTEGER PRIMARY KEY,
+    nome VARCHAR(100),
+    email VARCHAR(100),
+    telefone VARCHAR(20),
+    data_cadastro DATE,
+    ultima_compra DATE,
+    status VARCHAR(20),
+    observacoes TEXT
+);
+
+CREATE TABLE lab_workspace.staging_produtos (
+    produto_id INTEGER PRIMARY KEY,
+    nome VARCHAR(100),
+    categoria VARCHAR(50),
+    subcategoria VARCHAR(50),
+    preco DECIMAL(10,2),
+    custo DECIMAL(10,2),
+    estoque INTEGER,
+    fornecedor VARCHAR(100),
+    status VARCHAR(20)
+);
+
+-- Inserir dados de exemplo nas tabelas de staging
+INSERT INTO lab_workspace.staging_clientes
+VALUES 
+    (1001, 'João Silva', 'joao.silva.novo@email.com', '11987654321', '2020-01-15', '2022-07-05', 'Ativo', 'Cliente atualizado'),
+    (1006, 'Fernanda Lima', 'fernanda.lima@email.com', '61987654321', '2022-07-01', '2022-07-02', 'Ativo', 'Novo cliente'),
+    (1007, 'Roberto Alves', 'roberto.alves@email.com', '71987654321', '2022-07-02', '2022-07-03', 'Ativo', 'Novo cliente');
+
+INSERT INTO lab_workspace.staging_produtos
+VALUES 
+    (2001, 'Notebook Basic Plus', 'Informática', 'Laptops', 2699.90, 1889.93, 10, 'Tech Distribuidora', 'Ativo'),
+    (2006, 'Headphone Bluetooth', 'Eletrônicos', 'Áudio', 199.90, 139.93, 40, 'Sound Solutions', 'Ativo'),
+    (2007, 'Webcam HD', 'Informática', 'Periféricos', 149.90, 104.93, 30, 'Visual Tech', 'Ativo');
+```
+
+### 2.2 Sincronização de Clientes
+
+```SQL
+-- Sincronizar clientes (inserir novos e atualizar existentes)
+WITH clientes_atualizados AS (
+    -- Atualizar clientes existentes
+    UPDATE lab_workspace.clientes_novo c
+    SET 
+        nome = s.nome,
+        email = s.email,
+        telefone = s.telefone,
+        status = s.status,
+        ultima_atualizacao = CURRENT_TIMESTAMP,
+        segmento = CASE
+            WHEN s.ultima_compra >= CURRENT_DATE - INTERVAL '3 months' THEN 'Frequente'
+            WHEN s.ultima_compra >= CURRENT_DATE - INTERVAL '6 months' THEN 'Regular'
+            ELSE 'Ocasional'
+        END
+    FROM lab_workspace.staging_clientes s
+    WHERE c.codigo_legado = s.cliente_id
+    RETURNING c.codigo_legado
+)
+-- Inserir novos clientes
+INSERT INTO lab_workspace.clientes_novo (
+    codigo_legado,
+    nome,
+    email,
+    telefone,
+    data_cadastro,
+    ultima_atualizacao,
+    status,
+    segmento,
+    limite_credito
+)
+SELECT
+    cliente_id,
+    nome,
+    email,
+    telefone,
+    data_cadastro,
+    CURRENT_TIMESTAMP,
+    status,
+    CASE
+        WHEN ultima_compra >= CURRENT_DATE - INTERVAL '3 months' THEN 'Frequente'
+        WHEN ultima_compra >= CURRENT_DATE - INTERVAL '6 months' THEN 'Regular'
+        ELSE 'Ocasional'
+    END AS segmento,
+    CASE
+        WHEN ultima_compra >= CURRENT_DATE - INTERVAL '3 months' THEN 2000.00
+        WHEN ultima_compra >= CURRENT_DATE - INTERVAL '6 months' THEN 1500.00
+        ELSE 1000.00
+    END AS limite_credito
+FROM lab_workspace.staging_clientes s
+WHERE NOT EXISTS (
+    SELECT 1 FROM clientes_atualizados ca
+    WHERE ca.codigo_legado = s.cliente_id
+);
+
+-- Verificar resultados
+SELECT * FROM lab_workspace.clientes_novo ORDER BY id;
+```
+
+### 2.3 Sincronização de Produtos
+
+```SQL
+-- Sincronizar produtos (inserir novos e atualizar existentes)
+WITH produtos_atualizados AS (
+    -- Atualizar produtos existentes
+    UPDATE lab_workspace.produtos_novo p
+    SET 
+        nome = s.nome,
+        categoria = s.categoria,
+        subcategoria = s.subcategoria,
+        preco = s.preco,
+        custo = s.custo,
+        estoque = s.estoque,
+        fornecedor = s.fornecedor,
+        status = s.status,
+        ultima_atualizacao = CURRENT_TIMESTAMP
+    FROM lab_workspace.staging_produtos s
+    WHERE p.codigo_legado = s.produto_id
+    RETURNING p.codigo_legado
+)
+-- Inserir novos produtos
+INSERT INTO lab_workspace.produtos_novo (
+    codigo_legado,
+    nome,
+    categoria,
+    subcategoria,
+    preco,
+    custo,
+    margem_lucro,
+    estoque,
+    estoque_minimo,
+    fornecedor,
+    data_cadastro,
+    ultima_atualizacao,
+    status
+)
+SELECT
+    produto_id,
+    nome,
+    categoria,
+    subcategoria,
+    preco,
+    custo,
+    (preco - custo) / preco AS margem_lucro,
+    estoque,
+    CASE
+        WHEN categoria = 'Informática' THEN 10
+        WHEN categoria = 'Eletrônicos' THEN 5
+        ELSE 3
+    END AS estoque_minimo,
+    fornecedor,
+    CURRENT_DATE AS data_cadastro,
+    CURRENT_TIMESTAMP,
+    status
+FROM lab_workspace.staging_produtos s
+WHERE NOT EXISTS (
+    SELECT 1 FROM produtos_atualizados pa
+    WHERE pa.codigo_legado = s.produto_id
+);
+
+-- Verificar resultados
+SELECT * FROM lab_workspace.produtos_novo ORDER BY id;
+```
+
+## Parte 3: Validação e Correção de Dados
+
+### 3.1 Verificação de Integridade Referencial
+
+```SQL
+-- Verificar integridade referencial entre vendas e clientes
+SELECT v.id, v.codigo_legado, v.cliente_id
+FROM lab_workspace.vendas_novo v
+LEFT JOIN lab_workspace.clientes_novo c ON v.cliente_id = c.id
+WHERE c.id IS NULL;
+
+-- Verificar integridade referencial entre itens de venda e produtos
+SELECT i.venda_id, i.produto_id
+FROM lab_workspace.itens_venda_novo i
+LEFT JOIN lab_workspace.produtos_novo p ON i.produto_id = p.id
+WHERE p.id IS NULL;
+
+-- Verificar integridade referencial entre itens de venda e vendas
+SELECT i.venda_id, i.produto_id
+FROM lab_workspace.itens_venda_novo i
+LEFT JOIN lab_workspace.vendas_novo v ON i.venda_id = v.id
+WHERE v.id IS NULL;
+```
+
+### 3.2 Correção de Inconsistências
+
+```SQL
+-- Atualizar valores totais das vendas com base nos itens
+UPDATE lab_workspace.vendas_novo v
+SET 
+    valor_subtotal = subquery.subtotal,
+    valor_total = subquery.subtotal
+FROM (
+    SELECT 
+        venda_id,
+        SUM(quantidade * preco_unitario) AS subtotal
+    FROM lab_workspace.itens_venda_novo
+    GROUP BY venda_id
+) AS subquery
+WHERE v.id = subquery.venda_id
+AND (v.valor_subtotal <> subquery.subtotal OR v.valor_total <> subquery.subtotal);
+
+-- Verificar resultados
+SELECT 
+    v.id, 
+    v.valor_subtotal, 
+    v.valor_total,
+    (SELECT SUM(quantidade * preco_unitario) FROM lab_workspace.itens_venda_novo WHERE venda_id = v.id) AS calculado
+FROM lab_workspace.vendas_novo v;
+```
+
+### 3.3 Enriquecimento de Dados
+
+```SQL
+-- Adicionar informações de forma de pagamento com base em padrões
+UPDATE lab_workspace.vendas_novo
+SET forma_pagamento = 
+    CASE 
+        WHEN id % 3 = 0 THEN 'Cartão de Crédito'
+        WHEN id % 3 = 1 THEN 'Boleto Bancário'
+        WHEN id % 3 = 2 THEN 'PIX'
+    END
+WHERE forma_pagamento = 'Cartão de Crédito';
+
+-- Adicionar valor de frete com base no valor total
+UPDATE lab_workspace.vendas_novo
+SET 
+    valor_frete = 
+        CASE
+            WHEN valor_total < 100 THEN 15.00
+            WHEN valor_total < 500 THEN 25.00
+            WHEN valor_total < 1000 THEN 35.00
+            ELSE 0.00 -- Frete grátis para compras acima de 1000
+        END,
+    valor_total = valor_total + 
+        CASE
+            WHEN valor_total < 100 THEN 15.00
+            WHEN valor_total < 500 THEN 25.00
+            WHEN valor_total < 1000 THEN 35.00
+            ELSE 0.00
+        END;
+
+-- Verificar resultados
+SELECT id, valor_subtotal, valor_frete, valor_total, forma_pagamento
+FROM lab_workspace.vendas_novo;
+```
+
+## Parte 4: Exportação e Relatórios
+
+### 4.1 Criação de Visões para Relatórios
+
+```SQL
+-- Visão de resumo de vendas por cliente
+CREATE OR REPLACE VIEW lab_workspace.vw_vendas_por_cliente AS
+SELECT 
+    c.id AS cliente_id,
+    c.nome,
+    c.segmento,
+    COUNT(v.id) AS total_pedidos,
+    SUM(v.valor_total) AS valor_total_compras,
+    MAX(v.data_venda) AS ultima_compra,
+    MIN(v.data_venda) AS primeira_compra
+FROM lab_workspace.clientes_novo c
+LEFT JOIN lab_workspace.vendas_novo v ON c.id = v.cliente_id
+GROUP BY c.id, c.nome, c.segmento
+ORDER BY valor_total_compras DESC NULLS LAST;
+
+-- Visão de produtos mais vendidos
+CREATE OR REPLACE VIEW lab_workspace.vw_produtos_mais_vendidos AS
+SELECT 
+    p.id AS produto_id,
+    p.nome,
+    p.categoria,
+    p.subcategoria,
+    SUM(i.quantidade) AS quantidade_vendida,
+    SUM(i.quantidade * i.preco_unitario) AS valor_total_vendas,
+    COUNT(DISTINCT i.venda_id) AS numero_vendas,
+    p.estoque AS estoque_atual,
+    CASE 
+        WHEN p.estoque = 0 THEN 'Sem estoque'
+        WHEN p.estoque < p.estoque_minimo THEN 'Estoque baixo'
+        ELSE 'Estoque normal'
+    END AS status_estoque
+FROM lab_workspace.produtos_novo p
+LEFT JOIN lab_workspace.itens_venda_novo i ON p.id = i.produto_id
+GROUP BY p.id, p.nome, p.categoria, p.subcategoria, p.estoque, p.estoque_minimo
+ORDER BY quantidade_vendida DESC NULLS LAST;
+
+-- Consultar visões
+SELECT * FROM lab_workspace.vw_vendas_por_cliente;
+SELECT * FROM lab_workspace.vw_produtos_mais_vendidos;
+```
+
+### 4.2 Exportação para Tabelas de Relatórios
+
+```SQL
+-- Criar tabela de relatório de vendas mensais
+CREATE TABLE lab_workspace.relatorio_vendas_mensais (
+    ano INTEGER,
+    mes INTEGER,
+    categoria VARCHAR(50),
+    subcategoria VARCHAR(50),
+    total_vendas INTEGER,
+    valor_total DECIMAL(12,2),
+    ticket_medio DECIMAL(12,2),
+    data_geracao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Preencher tabela de relatório
+INSERT INTO lab_workspace.relatorio_vendas_mensais (
+    ano,
+    mes,
+    categoria,
+    subcategoria,
+    total_vendas,
+    valor_total,
+    ticket_medio
+)
+SELECT 
+    EXTRACT(YEAR FROM v.data_venda) AS ano,
+    EXTRACT(MONTH FROM v.data_venda) AS mes,
+    p.categoria,
+    p.subcategoria,
+    COUNT(DISTINCT v.id) AS total_vendas,
+    SUM(i.quantidade * i.preco_unitario) AS valor_total,
+    SUM(i.quantidade * i.preco_unitario) / COUNT(DISTINCT v.id) AS ticket_medio
+FROM lab_workspace.vendas_novo v
+JOIN lab_workspace.itens_venda_novo i ON v.id = i.venda_id
+JOIN lab_workspace.produtos_novo p ON i.produto_id = p.id
+GROUP BY 
+    EXTRACT(YEAR FROM v.data_venda),
+    EXTRACT(MONTH FROM v.data_venda),
+    p.categoria,
+    p.subcategoria
+ORDER BY 
+    ano, mes, categoria, subcategoria;
+
+-- Verificar resultados
+SELECT * FROM lab_workspace.relatorio_vendas_mensais;
+```
+
+### 4.3 Exportação para Formatos Externos
+
+```SQL
+-- Preparar dados para exportação em CSV (simulado com uma consulta)
+SELECT 
+    c.id,
+    c.nome,
+    c.email,
+    c.telefone,
+    c.segmento,
+    COUNT(v.id) AS total_pedidos,
+    SUM(v.valor_total) AS valor_total,
+    MAX(v.data_venda) AS ultima_compra
+FROM lab_workspace.clientes_novo c
+LEFT JOIN lab_workspace.vendas_novo v ON c.id = v.cliente_id
+GROUP BY c.id, c.nome, c.email, c.telefone, c.segmento
+ORDER BY c.id;
+
+-- Preparar dados para exportação em JSON (simulado com uma consulta)
+SELECT 
+    json_build_object(
+        'id', p.id,
+        'nome', p.nome,
+        'categoria', p.categoria,
+        'subcategoria', p.subcategoria,
+        'preco', p.preco,
+        'estoque', p.estoque,
+        'vendas', (
+            SELECT json_agg(
+                json_build_object(
+                    'venda_id', i.venda_id,
+                    'quantidade', i.quantidade,
+                    'valor', i.preco_unitario
+                )
+            )
+            FROM lab_workspace.itens_venda_novo i
+            WHERE i.produto_id = p.id
+        )
+    ) AS produto_json
+FROM lab_workspace.produtos_novo p
+ORDER BY p.id;
+```
+
+## Parte 5: Manutenção e Limpeza
+
+### 5.1 Arquivamento de Dados
+
+```SQL
+-- Criar tabela de arquivamento para vendas antigas
+CREATE TABLE lab_workspace.vendas_arquivo (
+    id INTEGER,
+    codigo_legado INTEGER,
+    cliente_id INTEGER,
+    data_venda TIMESTAMP,
+    valor_subtotal DECIMAL(10,2),
+    valor_desconto DECIMAL(10,2),
+    valor_frete DECIMAL(10,2),
+    valor_total DECIMAL(10,2),
+    forma_pagamento VARCHAR(50),
+    status VARCHAR(20),
+    data_arquivamento TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Mover vendas antigas para arquivamento
+WITH vendas_arquivadas AS (
+    DELETE FROM lab_workspace.vendas_novo
+    WHERE data_venda < CURRENT_DATE - INTERVAL '1 year'
+    RETURNING *
+)
+INSERT INTO lab_workspace.vendas_arquivo (
+    id,
+    codigo_legado,
+    cliente_id,
+    data_venda,
+    valor_subtotal,
+    valor_desconto,
+    valor_frete,
+    valor_total,
+    forma_pagamento,
+    status
+)
+SELECT
+    id,
+    codigo_legado,
+    cliente_id,
+    data_venda,
+    valor_subtotal,
+    valor_desconto,
+    valor_frete,
+    valor_total,
+    forma_pagamento,
+    status
+FROM vendas_arquivadas;
+
+-- Verificar resultados
+SELECT * FROM lab_workspace.vendas_arquivo;
+```
+
+### 5.2 Limpeza de Dados Temporários
+
+```SQL
+-- Limpar tabelas de staging após sincronização
+TRUNCATE TABLE lab_workspace.staging_clientes;
+TRUNCATE TABLE lab_workspace.staging_produtos;
+
+-- Verificar se as tabelas estão vazias
+SELECT COUNT(*) FROM lab_workspace.staging_clientes;
+SELECT COUNT(*) FROM lab_workspace.staging_produtos;
+```
+
+### 5.3 Atualização de Estatísticas
+
+```SQL
+-- Atualizar estatísticas para melhorar performance de consultas
+ANALYZE lab_workspace.clientes_novo;
+ANALYZE lab_workspace.produtos_novo;
+ANALYZE lab_workspace.vendas_novo;
+ANALYZE lab_workspace.itens_venda_novo;
+
+-- Registrar conclusão do laboratório
+UPDATE lab_workspace.lab_progress
+SET 
+    completion_time = CURRENT_TIMESTAMP,
+    status = 'COMPLETED',
+    notes = 'Laboratório de integração de dados concluído com sucesso. Foram realizadas operações de migração, sincronização, validação, exportação e manutenção de dados.'
+WHERE lab_name = 'Integração de Dados'
+AND completion_time IS NULL;
+```
+
+## Desafios Adicionais
+
+1. Implementar um processo de ETL completo
+
+* Extrair dados de múltiplas fontes
+
+* Transformar e normalizar os dados
+
+* Carregar em um data warehouse
+
+2. Criar um sistema de detecção de anomalias
+
+* Identificar valores atípicos
+
+* Detectar padrões suspeitos
+
+* Gerar alertas automáticos
+
+3. Desenvolver um processo de reconciliação de dados
+
+* Comparar dados entre sistemas
+
+* Identificar discrepâncias
+
+* Resolver conflitos automaticamente
+
+## Conclusão
+
+Neste laboratório, você praticou técnicas essenciais de integração de dados, incluindo:
+
+* Migração de dados entre sistemas
+
+* Sincronização e atualização de registros
+
+* Validação e correção de inconsistências
+
+* Enriquecimento de dados
+
+* Criação de relatórios e exportação
+
+* Manutenção e arquivamento
+
+Estas habilidades são fundamentais para profissionais que trabalham com engenharia de dados, ETL, data warehousing e análise de dados.
 
 
 

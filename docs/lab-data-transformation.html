@@ -1,0 +1,503 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en-US" data-preset="contrast" data-primary-color="#E8488B"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="built-on" content="2025-05-09T17:19:15.891525398"><title>Laborat&oacute;rio: Transforma&ccedil;&atilde;o de Dados | Database Management Systems: A Complete Guide</title><script type="application/json" id="virtual-toc-data">[{"id":"objetivo","level":0,"title":"Objetivo","anchor":"#objetivo"},{"id":"cen-rio","level":0,"title":"Cenário","anchor":"#cen-rio"},{"id":"setup-inicial","level":0,"title":"Setup Inicial","anchor":"#setup-inicial"},{"id":"parte-1-limpeza-e-padroniza-o","level":0,"title":"Parte 1: Limpeza e Padronização","anchor":"#parte-1-limpeza-e-padroniza-o"},{"id":"parte-2-convers-o-de-tipos-e-formatos","level":0,"title":"Parte 2: Conversão de Tipos e Formatos","anchor":"#parte-2-convers-o-de-tipos-e-formatos"},{"id":"parte-3-enriquecimento-de-dados","level":0,"title":"Parte 3: Enriquecimento de Dados","anchor":"#parte-3-enriquecimento-de-dados"},{"id":"parte-4-an-lise-e-visualiza-o","level":0,"title":"Parte 4: Análise e Visualização","anchor":"#parte-4-an-lise-e-visualiza-o"},{"id":"conclus-o","level":0,"title":"Conclusão","anchor":"#conclus-o"},{"id":"pr-ximos-passos","level":0,"title":"Próximos Passos","anchor":"#pr-ximos-passos"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.css" rel="stylesheet"><link href="static/custom.css" rel="stylesheet"><link rel="icon" type="image/svg" sizes="16x16" href="images/logo-primary.svg"><meta name="image" content=""><!-- Open Graph --><meta property="og:title" content="Laborat&oacute;rio: Transforma&ccedil;&atilde;o de Dados | Database Management Systems: A Complete Guide"><meta property="og:description" content=""><meta property="og:image" content=""><meta property="og:site_name" content="Database Management Systems: A Complete Guide Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="writerside-documentation/lab-data-transformation.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content=""><meta name="twitter:title" content="Laborat&oacute;rio: Transforma&ccedil;&atilde;o de Dados | Database Management Systems: A Complete Guide"><meta name="twitter:description" content=""><meta name="twitter:creator" content=""><meta name="twitter:image:src" content=""><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    "@id": "writerside-documentation/lab-data-transformation.html#webpage",
+    "url": "writerside-documentation/lab-data-transformation.html",
+    "name": "Laborat&oacute;rio: Transforma&ccedil;&atilde;o de Dados | Database Management Systems: A Complete Guide",
+    "description": "",
+    "image": "",
+    "inLanguage":"en-US"
+}</script><!-- End Schema.org --><!-- Schema.org WebSite --><script type="application/ld+json">{
+    "@type": "WebSite",
+    "@id": "writerside-documentation/#website",
+    "url": "writerside-documentation/",
+    "name": "Database Management Systems: A Complete Guide Help"
+}</script><!-- End Schema.org --></head><body data-id="lab-data-transformation" data-main-title="Laboratório: Transformação de Dados" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs="sql-fundamentals.md|Fundamentos SQL///sql-dml.md|DML - Linguagem de Manipulação de Dados///dml-labs.md|Laboratórios de DML"><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>Database Management Systems: A Complete Guide  Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="lab-data-transformation" id="lab-data-transformation.md">Laboratório: Transformação de Dados</h1><section class="chapter"><h2 id="objetivo" data-toc="objetivo">Objetivo</h2><p id="z5iif2z_12">Desenvolver habilidades de transforma&ccedil;&atilde;o e manipula&ccedil;&atilde;o de dados utilizando SQL, incluindo convers&atilde;o de formatos, limpeza, normaliza&ccedil;&atilde;o e enriquecimento de dados.</p></section><section class="chapter"><h2 id="cen-rio" data-toc="cen-rio">Cen&aacute;rio</h2><p id="z5iif2z_13">Voc&ecirc; &eacute; um engenheiro de dados em uma empresa que precisa preparar dados brutos para an&aacute;lise, integrando m&uacute;ltiplas fontes e garantindo a qualidade dos dados.</p></section><section class="chapter"><h2 id="setup-inicial" data-toc="setup-inicial">Setup Inicial</h2><div class="code-block" data-lang="sql">
+-- Criar tabelas para dados brutos
+CREATE TABLE lab_workspace.dados_brutos_clientes (
+    id VARCHAR(20),
+    nome_completo TEXT,
+    email TEXT,
+    telefone VARCHAR(50),
+    endereco TEXT,
+    data_cadastro VARCHAR(30),
+    status VARCHAR(20),
+    observacoes TEXT
+);
+
+CREATE TABLE lab_workspace.dados_brutos_vendas (
+    id_venda VARCHAR(20),
+    data_hora VARCHAR(30),
+    cliente_id VARCHAR(20),
+    itens TEXT,
+    valor_total VARCHAR(20),
+    desconto VARCHAR(20),
+    forma_pagamento TEXT,
+    status_pagamento TEXT,
+    status_entrega TEXT
+);
+
+CREATE TABLE lab_workspace.dados_brutos_produtos (
+    codigo VARCHAR(20),
+    nome TEXT,
+    descricao TEXT,
+    categoria TEXT,
+    subcategoria TEXT,
+    fornecedor TEXT,
+    preco VARCHAR(20),
+    estoque VARCHAR(10),
+    unidade_medida VARCHAR(10),
+    dimensoes TEXT,
+    peso VARCHAR(20),
+    data_cadastro VARCHAR(30)
+);
+
+-- Carregar dados de exemplo com problemas comuns
+INSERT INTO lab_workspace.dados_brutos_clientes
+VALUES 
+    ('CLI-001', 'Silva, João Carlos', 'joao.silva@email.com', '(11) 98765-4321', 'Rua das Flores, 123 - São Paulo, SP', '15/03/2022', 'ATIVO', NULL),
+    ('CLI-002', 'Maria Souza', 'maria.souza@email.com', '11987654322', 'Av. Paulista, 1000, Apto 501, São Paulo - SP', '2022-04-20', 'ativo', 'Cliente VIP'),
+    ('CLI-003', 'PEDRO SANTOS', 'pedro@email', '(21)87654323', 'Rua Ipanema 45, Rio de Janeiro RJ', '05/05/2022', 'INATIVO', 'Bloqueado por inadimplência'),
+    ('CLI-004', 'Ana Paula  Oliveira', 'ana.oliveira@email.com', '(31) 9876-54324', 'Av. Amazonas, 500 - Belo Horizonte - MG', '10/06/2022', 'ATIVO', NULL),
+    ('CLI-005', 'Carlos Eduardo da Silva', 'carlos@email.com.br', '(41)998765325', 'R. XV de Novembro, 200 - Curitiba PR', '2022/07/15', 'PENDENTE', 'Aguardando confirmação de email');
+
+INSERT INTO lab_workspace.dados_brutos_vendas
+VALUES 
+    ('V-2022-001', '15/04/2022 14:30:25', 'CLI-001', 'PROD-001:2,PROD-003:1', 'R$ 1.299,90', '10%', 'CARTÃO DE CRÉDITO', 'APROVADO', 'ENTREGUE'),
+    ('V-2022-002', '2022-05-20 09:45:12', 'CLI-002', 'PROD-002:1', '2499.90', '0', 'PIX', 'APROVADO', 'EM TRANSPORTE'),
+    ('V-2022-003', '25/05/2022 18:20:45', 'CLI-001', 'PROD-005:3,PROD-004:1', 'R$1.549,97', 'R$ 100,00', 'BOLETO', 'APROVADO', 'PENDENTE'),
+    ('V-2022-004', '30/05/2022 10:15:30', 'CLI-003', 'PROD-001:1', 'R$ 599,90', 'R$ 0,00', 'DÉBITO', 'APROVADO', 'ENTREGUE'),
+    ('V-2022-005', '2022-06-10T08:45:12Z', 'CLI-002', 'PROD-003:2', '1400', '5%', 'CRÉDITO', 'APROVADO', 'ENTREGUE');
+
+INSERT INTO lab_workspace.dados_brutos_produtos
+VALUES 
+    ('PROD-001', 'Smartphone XYZ', 'Smartphone com 128GB de memória', 'Eletrônicos', 'Celulares', 'Tech Inc.', 'R$ 599,90', '15', 'un', '15x7x1 cm', '180g', '10/01/2022'),
+    ('PROD-002', 'Notebook Ultra', 'Notebook com processador i7', 'Eletrônicos', 'Computadores', 'Tech Inc.', '2499.90', '8', 'un', NULL, '1,5 kg', '2022-01-15'),
+    ('PROD-003', 'Fone de Ouvido Bluetooth', 'Fone sem fio com cancelamento de ruído', 'Eletrônicos', 'Acessórios', 'AudioTech', 'R$699,95', '25', 'un', '18x18x5 cm', '200 g', '20/01/2022'),
+    ('PROD-004', 'Mouse Gamer', 'Mouse com 6 botões e LED RGB', 'Eletrônicos', 'Acessórios', 'GamerTech', 'R$ 149,99', '30', 'un', '12x7x4 cm', '100g', '25/01/2022'),
+    ('PROD-005', 'Teclado Mecânico', 'Teclado com switches blue', 'Eletrônicos', 'Acessórios', 'GamerTech', 'R$ 299,99', '20', 'un', '44x14x4 cm', '850 g', '2022/01/30');
+
+-- Criar tabela de progresso do laboratório
+CREATE TABLE IF NOT EXISTS lab_workspace.lab_progress (
+    lab_name VARCHAR(100) PRIMARY KEY,
+    start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    completion_time TIMESTAMP,
+    status VARCHAR(20) DEFAULT 'IN_PROGRESS',
+    notes TEXT
+);
+
+-- Registrar início do laboratório
+INSERT INTO lab_workspace.lab_progress (lab_name)
+VALUES ('Transformação de Dados');
+</div></section><section class="chapter"><h2 id="parte-1-limpeza-e-padroniza-o" data-toc="parte-1-limpeza-e-padroniza-o">Parte 1: Limpeza e Padroniza&ccedil;&atilde;o</h2><section class="chapter"><h3 id="1-1-padroniza-o-de-nomes" data-toc="1-1-padroniza-o-de-nomes">1.1 Padroniza&ccedil;&atilde;o de Nomes</h3><div class="code-block" data-lang="sql">
+-- Criar tabela normalizada para clientes
+CREATE TABLE lab_workspace.clientes (
+    id VARCHAR(20) PRIMARY KEY,
+    nome_primeiro VARCHAR(50),
+    nome_ultimo VARCHAR(50),
+    email VARCHAR(100),
+    telefone VARCHAR(20),
+    data_cadastro DATE,
+    status VARCHAR(20),
+    observacoes TEXT
+);
+
+-- Padronizar e separar nomes
+INSERT INTO lab_workspace.clientes (
+    id,
+    nome_primeiro,
+    nome_ultimo,
+    email,
+    telefone,
+    data_cadastro,
+    status,
+    observacoes
+)
+SELECT
+    id,
+    -- Padronizar e extrair primeiro nome
+    CASE
+        WHEN nome_completo LIKE '%,%' THEN 
+            TRIM(SPLIT_PART(nome_completo, ',', 2))
+        ELSE
+            TRIM(SPLIT_PART(nome_completo, ' ', 1))
+    END AS nome_primeiro,
+    
+    -- Padronizar e extrair último nome
+    CASE
+        WHEN nome_completo LIKE '%,%' THEN 
+            TRIM(SPLIT_PART(nome_completo, ',', 1))
+        ELSE
+            CASE
+                WHEN ARRAY_LENGTH(STRING_TO_ARRAY(nome_completo, ' '), 1) &gt; 1 THEN
+                    TRIM(SPLIT_PART(nome_completo, ' ', ARRAY_LENGTH(STRING_TO_ARRAY(nome_completo, ' '), 1)))
+                ELSE
+                    NULL
+            END
+    END AS nome_ultimo,
+    
+    -- Manter email original por enquanto
+    email,
+    
+    -- Padronizar telefone (remover formatação)
+    REGEXP_REPLACE(telefone, '[^0-9]', '', 'g') AS telefone,
+    
+    -- Converter data para formato padrão
+    CASE
+        WHEN data_cadastro ~ '^[0-9]{2}/[0-9]{2}/[0-9]{4}$' THEN 
+            TO_DATE(data_cadastro, 'DD/MM/YYYY')
+        WHEN data_cadastro ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' THEN 
+            TO_DATE(data_cadastro, 'YYYY-MM-DD')
+        WHEN data_cadastro ~ '^[0-9]{4}/[0-9]{2}/[0-9]{2}$' THEN 
+            TO_DATE(data_cadastro, 'YYYY/MM/DD')
+        ELSE NULL
+    END AS data_cadastro,
+    
+    -- Padronizar status (primeira letra maiúscula, resto minúscula)
+    INITCAP(LOWER(status)) AS status,
+    
+    observacoes
+FROM lab_workspace.dados_brutos_clientes;
+
+-- Verificar resultados
+SELECT * FROM lab_workspace.clientes;
+</div></section><section class="chapter"><h3 id="1-2-valida-o-e-corre-o-de-dados" data-toc="1-2-valida-o-e-corre-o-de-dados">1.2 Valida&ccedil;&atilde;o e Corre&ccedil;&atilde;o de Dados</h3><div class="code-block" data-lang="sql">
+-- Validar e corrigir emails
+UPDATE lab_workspace.clientes
+SET email = 
+    CASE
+        WHEN email NOT LIKE '%@%.%' THEN email || '@dominio.com'
+        ELSE email
+    END
+WHERE email NOT LIKE '%@%.%';
+
+-- Validar e padronizar telefones
+UPDATE lab_workspace.clientes
+SET telefone = 
+    CASE
+        WHEN LENGTH(telefone) = 10 THEN 
+            SUBSTRING(telefone, 1, 2) || '9' || SUBSTRING(telefone, 3)
+        ELSE telefone
+    END
+WHERE LENGTH(telefone) = 10;
+
+-- Verificar registros com problemas
+SELECT id, email, telefone
+FROM lab_workspace.clientes
+WHERE 
+    email !~ '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$' OR
+    telefone !~ '^[0-9]{10,11}$';
+</div></section><section class="chapter"><h3 id="1-3-normaliza-o-de-endere-os" data-toc="1-3-normaliza-o-de-endere-os">1.3 Normaliza&ccedil;&atilde;o de Endere&ccedil;os</h3><div class="code-block" data-lang="sql">
+-- Criar tabela normalizada para endereços
+CREATE TABLE lab_workspace.enderecos (
+    id SERIAL PRIMARY KEY,
+    cliente_id VARCHAR(20) REFERENCES lab_workspace.clientes(id),
+    logradouro VARCHAR(100),
+    numero VARCHAR(20),
+    complemento VARCHAR(50),
+    bairro VARCHAR(50),
+    cidade VARCHAR(50),
+    estado CHAR(2),
+    cep VARCHAR(8)
+);
+
+-- Extrair e normalizar componentes de endereço
+INSERT INTO lab_workspace.enderecos (
+    cliente_id,
+    logradouro,
+    numero,
+    complemento,
+    cidade,
+    estado
+)
+SELECT
+    id AS cliente_id,
+    -- Extrair logradouro (até o número)
+    REGEXP_REPLACE(
+        SPLIT_PART(
+            SPLIT_PART(endereco, ',', 1), 
+            ' - ', 
+            1
+        ),
+        '[0-9]+$', 
+        ''
+    ) AS logradouro,
+    
+    -- Extrair número
+    REGEXP_REPLACE(
+        SPLIT_PART(
+            SPLIT_PART(endereco, ',', 1), 
+            ' - ', 
+            1
+        ),
+        '^.*?([0-9]+)$', 
+        '\1'
+    ) AS numero,
+    
+    -- Extrair complemento (se existir)
+    CASE
+        WHEN endereco LIKE '%Apto%' THEN 
+            REGEXP_REPLACE(
+                SPLIT_PART(endereco, ',', 2),
+                '.*Apto ([0-9]+).*',
+                'Apto \1'
+            )
+        ELSE NULL
+    END AS complemento,
+    
+    -- Extrair cidade
+    TRIM(SPLIT_PART(
+        SPLIT_PART(endereco, ' - ', 2),
+        '-',
+        1
+    )) AS cidade,
+    
+    -- Extrair estado
+    TRIM(REGEXP_REPLACE(
+        SPLIT_PART(endereco, ' - ', 2),
+        '.*([A-Z]{2})$',
+        '\1'
+    )) AS estado
+FROM lab_workspace.dados_brutos_clientes;
+
+-- Verificar resultados
+SELECT c.id, c.nome_primeiro, c.nome_ultimo, e.logradouro, e.numero, e.cidade, e.estado
+FROM lab_workspace.clientes c
+JOIN lab_workspace.enderecos e ON c.id = e.cliente_id;
+</div></section></section><section class="chapter"><h2 id="parte-2-convers-o-de-tipos-e-formatos" data-toc="parte-2-convers-o-de-tipos-e-formatos">Parte 2: Convers&atilde;o de Tipos e Formatos</h2><section class="chapter"><h3 id="2-1-normaliza-o-de-produtos" data-toc="2-1-normaliza-o-de-produtos">2.1 Normaliza&ccedil;&atilde;o de Produtos</h3><div class="code-block" data-lang="sql">
+-- Criar tabela normalizada para produtos
+CREATE TABLE lab_workspace.produtos (
+    id VARCHAR(20) PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    descricao TEXT,
+    categoria VARCHAR(50),
+    subcategoria VARCHAR(50),
+    fornecedor VARCHAR(50),
+    preco DECIMAL(10,2) NOT NULL,
+    estoque INTEGER NOT NULL,
+    unidade_medida VARCHAR(10),
+    peso DECIMAL(10,2),
+    peso_unidade VARCHAR(5),
+    data_cadastro DATE
+);
+
+-- Converter e normalizar dados de produtos
+INSERT INTO lab_workspace.produtos (
+    id,
+    nome,
+    descricao,
+    categoria,
+    subcategoria,
+    fornecedor,
+    preco,
+    estoque,
+    unidade_medida,
+    peso,
+    peso_unidade,
+    data_cadastro
+)
+SELECT
+    codigo AS id,
+    nome,
+    descricao,
+    categoria,
+    subcategoria,
+    fornecedor,
+    
+    -- Converter preço para decimal
+    CASE
+        WHEN preco LIKE 'R$%' THEN 
+            REPLACE(REPLACE(REPLACE(preco, 'R$', ''), '.', ''), ',', '.')::DECIMAL(10,2)
+        ELSE
+            REPLACE(preco, ',', '.')::DECIMAL(10,2)
+    END AS preco,
+    
+    -- Converter estoque para inteiro
+    estoque::INTEGER,
+    
+    unidade_medida,
+    
+    -- Extrair valor numérico do peso
+    CASE
+        WHEN peso LIKE '%kg%' THEN 
+            REPLACE(REPLACE(peso, 'kg', ''), ',', '.')::DECIMAL(10,2) * 1000
+        WHEN peso LIKE '%g%' THEN 
+            REPLACE(REPLACE(peso, 'g', ''), ',', '.')::DECIMAL(10,2)
+        ELSE NULL
+    END AS peso,
+    
+    -- Extrair unidade do peso
+    'g' AS peso_unidade,
+    
+    -- Converter data para formato padrão
+    CASE
+        WHEN data_cadastro ~ '^[0-9]{2}/[0-9]{2}/[0-9]{4}$' THEN 
+            TO_DATE(data_cadastro, 'DD/MM/YYYY')
+        WHEN data_cadastro ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' THEN 
+            TO_DATE(data_cadastro, 'YYYY-MM-DD')
+        WHEN data_cadastro ~ '^[0-9]{4}/[0-9]{2}/[0-9]{2}$' THEN 
+            TO_DATE(data_cadastro, 'YYYY/MM/DD')
+        ELSE NULL
+    END AS data_cadastro
+FROM lab_workspace.dados_brutos_produtos;
+
+-- Verificar resultados
+SELECT id, nome, preco, estoque, peso, data_cadastro
+FROM lab_workspace.produtos;
+</div></section><section class="chapter"><h3 id="2-2-normaliza-o-de-vendas" data-toc="2-2-normaliza-o-de-vendas">2.2 Normaliza&ccedil;&atilde;o de Vendas</h3><div class="code-block" data-lang="sql">
+-- Criar tabela normalizada para vendas
+CREATE TABLE lab_workspace.vendas (
+    id VARCHAR(20) PRIMARY KEY,
+    data_hora TIMESTAMP NOT NULL,
+    cliente_id VARCHAR(20) REFERENCES lab_workspace.clientes(id),
+    valor_total DECIMAL(10,2) NOT NULL,
+    desconto DECIMAL(10,2),
+    forma_pagamento VARCHAR(50),
+    status_pagamento VARCHAR(20),
+    status_entrega VARCHAR(20)
+);
+
+-- Converter e normalizar dados de vendas
+INSERT INTO lab_workspace.vendas (
+    id,
+    data_hora,
+    cliente_id,
+    valor_total,
+    desconto,
+    forma_pagamento,
+    status_pagamento,
+    status_entrega
+)
+SELECT
+    id_venda AS id,
+    
+    -- Converter data_hora para timestamp
+    CASE
+        WHEN data_hora ~ '^[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2}$' THEN 
+            TO_TIMESTAMP(data_hora, 'DD/MM/YYYY HH24:MI:SS')
+        WHEN data_hora ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$' THEN 
+            TO_TIMESTAMP(data_hora, 'YYYY-MM-DD HH24:MI:SS')
+        ELSE
+            TO_TIMESTAMP(data_hora, 'YYYY-MM-DDTHH24:MI:SSZ')
+    END AS data_hora,
+    
+    cliente_id,
+    
+    -- Converter valor_total para decimal
+    CASE
+        WHEN valor_total LIKE 'R$%' THEN 
+            REPLACE(REPLACE(REPLACE(valor_total, 'R$', ''), '.', ''), ',', '.')::DECIMAL(10,2)
+        ELSE
+            REPLACE(valor_total, ',', '.')::DECIMAL(10,2)
+    END AS valor_total,
+    
+    -- Converter desconto para decimal
+    CASE
+        WHEN desconto LIKE '%%' THEN 
+            REPLACE(desconto, '%', '')::DECIMAL(10,2) / 100
+        ELSE
+            REPLACE(desconto, ',', '.')::DECIMAL(10,2)
+    END AS desconto,
+    
+    forma_pagamento,
+    status_pagamento,
+    status_entrega
+FROM lab_workspace.dados_brutos_vendas;
+
+-- Verificar resultados
+SELECT id, data_hora, cliente_id, valor_total, desconto, forma_pagamento, status_pagamento, status_entrega
+FROM lab_workspace.vendas;
+</div></section></section><section class="chapter"><h2 id="parte-3-enriquecimento-de-dados" data-toc="parte-3-enriquecimento-de-dados">Parte 3: Enriquecimento de Dados</h2><section class="chapter"><h3 id="3-1-adicionar-informa-es-de-geolocaliza-o" data-toc="3-1-adicionar-informa-es-de-geolocaliza-o">3.1 Adicionar Informa&ccedil;&otilde;es de Geolocaliza&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+-- Criar tabela para armazenar informações de geolocalização
+CREATE TABLE lab_workspace.geolocalizacao (
+    cidade VARCHAR(50),
+    estado CHAR(2),
+    pais VARCHAR(50),
+    latitude DECIMAL(9,6),
+    longitude DECIMAL(9,6)
+);
+
+-- Inserir dados de geolocalização (exemplo)
+INSERT INTO lab_workspace.geolocalizacao (cidade, estado, pais, latitude, longitude)
+VALUES 
+    ('São Paulo', 'SP', 'Brasil', -23.550520, -46.633309),
+    ('Rio de Janeiro', 'RJ', 'Brasil', -22.906847, -43.172897),
+    ('Belo Horizonte', 'MG', 'Brasil', -19.815733, -43.954234),
+    ('Curitiba', 'PR', 'Brasil', -25.428408, -49.273388);
+
+-- Adicionar colunas para geolocalização na tabela de endereços
+ALTER TABLE lab_workspace.enderecos
+ADD COLUMN latitude DECIMAL(9,6),
+ADD COLUMN longitude DECIMAL(9,6);
+
+-- Atualizar endereços com informações de geolocalização
+UPDATE lab_workspace.enderecos e
+SET latitude = g.latitude,
+    longitude = g.longitude
+FROM lab_workspace.geolocalizacao g
+WHERE e.cidade = g.cidade AND e.estado = g.estado;
+
+-- Verificar resultados
+SELECT c.id, c.nome_primeiro, c.nome_ultimo, e.logradouro, e.numero, e.cidade, e.estado, e.latitude, e.longitude
+FROM lab_workspace.clientes c
+JOIN lab_workspace.enderecos e ON c.id = e.cliente_id;
+</div></section><section class="chapter"><h3 id="3-2-adicionar-informa-es-de-produtos" data-toc="3-2-adicionar-informa-es-de-produtos">3.2 Adicionar Informa&ccedil;&otilde;es de Produtos</h3><div class="code-block" data-lang="sql">
+-- Criar tabela para armazenar informações adicionais de produtos
+CREATE TABLE lab_workspace.produtos_info (
+    produto_id VARCHAR(20) PRIMARY KEY,
+    marca VARCHAR(50),
+    modelo VARCHAR(50),
+    garantia VARCHAR(50),
+    fabricante VARCHAR(50)
+);
+
+-- Inserir dados de informações de produtos (exemplo)
+INSERT INTO lab_workspace.produtos_info (produto_id, marca, modelo, garantia, fabricante)
+VALUES 
+    ('PROD-001', 'Tech Inc.', 'XYZ', '1 ano', 'Tech Inc.'),
+    ('PROD-002', 'Tech Inc.', 'Ultra', '2 anos', 'Tech Inc.'),
+    ('PROD-003', 'AudioTech', 'Bluetooth', '1 ano', 'AudioTech'),
+    ('PROD-004', 'GamerTech', 'Gamer', '1 ano', 'GamerTech'),
+    ('PROD-005', 'GamerTech', 'Mechanical', '2 anos', 'GamerTech');
+
+-- Adicionar colunas para informações de produtos na tabela de produtos
+ALTER TABLE lab_workspace.produtos
+ADD COLUMN marca VARCHAR(50),
+ADD COLUMN modelo VARCHAR(50),
+ADD COLUMN garantia VARCHAR(50),
+ADD COLUMN fabricante VARCHAR(50);
+
+-- Atualizar produtos com informações adicionais
+UPDATE lab_workspace.produtos p
+SET marca = pi.marca,
+    modelo = pi.modelo,
+    garantia = pi.garantia,
+    fabricante = pi.fabricante
+FROM lab_workspace.produtos_info pi
+WHERE p.id = pi.produto_id;
+
+-- Verificar resultados
+SELECT p.id, p.nome, p.preco, p.estoque, p.peso, p.data_cadastro, p.marca, p.modelo, p.garantia, p.fabricante
+FROM lab_workspace.produtos p;
+</div></section></section><section class="chapter"><h2 id="parte-4-an-lise-e-visualiza-o" data-toc="parte-4-an-lise-e-visualiza-o">Parte 4: An&aacute;lise e Visualiza&ccedil;&atilde;o</h2><section class="chapter"><h3 id="4-1-an-lise-de-vendas" data-toc="4-1-an-lise-de-vendas">4.1 An&aacute;lise de Vendas</h3><div class="code-block" data-lang="sql">
+-- Calcular o total de vendas por cliente
+SELECT c.id, c.nome_primeiro, c.nome_ultimo, SUM(v.valor_total) AS total_vendas
+FROM lab_workspace.clientes c
+JOIN lab_workspace.vendas v ON c.id = v.cliente_id
+GROUP BY c.id, c.nome_primeiro, c.nome_ultimo
+ORDER BY total_vendas DESC;
+
+-- Calcular o total de vendas por produto
+SELECT p.id, p.nome, SUM(v.valor_total) AS total_vendas
+FROM lab_workspace.produtos p
+JOIN lab_workspace.vendas v ON p.id = v.itens
+GROUP BY p.id, p.nome
+ORDER BY total_vendas DESC;
+
+-- Calcular o total de vendas por mês
+SELECT TO_CHAR(v.data_hora, 'YYYY-MM') AS mes, SUM(v.valor_total) AS total_vendas
+FROM lab_workspace.vendas v
+GROUP BY TO_CHAR(v.data_hora, 'YYYY-MM')
+ORDER BY mes;
+</div></section><section class="chapter"><h3 id="4-2-visualiza-o-de-dados" data-toc="4-2-visualiza-o-de-dados">4.2 Visualiza&ccedil;&atilde;o de Dados</h3><p id="z5iif2z_32">Para visualizar os dados, voc&ecirc; pode usar ferramentas como Tableau, Power BI ou Google Data Studio. Aqui est&atilde;o algumas ideias de visualiza&ccedil;&otilde;es:</p><ol class="list _decimal" id="z5iif2z_33" type="1"><li class="list__item" id="z5iif2z_35"><p id="z5iif2z_39">Gr&aacute;fico de barras para o total de vendas por cliente.</p></li><li class="list__item" id="z5iif2z_36"><p id="z5iif2z_40">Gr&aacute;fico de pizza para a distribui&ccedil;&atilde;o de vendas por produto.</p></li><li class="list__item" id="z5iif2z_37"><p id="z5iif2z_41">Gr&aacute;fico de linha para o total de vendas ao longo do tempo.</p></li><li class="list__item" id="z5iif2z_38"><p id="z5iif2z_42">Mapa para visualizar a distribui&ccedil;&atilde;o geogr&aacute;fica dos clientes.</p></li></ol><p id="z5iif2z_34">Lembre-se de que a visualiza&ccedil;&atilde;o de dados &eacute; uma parte importante da an&aacute;lise e pode ajudar a identificar tend&ecirc;ncias e padr&otilde;es nos dados.</p></section></section><section class="chapter"><h2 id="conclus-o" data-toc="conclus-o">Conclus&atilde;o</h2><p id="z5iif2z_43">Neste laborat&oacute;rio, voc&ecirc; aprendeu a transformar e manipular dados brutos utilizando SQL, incluindo limpeza, normaliza&ccedil;&atilde;o, convers&atilde;o de formatos e enriquecimento de dados. Voc&ecirc; tamb&eacute;m explorou t&eacute;cnicas de an&aacute;lise e visualiza&ccedil;&atilde;o de dados para obter insights valiosos.</p></section><section class="chapter"><h2 id="pr-ximos-passos" data-toc="pr-ximos-passos">Pr&oacute;ximos Passos</h2><p id="z5iif2z_44">Para aprofundar seus conhecimentos, voc&ecirc; pode:</p><ol class="list _decimal" id="z5iif2z_45" type="1"><li class="list__item" id="z5iif2z_47"><p id="z5iif2z_51">Explorar mais t&eacute;cnicas de manipula&ccedil;&atilde;o de dados em SQL.</p></li><li class="list__item" id="z5iif2z_48"><p id="z5iif2z_52">Aprender sobre ferramentas de an&aacute;lise e visualiza&ccedil;&atilde;o de dados.</p></li><li class="list__item" id="z5iif2z_49"><p id="z5iif2z_53">Trabalhar com conjuntos de dados maiores e mais complexos.</p></li><li class="list__item" id="z5iif2z_50"><p id="z5iif2z_54">Experimentar diferentes abordagens de limpeza e normaliza&ccedil;&atilde;o de dados.</p></li></ol><p id="z5iif2z_46">Boa sorte! Se tiver alguma d&uacute;vida, sinta-se &agrave; vontade para perguntar.</p></section><div class="last-modified">04 maio 2025</div><div data-feedback-placeholder="true"></div><div class="navigation-links _bottom"><a href="lab-data-analysis.html" class="navigation-links__prev">Laborat&oacute;rio: An&aacute;lise de Dados</a><a href="lab-data-integration.html" class="navigation-links__next">Laborat&oacute;rio: Integra&ccedil;&atilde;o de Dados</a></div></article><div id="disqus_thread"></div></div></section></main></div><script src="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.js"></script></body></html>
