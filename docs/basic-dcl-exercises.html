@@ -1,0 +1,152 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en-US" data-preset="contrast" data-primary-color="#E8488B"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="built-on" content="2025-05-09T19:38:35.764773727"><title>Exerc&iacute;cios B&aacute;sicos de DCL | Database Management Systems: A Complete Guide</title><script type="application/json" id="virtual-toc-data">[{"id":"exerc-cio-1-concess-o-de-privil-gios-b-sicos","level":0,"title":"Exercício 1: Concessão de Privilégios Básicos","anchor":"#exerc-cio-1-concess-o-de-privil-gios-b-sicos"},{"id":"exerc-cio-2-revoga-o-de-privil-gios","level":0,"title":"Exercício 2: Revogação de Privilégios","anchor":"#exerc-cio-2-revoga-o-de-privil-gios"},{"id":"exerc-cio-3-privil-gios-em-n-vel-de-schema","level":0,"title":"Exercício 3: Privilégios em Nível de Schema","anchor":"#exerc-cio-3-privil-gios-em-n-vel-de-schema"},{"id":"exerc-cio-4-cria-o-e-gerenciamento-de-roles","level":0,"title":"Exercício 4: Criação e Gerenciamento de Roles","anchor":"#exerc-cio-4-cria-o-e-gerenciamento-de-roles"},{"id":"exerc-cio-5-privil-gios-em-n-vel-de-coluna","level":0,"title":"Exercício 5: Privilégios em Nível de Coluna","anchor":"#exerc-cio-5-privil-gios-em-n-vel-de-coluna"},{"id":"exerc-cio-6-privil-gios-de-execu-o","level":0,"title":"Exercício 6: Privilégios de Execução","anchor":"#exerc-cio-6-privil-gios-de-execu-o"},{"id":"exerc-cio-7-privil-gios-de-conex-o","level":0,"title":"Exercício 7: Privilégios de Conexão","anchor":"#exerc-cio-7-privil-gios-de-conex-o"},{"id":"exerc-cio-8-privil-gios-tempor-rios","level":0,"title":"Exercício 8: Privilégios Temporários","anchor":"#exerc-cio-8-privil-gios-tempor-rios"},{"id":"crit-rios-de-avalia-o","level":0,"title":"Critérios de Avaliação","anchor":"#crit-rios-de-avalia-o"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.css" rel="stylesheet"><link href="static/custom.css" rel="stylesheet"><link rel="icon" type="image/svg" sizes="16x16" href="images/logo-primary.svg"><meta name="image" content=""><!-- Open Graph --><meta property="og:title" content="Exerc&iacute;cios B&aacute;sicos de DCL | Database Management Systems: A Complete Guide"><meta property="og:description" content=""><meta property="og:image" content=""><meta property="og:site_name" content="Database Management Systems: A Complete Guide Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="writerside-documentation/basic-dcl-exercises.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content=""><meta name="twitter:title" content="Exerc&iacute;cios B&aacute;sicos de DCL | Database Management Systems: A Complete Guide"><meta name="twitter:description" content=""><meta name="twitter:creator" content=""><meta name="twitter:image:src" content=""><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    "@id": "writerside-documentation/basic-dcl-exercises.html#webpage",
+    "url": "writerside-documentation/basic-dcl-exercises.html",
+    "name": "Exerc&iacute;cios B&aacute;sicos de DCL | Database Management Systems: A Complete Guide",
+    "description": "",
+    "image": "",
+    "inLanguage":"en-US"
+}</script><!-- End Schema.org --><!-- Schema.org WebSite --><script type="application/ld+json">{
+    "@type": "WebSite",
+    "@id": "writerside-documentation/#website",
+    "url": "writerside-documentation/",
+    "name": "Database Management Systems: A Complete Guide Help"
+}</script><!-- End Schema.org --></head><body data-id="basic-dcl-exercises" data-main-title="Exercícios Básicos de DCL" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs="sql-fundamentals.md|Fundamentos SQL///sql-dcl.md|DCL - Linguagem de Controle de Dados///dcl-exercises.md|Exercícios de DCL (Data Control Language)"><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>Database Management Systems: A Complete Guide  Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="basic-dcl-exercises" id="basic-dcl-exercises.md">Exercícios Básicos de DCL</h1><section class="chapter"><h2 id="exerc-cio-1-concess-o-de-privil-gios-b-sicos" data-toc="exerc-cio-1-concess-o-de-privil-gios-b-sicos">Exerc&iacute;cio 1: Concess&atilde;o de Privil&eacute;gios B&aacute;sicos</h2><section class="chapter"><h3 id="descri-o" data-toc="descri-o">Descri&ccedil;&atilde;o</h3><p id="-nbbad2_15">Pratique a concess&atilde;o de privil&eacute;gios b&aacute;sicos para usu&aacute;rios em diferentes tabelas.</p></section><section class="chapter"><h3 id="requisitos" data-toc="requisitos">Requisitos</h3><ul class="list _bullet" id="-nbbad2_16"><li class="list__item" id="-nbbad2_17"><p id="-nbbad2_21">Conceder privil&eacute;gios de SELECT</p></li><li class="list__item" id="-nbbad2_18"><p id="-nbbad2_22">Conceder privil&eacute;gios de INSERT/UPDATE</p></li><li class="list__item" id="-nbbad2_19"><p id="-nbbad2_23">Conceder privil&eacute;gios de DELETE</p></li><li class="list__item" id="-nbbad2_20"><p id="-nbbad2_24">Verificar privil&eacute;gios concedidos</p></li></ul></section><section class="chapter"><h3 id="solu-o" data-toc="solu-o">Solu&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+-- Conceder privilégio de SELECT
+GRANT SELECT ON aplicacao.produtos TO app_user;
+
+-- Conceder privilégios de INSERT e UPDATE
+GRANT INSERT, UPDATE ON aplicacao.pedidos TO app_user;
+
+-- Conceder privilégio de DELETE com restrição
+GRANT DELETE ON aplicacao.pedidos TO admin_user;
+
+-- Verificar privilégios concedidos
+SELECT grantee, table_schema, table_name, privilege_type
+FROM information_schema.table_privileges
+WHERE grantee = 'app_user';
+</div></section></section><section class="chapter"><h2 id="exerc-cio-2-revoga-o-de-privil-gios" data-toc="exerc-cio-2-revoga-o-de-privil-gios">Exerc&iacute;cio 2: Revoga&ccedil;&atilde;o de Privil&eacute;gios</h2><section class="chapter"><h3 id="descri-o" data-toc="descri-o">Descri&ccedil;&atilde;o</h3><p id="-nbbad2_29">Pratique a revoga&ccedil;&atilde;o de privil&eacute;gios previamente concedidos.</p></section><section class="chapter"><h3 id="requisitos" data-toc="requisitos">Requisitos</h3><ul class="list _bullet" id="-nbbad2_30"><li class="list__item" id="-nbbad2_31"><p id="-nbbad2_35">Revogar privil&eacute;gios espec&iacute;ficos</p></li><li class="list__item" id="-nbbad2_32"><p id="-nbbad2_36">Revogar todos os privil&eacute;gios</p></li><li class="list__item" id="-nbbad2_33"><p id="-nbbad2_37">Revogar privil&eacute;gios de m&uacute;ltiplos objetos</p></li><li class="list__item" id="-nbbad2_34"><p id="-nbbad2_38">Verificar ap&oacute;s revoga&ccedil;&atilde;o</p></li></ul></section><section class="chapter"><h3 id="solu-o" data-toc="solu-o">Solu&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+-- Revogar privilégio específico
+REVOKE INSERT ON aplicacao.pedidos FROM app_user;
+
+-- Revogar todos os privilégios de uma tabela
+REVOKE ALL PRIVILEGES ON aplicacao.clientes FROM app_user;
+
+-- Revogar privilégios de múltiplas tabelas
+REVOKE SELECT ON aplicacao.produtos, aplicacao.pedidos FROM app_user;
+
+-- Verificar após revogação
+SELECT grantee, table_schema, table_name, privilege_type
+FROM information_schema.table_privileges
+WHERE grantee = 'app_user';
+</div></section></section><section class="chapter"><h2 id="exerc-cio-3-privil-gios-em-n-vel-de-schema" data-toc="exerc-cio-3-privil-gios-em-n-vel-de-schema">Exerc&iacute;cio 3: Privil&eacute;gios em N&iacute;vel de Schema</h2><section class="chapter"><h3 id="descri-o" data-toc="descri-o">Descri&ccedil;&atilde;o</h3><p id="-nbbad2_43">Pratique a concess&atilde;o e revoga&ccedil;&atilde;o de privil&eacute;gios em n&iacute;vel de schema.</p></section><section class="chapter"><h3 id="requisitos" data-toc="requisitos">Requisitos</h3><ul class="list _bullet" id="-nbbad2_44"><li class="list__item" id="-nbbad2_45"><p id="-nbbad2_49">Conceder USAGE em schema</p></li><li class="list__item" id="-nbbad2_46"><p id="-nbbad2_50">Conceder privil&eacute;gios em todas as tabelas</p></li><li class="list__item" id="-nbbad2_47"><p id="-nbbad2_51">Conceder privil&eacute;gios em tabelas futuras</p></li><li class="list__item" id="-nbbad2_48"><p id="-nbbad2_52">Revogar privil&eacute;gios em n&iacute;vel de schema</p></li></ul></section><section class="chapter"><h3 id="solu-o" data-toc="solu-o">Solu&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+-- Conceder USAGE em schema
+GRANT USAGE ON SCHEMA relatorios TO relatorio_user;
+
+-- Conceder privilégios em todas as tabelas existentes
+GRANT SELECT ON ALL TABLES IN SCHEMA relatorios TO relatorio_user;
+
+-- Conceder privilégios em tabelas futuras
+ALTER DEFAULT PRIVILEGES IN SCHEMA relatorios
+GRANT SELECT ON TABLES TO relatorio_user;
+
+-- Revogar privilégios em nível de schema
+REVOKE ALL PRIVILEGES ON SCHEMA administracao FROM relatorio_user;
+REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA administracao FROM relatorio_user;
+</div></section></section><section class="chapter"><h2 id="exerc-cio-4-cria-o-e-gerenciamento-de-roles" data-toc="exerc-cio-4-cria-o-e-gerenciamento-de-roles">Exerc&iacute;cio 4: Cria&ccedil;&atilde;o e Gerenciamento de Roles</h2><section class="chapter"><h3 id="descri-o" data-toc="descri-o">Descri&ccedil;&atilde;o</h3><p id="-nbbad2_57">Pratique a cria&ccedil;&atilde;o e gerenciamento b&aacute;sico de roles.</p></section><section class="chapter"><h3 id="requisitos" data-toc="requisitos">Requisitos</h3><ul class="list _bullet" id="-nbbad2_58"><li class="list__item" id="-nbbad2_59"><p id="-nbbad2_63">Criar roles para diferentes fun&ccedil;&otilde;es</p></li><li class="list__item" id="-nbbad2_60"><p id="-nbbad2_64">Conceder privil&eacute;gios &agrave;s roles</p></li><li class="list__item" id="-nbbad2_61"><p id="-nbbad2_65">Atribuir roles a usu&aacute;rios</p></li><li class="list__item" id="-nbbad2_62"><p id="-nbbad2_66">Revogar roles de usu&aacute;rios</p></li></ul></section><section class="chapter"><h3 id="solu-o" data-toc="solu-o">Solu&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+-- Criar roles para diferentes funções
+CREATE ROLE vendas_role;
+CREATE ROLE estoque_role;
+CREATE ROLE relatorios_role;
+
+-- Conceder privilégios às roles
+GRANT SELECT, INSERT, UPDATE ON aplicacao.pedidos TO vendas_role;
+GRANT SELECT, UPDATE ON aplicacao.produtos TO estoque_role;
+GRANT SELECT ON ALL TABLES IN SCHEMA relatorios TO relatorios_role;
+
+-- Atribuir roles a usuários
+GRANT vendas_role TO app_user;
+GRANT estoque_role TO app_user;
+GRANT relatorios_role TO relatorio_user;
+
+-- Revogar roles de usuários
+REVOKE estoque_role FROM app_user;
+</div></section></section><section class="chapter"><h2 id="exerc-cio-5-privil-gios-em-n-vel-de-coluna" data-toc="exerc-cio-5-privil-gios-em-n-vel-de-coluna">Exerc&iacute;cio 5: Privil&eacute;gios em N&iacute;vel de Coluna</h2><section class="chapter"><h3 id="descri-o" data-toc="descri-o">Descri&ccedil;&atilde;o</h3><p id="-nbbad2_71">Pratique a concess&atilde;o de privil&eacute;gios em n&iacute;vel de coluna.</p></section><section class="chapter"><h3 id="requisitos" data-toc="requisitos">Requisitos</h3><ul class="list _bullet" id="-nbbad2_72"><li class="list__item" id="-nbbad2_73"><p id="-nbbad2_77">Conceder SELECT em colunas espec&iacute;ficas</p></li><li class="list__item" id="-nbbad2_74"><p id="-nbbad2_78">Conceder UPDATE em colunas espec&iacute;ficas</p></li><li class="list__item" id="-nbbad2_75"><p id="-nbbad2_79">Revogar privil&eacute;gios em n&iacute;vel de coluna</p></li><li class="list__item" id="-nbbad2_76"><p id="-nbbad2_80">Verificar privil&eacute;gios em n&iacute;vel de coluna</p></li></ul></section><section class="chapter"><h3 id="solu-o" data-toc="solu-o">Solu&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+-- Conceder SELECT em colunas específicas
+GRANT SELECT (nome, email) ON aplicacao.clientes TO app_user;
+
+-- Conceder UPDATE em colunas específicas
+GRANT UPDATE (estoque) ON aplicacao.produtos TO app_user;
+
+-- Revogar privilégios em nível de coluna
+REVOKE UPDATE (preco) ON aplicacao.produtos FROM app_user;
+
+-- Verificar privilégios em nível de coluna
+SELECT grantee, table_schema, table_name, column_name, privilege_type
+FROM information_schema.column_privileges
+WHERE grantee = 'app_user';
+</div></section></section><section class="chapter"><h2 id="exerc-cio-6-privil-gios-de-execu-o" data-toc="exerc-cio-6-privil-gios-de-execu-o">Exerc&iacute;cio 6: Privil&eacute;gios de Execu&ccedil;&atilde;o</h2><section class="chapter"><h3 id="descri-o" data-toc="descri-o">Descri&ccedil;&atilde;o</h3><p id="-nbbad2_85">Pratique a concess&atilde;o de privil&eacute;gios para execu&ccedil;&atilde;o de fun&ccedil;&otilde;es e procedimentos.</p></section><section class="chapter"><h3 id="requisitos" data-toc="requisitos">Requisitos</h3><ul class="list _bullet" id="-nbbad2_86"><li class="list__item" id="-nbbad2_87"><p id="-nbbad2_91">Criar fun&ccedil;&atilde;o/procedimento</p></li><li class="list__item" id="-nbbad2_88"><p id="-nbbad2_92">Conceder privil&eacute;gio de execu&ccedil;&atilde;o</p></li><li class="list__item" id="-nbbad2_89"><p id="-nbbad2_93">Revogar privil&eacute;gio de execu&ccedil;&atilde;o</p></li><li class="list__item" id="-nbbad2_90"><p id="-nbbad2_94">Verificar privil&eacute;gios de execu&ccedil;&atilde;o</p></li></ul></section><section class="chapter"><h3 id="solu-o" data-toc="solu-o">Solu&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+-- Criar função
+CREATE OR REPLACE FUNCTION aplicacao.calcular_total_pedido(pedido_id INT)
+RETURNS DECIMAL AS $$
+DECLARE
+    total DECIMAL(10,2);
+BEGIN
+    SELECT SUM(quantidade * preco_unitario) INTO total
+    FROM aplicacao.itens_pedido
+    WHERE pedido_id = pedido_id;
+    RETURN total;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Conceder privilégio de execução
+GRANT EXECUTE ON FUNCTION aplicacao.calcular_total_pedido(INT) TO app_user;
+
+-- Revogar privilégio de execução
+REVOKE EXECUTE ON FUNCTION aplicacao.calcular_total_pedido(INT) FROM relatorio_user;
+
+-- Verificar privilégios de execução
+SELECT grantee, routine_schema, routine_name, privilege_type
+FROM information_schema.routine_privileges
+WHERE grantee = 'app_user';
+</div></section></section><section class="chapter"><h2 id="exerc-cio-7-privil-gios-de-conex-o" data-toc="exerc-cio-7-privil-gios-de-conex-o">Exerc&iacute;cio 7: Privil&eacute;gios de Conex&atilde;o</h2><section class="chapter"><h3 id="descri-o" data-toc="descri-o">Descri&ccedil;&atilde;o</h3><p id="-nbbad2_99">Pratique a concess&atilde;o de privil&eacute;gios de conex&atilde;o a bancos de dados.</p></section><section class="chapter"><h3 id="requisitos" data-toc="requisitos">Requisitos</h3><ul class="list _bullet" id="-nbbad2_100"><li class="list__item" id="-nbbad2_101"><p id="-nbbad2_105">Conceder privil&eacute;gio de conex&atilde;o</p></li><li class="list__item" id="-nbbad2_102"><p id="-nbbad2_106">Revogar privil&eacute;gio de conex&atilde;o</p></li><li class="list__item" id="-nbbad2_103"><p id="-nbbad2_107">Limitar conex&otilde;es por usu&aacute;rio</p></li><li class="list__item" id="-nbbad2_104"><p id="-nbbad2_108">Verificar privil&eacute;gios de conex&atilde;o</p></li></ul></section><section class="chapter"><h3 id="solu-o" data-toc="solu-o">Solu&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+-- Conceder privilégio de conexão
+GRANT CONNECT ON DATABASE seguranca_db TO app_user;
+
+-- Revogar privilégio de conexão
+REVOKE CONNECT ON DATABASE seguranca_db FROM dev_user;
+
+-- Limitar conexões por usuário (PostgreSQL)
+ALTER USER app_user CONNECTION LIMIT 5;
+
+-- Verificar privilégios de conexão
+SELECT * FROM pg_database d
+JOIN pg_shdescription s ON d.oid = s.objoid
+WHERE s.objsubid = 0 AND d.datname = 'seguranca_db';
+</div></section></section><section class="chapter"><h2 id="exerc-cio-8-privil-gios-tempor-rios" data-toc="exerc-cio-8-privil-gios-tempor-rios">Exerc&iacute;cio 8: Privil&eacute;gios Tempor&aacute;rios</h2><section class="chapter"><h3 id="descri-o" data-toc="descri-o">Descri&ccedil;&atilde;o</h3><p id="-nbbad2_113">Pratique a concess&atilde;o de privil&eacute;gios tempor&aacute;rios para tarefas espec&iacute;ficas.</p></section><section class="chapter"><h3 id="requisitos" data-toc="requisitos">Requisitos</h3><ul class="list _bullet" id="-nbbad2_114"><li class="list__item" id="-nbbad2_115"><p id="-nbbad2_119">Conceder privil&eacute;gios tempor&aacute;rios</p></li><li class="list__item" id="-nbbad2_116"><p id="-nbbad2_120">Implementar expira&ccedil;&atilde;o de privil&eacute;gios</p></li><li class="list__item" id="-nbbad2_117"><p id="-nbbad2_121">Revogar privil&eacute;gios ap&oacute;s uso</p></li><li class="list__item" id="-nbbad2_118"><p id="-nbbad2_122">Registrar concess&otilde;es tempor&aacute;rias</p></li></ul></section><section class="chapter"><h3 id="solu-o" data-toc="solu-o">Solu&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+-- Conceder privilégios temporários (simulação)
+GRANT UPDATE ON aplicacao.produtos TO dev_user;
+
+-- Registrar concessão temporária
+INSERT INTO administracao.privilegios_temporarios
+(username, privilegio, objeto, data_expiracao)
+VALUES ('dev_user', 'UPDATE', 'aplicacao.produtos', CURRENT_DATE + INTERVAL '1 day');
+
+-- Verificar e revogar privilégios expirados
+DO $$
+BEGIN
+    FOR r IN SELECT username, privilegio, objeto
+             FROM administracao.privilegios_temporarios
+             WHERE data_expiracao &lt; CURRENT_DATE
+    LOOP
+        EXECUTE 'REVOKE ' || r.privilegio || ' ON ' || r.objeto || ' FROM ' || r.username;
+        
+        -- Registrar revogação
+        INSERT INTO administracao.log_acessos
+        (username, tabela_acessada, tipo_operacao)
+        VALUES (r.username, r.objeto, 'REVOKE_EXPIRADO');
+    END LOOP;
+END $$;
+</div></section></section><section class="chapter"><h2 id="crit-rios-de-avalia-o" data-toc="crit-rios-de-avalia-o">Crit&eacute;rios de Avalia&ccedil;&atilde;o</h2><ul class="list _bullet" id="-nbbad2_124"><li class="list__item" id="-nbbad2_125"><p id="-nbbad2_130">Sintaxe correta dos comandos DCL</p></li><li class="list__item" id="-nbbad2_126"><p id="-nbbad2_131">Aplica&ccedil;&atilde;o do princ&iacute;pio do menor privil&eacute;gio</p></li><li class="list__item" id="-nbbad2_127"><p id="-nbbad2_132">Verifica&ccedil;&atilde;o adequada ap&oacute;s concess&atilde;o/revoga&ccedil;&atilde;o</p></li><li class="list__item" id="-nbbad2_128"><p id="-nbbad2_133">Organiza&ccedil;&atilde;o l&oacute;gica de permiss&otilde;es</p></li><li class="list__item" id="-nbbad2_129"><p id="-nbbad2_134">Documenta&ccedil;&atilde;o das decis&otilde;es de seguran&ccedil;a</p></li></ul></section><div class="last-modified">09 maio 2025</div><div data-feedback-placeholder="true"></div><div class="navigation-links _bottom"><a href="dcl-exercises.html" class="navigation-links__prev">Exerc&iacute;cios de DCL (Data Control Language)</a><a href="intermediate-dcl-exercises.html" class="navigation-links__next">Exerc&iacute;cios Intermedi&aacute;rios de DCL</a></div></article><div id="disqus_thread"></div></div></section></main></div><script src="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.js"></script></body></html>

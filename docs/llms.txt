@@ -29856,3 +29856,4105 @@ Dica Final: Revise regularmente as roles e suas permissões, mantendo documenta�
 
 
 
+# Exercícios de DCL (Data Control Language)
+
+## Visão Geral
+
+Este módulo contém uma série progressiva de exercícios para praticar comandos DCL em SQL. Os exercícios estão organizados em três níveis de dificuldade:
+
+### Nível Básico
+
+* Criação e gerenciamento de usuários
+
+* Concessão de privilégios simples
+
+* Revogação de privilégios
+
+* Operações fundamentais de DCL
+
+### Nível Intermediário
+
+* Gerenciamento de roles
+
+* Hierarquias de privilégios
+
+* Privilégios em nível de coluna
+
+* Técnicas de segurança intermediárias
+
+### Nível Avançado
+
+* Implementação de políticas de segurança
+
+* Auditoria de privilégios
+
+* Cenários empresariais de controle de acesso
+
+* Migração de permissões
+
+## Estrutura dos Exercícios
+
+Cada exercício segue o formato:
+
+1. Descrição do problema
+
+2. Requisitos específicos
+
+3. Dicas de implementação
+
+4. Solução de referência
+
+5. Critérios de avaliação
+
+## Ambiente de Prática
+
+```SQL
+-- Database de teste
+CREATE DATABASE seguranca_db;
+
+-- Schema para isolamento
+CREATE SCHEMA aplicacao;
+CREATE SCHEMA relatorios;
+CREATE SCHEMA administracao;
+
+-- Tabelas de exemplo
+CREATE TABLE aplicacao.clientes (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    cpf VARCHAR(14) UNIQUE,
+    limite_credito DECIMAL(10,2),
+    data_cadastro DATE DEFAULT CURRENT_DATE
+);
+
+CREATE TABLE aplicacao.produtos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    descricao TEXT,
+    preco DECIMAL(10,2) CHECK (preco > 0),
+    estoque INTEGER DEFAULT 0
+);
+
+CREATE TABLE aplicacao.pedidos (
+    id SERIAL PRIMARY KEY,
+    cliente_id INTEGER REFERENCES aplicacao.clientes(id),
+    data_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    valor_total DECIMAL(10,2),
+    status VARCHAR(20) DEFAULT 'Pendente'
+);
+
+CREATE TABLE relatorios.vendas_mensais (
+    mes DATE PRIMARY KEY,
+    total_vendas DECIMAL(12,2),
+    total_pedidos INTEGER,
+    ticket_medio DECIMAL(10,2)
+);
+
+CREATE TABLE administracao.usuarios (
+    username VARCHAR(50) PRIMARY KEY,
+    departamento VARCHAR(50),
+    cargo VARCHAR(50),
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE administracao.log_acessos (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50),
+    tabela_acessada VARCHAR(100),
+    tipo_operacao VARCHAR(20),
+    data_acesso TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+## Fluxo de Estudo Recomendado
+
+```MERMAID
+graph TD
+    A[Básico] --> B[Intermediário]
+    B --> C[Avançado]
+    A --> D[Laboratórios]
+    B --> D
+    C --> D
+    D --> E[Implementação em Produção]
+```
+
+## Preparação do Ambiente
+
+Para obter o máximo proveito destes exercícios, recomendamos:
+
+1. Configurar um ambiente de banco de dados
+
+* PostgreSQL 12+ ou MySQL 8+
+
+* Cliente SQL (DBeaver, pgAdmin, MySQL Workbench)
+
+* Scripts de inicialização fornecidos
+
+2. Usuários de teste
+
+```SQL
+-- Criar usuários para testes
+CREATE USER app_user WITH PASSWORD 'app123';
+CREATE USER relatorio_user WITH PASSWORD 'rel123';
+CREATE USER admin_user WITH PASSWORD 'adm123';
+CREATE USER dev_user WITH PASSWORD 'dev123';
+```
+
+3. Ferramentas recomendadas
+
+* Editor de SQL com highlight de sintaxe
+
+* Ferramenta para visualização de privilégios
+
+* Ambiente para documentar suas soluções
+
+## Navegação do Conteúdo
+
+* [Exercícios Básicos](basic-dcl-exercises.html)
+
+* [Exercícios Intermediários](intermediate-dcl-exercises.html)
+
+* [Exercícios Avançados](advanced-dcl-exercises.html)
+
+## Dicas de Estudo
+
+```
+╔════════════════════════════════════════════╗
+║  BOAS PRÁTICAS DE SEGURANÇA:              ║
+║  ✓ Privilégio mínimo necessário           ║
+║  ✓ Usar roles para agrupar permissões     ║
+║  ✓ Revisar permissões regularmente        ║
+║  ✓ Documentar políticas de acesso         ║
+║  ✓ Implementar auditoria de acessos       ║
+╚════════════════════════════════════════════╝
+```
+
+## Suporte e Recursos
+
+* Fórum de discussão
+
+* Documentação oficial do SGBD
+
+* Exemplos práticos adicionais
+
+* Soluções comentadas
+
+## Próximos Passos
+
+Após completar os exercícios de DCL, recomendamos:
+
+1. Laboratórios práticos
+
+* Aplicação em cenários realistas
+
+* Integração com outros conceitos
+
+2. Projetos integrados
+
+* Implementação de políticas de segurança
+
+* Auditoria e conformidade
+
+3. Tópicos relacionados
+
+* Segurança de banco de dados
+
+* Criptografia de dados
+
+* Conformidade com regulamentações (LGPD, GDPR)
+
+## Feedback e Avaliação
+
+Para cada conjunto de exercícios, você pode:
+
+* Verificar suas soluções contra as referências
+
+* Compartilhar abordagens alternativas
+
+* Discutir implicações de segurança
+
+* Solicitar revisão por pares
+
+
+
+# Exercícios Básicos de DCL
+
+## Exercício 1: Concessão de Privilégios Básicos
+
+### Descrição
+
+Pratique a concessão de privilégios básicos para usuários em diferentes tabelas.
+
+### Requisitos
+
+* Conceder privilégios de SELECT
+
+* Conceder privilégios de INSERT/UPDATE
+
+* Conceder privilégios de DELETE
+
+* Verificar privilégios concedidos
+
+### Solução
+
+```SQL
+-- Conceder privilégio de SELECT
+GRANT SELECT ON aplicacao.produtos TO app_user;
+
+-- Conceder privilégios de INSERT e UPDATE
+GRANT INSERT, UPDATE ON aplicacao.pedidos TO app_user;
+
+-- Conceder privilégio de DELETE com restrição
+GRANT DELETE ON aplicacao.pedidos TO admin_user;
+
+-- Verificar privilégios concedidos
+SELECT grantee, table_schema, table_name, privilege_type
+FROM information_schema.table_privileges
+WHERE grantee = 'app_user';
+```
+
+## Exercício 2: Revogação de Privilégios
+
+### Descrição
+
+Pratique a revogação de privilégios previamente concedidos.
+
+### Requisitos
+
+* Revogar privilégios específicos
+
+* Revogar todos os privilégios
+
+* Revogar privilégios de múltiplos objetos
+
+* Verificar após revogação
+
+### Solução
+
+```SQL
+-- Revogar privilégio específico
+REVOKE INSERT ON aplicacao.pedidos FROM app_user;
+
+-- Revogar todos os privilégios de uma tabela
+REVOKE ALL PRIVILEGES ON aplicacao.clientes FROM app_user;
+
+-- Revogar privilégios de múltiplas tabelas
+REVOKE SELECT ON aplicacao.produtos, aplicacao.pedidos FROM app_user;
+
+-- Verificar após revogação
+SELECT grantee, table_schema, table_name, privilege_type
+FROM information_schema.table_privileges
+WHERE grantee = 'app_user';
+```
+
+## Exercício 3: Privilégios em Nível de Schema
+
+### Descrição
+
+Pratique a concessão e revogação de privilégios em nível de schema.
+
+### Requisitos
+
+* Conceder USAGE em schema
+
+* Conceder privilégios em todas as tabelas
+
+* Conceder privilégios em tabelas futuras
+
+* Revogar privilégios em nível de schema
+
+### Solução
+
+```SQL
+-- Conceder USAGE em schema
+GRANT USAGE ON SCHEMA relatorios TO relatorio_user;
+
+-- Conceder privilégios em todas as tabelas existentes
+GRANT SELECT ON ALL TABLES IN SCHEMA relatorios TO relatorio_user;
+
+-- Conceder privilégios em tabelas futuras
+ALTER DEFAULT PRIVILEGES IN SCHEMA relatorios
+GRANT SELECT ON TABLES TO relatorio_user;
+
+-- Revogar privilégios em nível de schema
+REVOKE ALL PRIVILEGES ON SCHEMA administracao FROM relatorio_user;
+REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA administracao FROM relatorio_user;
+```
+
+## Exercício 4: Criação e Gerenciamento de Roles
+
+### Descrição
+
+Pratique a criação e gerenciamento básico de roles.
+
+### Requisitos
+
+* Criar roles para diferentes funções
+
+* Conceder privilégios às roles
+
+* Atribuir roles a usuários
+
+* Revogar roles de usuários
+
+### Solução
+
+```SQL
+-- Criar roles para diferentes funções
+CREATE ROLE vendas_role;
+CREATE ROLE estoque_role;
+CREATE ROLE relatorios_role;
+
+-- Conceder privilégios às roles
+GRANT SELECT, INSERT, UPDATE ON aplicacao.pedidos TO vendas_role;
+GRANT SELECT, UPDATE ON aplicacao.produtos TO estoque_role;
+GRANT SELECT ON ALL TABLES IN SCHEMA relatorios TO relatorios_role;
+
+-- Atribuir roles a usuários
+GRANT vendas_role TO app_user;
+GRANT estoque_role TO app_user;
+GRANT relatorios_role TO relatorio_user;
+
+-- Revogar roles de usuários
+REVOKE estoque_role FROM app_user;
+```
+
+## Exercício 5: Privilégios em Nível de Coluna
+
+### Descrição
+
+Pratique a concessão de privilégios em nível de coluna.
+
+### Requisitos
+
+* Conceder SELECT em colunas específicas
+
+* Conceder UPDATE em colunas específicas
+
+* Revogar privilégios em nível de coluna
+
+* Verificar privilégios em nível de coluna
+
+### Solução
+
+```SQL
+-- Conceder SELECT em colunas específicas
+GRANT SELECT (nome, email) ON aplicacao.clientes TO app_user;
+
+-- Conceder UPDATE em colunas específicas
+GRANT UPDATE (estoque) ON aplicacao.produtos TO app_user;
+
+-- Revogar privilégios em nível de coluna
+REVOKE UPDATE (preco) ON aplicacao.produtos FROM app_user;
+
+-- Verificar privilégios em nível de coluna
+SELECT grantee, table_schema, table_name, column_name, privilege_type
+FROM information_schema.column_privileges
+WHERE grantee = 'app_user';
+```
+
+## Exercício 6: Privilégios de Execução
+
+### Descrição
+
+Pratique a concessão de privilégios para execução de funções e procedimentos.
+
+### Requisitos
+
+* Criar função/procedimento
+
+* Conceder privilégio de execução
+
+* Revogar privilégio de execução
+
+* Verificar privilégios de execução
+
+### Solução
+
+```SQL
+-- Criar função
+CREATE OR REPLACE FUNCTION aplicacao.calcular_total_pedido(pedido_id INT)
+RETURNS DECIMAL AS $$
+DECLARE
+    total DECIMAL(10,2);
+BEGIN
+    SELECT SUM(quantidade * preco_unitario) INTO total
+    FROM aplicacao.itens_pedido
+    WHERE pedido_id = pedido_id;
+    RETURN total;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Conceder privilégio de execução
+GRANT EXECUTE ON FUNCTION aplicacao.calcular_total_pedido(INT) TO app_user;
+
+-- Revogar privilégio de execução
+REVOKE EXECUTE ON FUNCTION aplicacao.calcular_total_pedido(INT) FROM relatorio_user;
+
+-- Verificar privilégios de execução
+SELECT grantee, routine_schema, routine_name, privilege_type
+FROM information_schema.routine_privileges
+WHERE grantee = 'app_user';
+```
+
+## Exercício 7: Privilégios de Conexão
+
+### Descrição
+
+Pratique a concessão de privilégios de conexão a bancos de dados.
+
+### Requisitos
+
+* Conceder privilégio de conexão
+
+* Revogar privilégio de conexão
+
+* Limitar conexões por usuário
+
+* Verificar privilégios de conexão
+
+### Solução
+
+```SQL
+-- Conceder privilégio de conexão
+GRANT CONNECT ON DATABASE seguranca_db TO app_user;
+
+-- Revogar privilégio de conexão
+REVOKE CONNECT ON DATABASE seguranca_db FROM dev_user;
+
+-- Limitar conexões por usuário (PostgreSQL)
+ALTER USER app_user CONNECTION LIMIT 5;
+
+-- Verificar privilégios de conexão
+SELECT * FROM pg_database d
+JOIN pg_shdescription s ON d.oid = s.objoid
+WHERE s.objsubid = 0 AND d.datname = 'seguranca_db';
+```
+
+## Exercício 8: Privilégios Temporários
+
+### Descrição
+
+Pratique a concessão de privilégios temporários para tarefas específicas.
+
+### Requisitos
+
+* Conceder privilégios temporários
+
+* Implementar expiração de privilégios
+
+* Revogar privilégios após uso
+
+* Registrar concessões temporárias
+
+### Solução
+
+```SQL
+-- Conceder privilégios temporários (simulação)
+GRANT UPDATE ON aplicacao.produtos TO dev_user;
+
+-- Registrar concessão temporária
+INSERT INTO administracao.privilegios_temporarios
+(username, privilegio, objeto, data_expiracao)
+VALUES ('dev_user', 'UPDATE', 'aplicacao.produtos', CURRENT_DATE + INTERVAL '1 day');
+
+-- Verificar e revogar privilégios expirados
+DO $$
+BEGIN
+    FOR r IN SELECT username, privilegio, objeto
+             FROM administracao.privilegios_temporarios
+             WHERE data_expiracao < CURRENT_DATE
+    LOOP
+        EXECUTE 'REVOKE ' || r.privilegio || ' ON ' || r.objeto || ' FROM ' || r.username;
+        
+        -- Registrar revogação
+        INSERT INTO administracao.log_acessos
+        (username, tabela_acessada, tipo_operacao)
+        VALUES (r.username, r.objeto, 'REVOKE_EXPIRADO');
+    END LOOP;
+END $$;
+```
+
+## Critérios de Avaliação
+
+* Sintaxe correta dos comandos DCL
+
+* Aplicação do princípio do menor privilégio
+
+* Verificação adequada após concessão/revogação
+
+* Organização lógica de permissões
+
+* Documentação das decisões de segurança
+
+
+
+# Exercícios Intermediários de DCL
+
+## Exercício 1: Hierarquia de Roles
+
+### Descrição
+
+Pratique a criação de uma hierarquia de roles para organizar permissões.
+
+### Requisitos
+
+* Criar estrutura hierárquica de roles
+
+* Conceder permissões em diferentes níveis
+
+* Herança de permissões
+
+* Verificar permissões efetivas
+
+### Solução
+
+```SQL
+-- Criar estrutura hierárquica de roles
+CREATE ROLE funcionario_base;
+CREATE ROLE vendedor;
+CREATE ROLE gerente_vendas;
+CREATE ROLE diretor_comercial;
+
+-- Estabelecer hierarquia
+GRANT funcionario_base TO vendedor;
+GRANT vendedor TO gerente_vendas;
+GRANT gerente_vendas TO diretor_comercial;
+
+-- Conceder permissões em diferentes níveis
+GRANT SELECT ON aplicacao.produtos TO funcionario_base;
+GRANT SELECT, INSERT ON aplicacao.pedidos TO vendedor;
+GRANT UPDATE ON aplicacao.clientes TO gerente_vendas;
+GRANT ALL PRIVILEGES ON SCHEMA aplicacao TO diretor_comercial;
+
+-- Atribuir roles a usuários
+GRANT vendedor TO usuario_vendas;
+GRANT gerente_vendas TO usuario_gerente;
+GRANT diretor_comercial TO usuario_diretor;
+
+-- Verificar permissões efetivas
+SELECT r.rolname, u.usename, 
+       has_table_privilege(u.usename, 'aplicacao.produtos', 'SELECT') as pode_consultar,
+       has_table_privilege(u.usename, 'aplicacao.pedidos', 'INSERT') as pode_inserir,
+       has_table_privilege(u.usename, 'aplicacao.clientes', 'UPDATE') as pode_atualizar
+FROM pg_roles r
+JOIN pg_user u ON r.rolname = u.usename
+WHERE r.rolname IN ('usuario_vendas', 'usuario_gerente', 'usuario_diretor');
+```
+
+## Exercício 2: Permissões Baseadas em Função
+
+### Descrição
+
+Implemente um sistema de permissões baseado nas funções dos usuários na organização.
+
+### Requisitos
+
+* Criar roles para departamentos
+
+* Criar roles para níveis hierárquicos
+
+* Implementar matriz de permissões
+
+* Gerenciar usuários com múltiplas funções
+
+### Solução
+
+```SQL
+-- Criar roles para departamentos
+CREATE ROLE dept_vendas;
+CREATE ROLE dept_marketing;
+CREATE ROLE dept_financeiro;
+CREATE ROLE dept_ti;
+
+-- Criar roles para níveis hierárquicos
+CREATE ROLE nivel_operacional;
+CREATE ROLE nivel_tatico;
+CREATE ROLE nivel_estrategico;
+
+-- Implementar matriz de permissões para departamentos
+-- Vendas
+GRANT SELECT, INSERT ON aplicacao.clientes TO dept_vendas;
+GRANT SELECT, INSERT ON aplicacao.pedidos TO dept_vendas;
+GRANT SELECT ON aplicacao.produtos TO dept_vendas;
+
+-- Marketing
+GRANT SELECT ON aplicacao.clientes TO dept_marketing;
+GRANT SELECT ON aplicacao.pedidos TO dept_marketing;
+GRANT SELECT ON relatorios.vendas_mensais TO dept_marketing;
+
+-- Financeiro
+GRANT SELECT ON aplicacao.pedidos TO dept_financeiro;
+GRANT SELECT ON aplicacao.clientes TO dept_financeiro;
+GRANT SELECT, UPDATE ON relatorios.vendas_mensais TO dept_financeiro;
+
+-- TI
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA aplicacao TO dept_ti;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA relatorios TO dept_ti;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA administracao TO dept_ti;
+
+-- Implementar matriz de permissões para níveis
+-- Operacional
+GRANT SELECT ON aplicacao.produtos TO nivel_operacional;
+GRANT SELECT ON aplicacao.clientes TO nivel_operacional;
+
+-- Tático
+GRANT SELECT, INSERT, UPDATE ON aplicacao.produtos TO nivel_tatico;
+GRANT SELECT, INSERT, UPDATE ON aplicacao.clientes TO nivel_tatico;
+GRANT SELECT ON relatorios.vendas_mensais TO nivel_tatico;
+
+-- Estratégico
+GRANT ALL PRIVILEGES ON SCHEMA relatorios TO nivel_estrategico;
+GRANT SELECT ON ALL TABLES IN SCHEMA aplicacao TO nivel_estrategico;
+
+-- Gerenciar usuários com múltiplas funções
+CREATE USER maria WITH PASSWORD 'senha123';
+CREATE USER joao WITH PASSWORD 'senha123';
+CREATE USER carlos WITH PASSWORD 'senha123';
+
+-- Maria: Vendas + Operacional
+GRANT dept_vendas TO maria;
+GRANT nivel_operacional TO maria;
+
+-- João: Marketing + Tático
+GRANT dept_marketing TO joao;
+GRANT nivel_tatico TO joao;
+
+-- Carlos: TI + Estratégico
+GRANT dept_ti TO carlos;
+GRANT nivel_estrategico TO carlos;
+```
+
+## Exercício 3: Permissões com Condições
+
+### Descrição
+
+Implemente permissões com condições específicas usando roles e esquemas.
+
+### Requisitos
+
+* Criar roles com permissões condicionais
+
+* Implementar permissões por horário de acesso
+
+* Implementar permissões por tipo de operação
+
+* Verificar efetividade das permissões
+
+### Solução
+
+```SQL
+-- Criar roles para diferentes condições
+CREATE ROLE acesso_horario_comercial;
+CREATE ROLE acesso_somente_leitura;
+CREATE ROLE acesso_manutencao;
+
+-- Conceder permissões básicas
+GRANT CONNECT ON DATABASE seguranca_db TO acesso_horario_comercial;
+GRANT USAGE ON SCHEMA aplicacao TO acesso_horario_comercial;
+GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA aplicacao TO acesso_horario_comercial;
+
+GRANT CONNECT ON DATABASE seguranca_db TO acesso_somente_leitura;
+GRANT USAGE ON SCHEMA aplicacao, relatorios TO acesso_somente_leitura;
+GRANT SELECT ON ALL TABLES IN SCHEMA aplicacao, relatorios TO acesso_somente_leitura;
+
+GRANT CONNECT ON DATABASE seguranca_db TO acesso_manutencao;
+GRANT USAGE ON SCHEMA aplicacao TO acesso_manutencao;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA aplicacao TO acesso_manutencao;
+
+-- Criar usuários para teste
+CREATE USER usuario_dia WITH PASSWORD 'senha123';
+CREATE USER usuario_consulta WITH PASSWORD 'senha123';
+CREATE USER usuario_manutencao WITH PASSWORD 'senha123';
+
+-- Atribuir roles aos usuários
+GRANT acesso_horario_comercial TO usuario_dia;
+GRANT acesso_somente_leitura TO usuario_consulta;
+GRANT acesso_manutencao TO usuario_manutencao;
+
+-- Criar tabela para controle de acesso
+CREATE TABLE administracao.controle_acesso (
+    id SERIAL PRIMARY KEY,
+    role_name VARCHAR(50),
+    horario_inicio TIME,
+    horario_fim TIME,
+    dias_semana VARCHAR(20),
+    ativo BOOLEAN DEFAULT TRUE
+);
+
+-- Inserir regras de controle
+INSERT INTO administracao.controle_acesso 
+(role_name, horario_inicio, horario_fim, dias_semana)
+VALUES 
+('acesso_horario_comercial', '08:00:00', '18:00:00', 'Mon-Fri'),
+('acesso_manutencao', '22:00:00', '06:00:00', 'Mon-Sun');
+
+-- Criar função para verificar permissão de acesso
+CREATE OR REPLACE FUNCTION administracao.verificar_acesso_permitido(p_role VARCHAR)
+RETURNS BOOLEAN AS $$
+DECLARE
+    v_permitido BOOLEAN := FALSE;
+    v_regra RECORD;
+    v_hora_atual TIME := CURRENT_TIME;
+    v_dia_atual VARCHAR := to_char(CURRENT_DATE, 'Dy');
+BEGIN
+    -- Verificar se existe regra para a role
+    SELECT * INTO v_regra
+    FROM administracao.controle_acesso
+    WHERE role_name = p_role AND ativo = TRUE;
+    
+    IF NOT FOUND THEN
+        -- Se não há regra específica, acesso é permitido
+        RETURN TRUE;
+    END IF;
+    
+    -- Verificar horário
+    IF (v_hora_atual BETWEEN v_regra.horario_inicio AND v_regra.horario_fim) THEN
+        -- Verificar dia da semana
+        IF v_regra.dias_semana = 'Mon-Sun' OR 
+           position(v_dia_atual in v_regra.dias_semana) > 0 THEN
+            v_permitido := TRUE;
+        END IF;
+    END IF;
+    
+    -- Registrar tentativa de acesso
+    INSERT INTO administracao.log_acessos
+    (username, tabela_acessada, tipo_operacao)
+    VALUES (
+        current_user,
+        'Verificação de acesso',
+        CASE WHEN v_permitido THEN 'ACESSO_PERMITIDO' ELSE 'ACESSO_NEGADO' END
+    );
+    
+    RETURN v_permitido;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Instruções para uso (comentadas)
+/*
+-- Como administrador, criar regra para verificar acesso antes de operações
+CREATE OR REPLACE RULE check_acesso_clientes AS
+ON SELECT TO aplicacao.clientes
+WHERE NOT administracao.verificar_acesso_permitido(current_user)
+DO INSTEAD NOTHING;
+
+-- Testar acesso em diferentes horários
+-- (executar como diferentes usuários)
+SELECT * FROM aplicacao.clientes;
+*/
+```
+
+## Exercício 4: Auditoria de Permissões
+
+### Descrição
+
+Implemente um sistema para auditar e monitorar permissões e acessos.
+
+### Requisitos
+
+* Criar tabelas de auditoria
+
+* Registrar alterações de permissões
+
+* Criar relatórios de auditoria
+
+* Detectar anomalias de permissões
+
+### Solução
+
+```SQL
+-- Criar tabelas de auditoria
+CREATE TABLE administracao.auditoria_permissoes (
+    id SERIAL PRIMARY KEY,
+    data_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    usuario_executor VARCHAR(50),
+    comando TEXT,
+    objeto_afetado TEXT,
+    usuario_afetado VARCHAR(50),
+    tipo_operacao VARCHAR(20)
+);
+
+-- Criar função para registrar alterações de permissões manualmente
+CREATE OR REPLACE FUNCTION administracao.registrar_alteracao_permissao(
+    p_comando TEXT,
+    p_objeto TEXT,
+    p_usuario TEXT,
+    p_tipo VARCHAR
+) RETURNS void AS $$
+BEGIN
+    INSERT INTO administracao.auditoria_permissoes
+    (usuario_executor, comando, objeto_afetado, usuario_afetado, tipo_operacao)
+    VALUES (
+        current_user,
+        p_comando,
+        p_objeto,
+        p_usuario,
+        p_tipo
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+-- Criar relatório de auditoria
+CREATE OR REPLACE VIEW administracao.relatorio_permissoes AS
+SELECT 
+    u.usename AS usuario,
+    n.nspname AS schema,
+    c.relname AS tabela,
+    c.relkind AS tipo_objeto,
+    string_agg(p.privilege_type, ', ') AS privilegios
+FROM pg_user u
+CROSS JOIN pg_class c
+JOIN pg_namespace n ON c.relnamespace = n.oid
+JOIN information_schema.table_privileges p ON 
+    p.grantee = u.usename AND 
+    p.table_schema = n.nspname AND 
+    p.table_name = c.relname
+WHERE n.nspname NOT LIKE 'pg_%' AND n.nspname != 'information_schema'
+GROUP BY u.usename, n.nspname, c.relname, c.relkind
+ORDER BY u.usename, n.nspname, c.relname;
+
+-- Detectar anomalias de permissões
+CREATE OR REPLACE VIEW administracao.anomalias_permissoes AS
+-- Usuários com permissões diretas (não via roles)
+SELECT 
+    p.grantee AS usuario,
+    p.table_schema || '.' || p.table_name AS objeto,
+    p.privilege_type AS privilegio,
+    'Permissão direta' AS tipo_anomalia
+FROM information_schema.table_privileges p
+WHERE p.grantee NOT IN (
+    SELECT rolname FROM pg_roles WHERE rolcanlogin = false
+)
+AND p.table_schema NOT LIKE 'pg_%'
+AND p.table_schema != 'information_schema'
+
+UNION ALL
+
+-- Usuários com permissões excessivas
+SELECT 
+    p.grantee AS usuario,
+    p.table_schema || '.' || p.table_name AS objeto,
+    string_agg(p.privilege_type, ', ') AS privilegio,
+    'Permissões excessivas' AS tipo_anomalia
+FROM information_schema.table_privileges p
+WHERE p.privilege_type IN ('DELETE', 'TRUNCATE')
+AND p.table_schema = 'aplicacao'
+GROUP BY p.grantee, p.table_schema, p.table_name;
+```
+
+## Exercício 5: Gerenciamento de Permissões em Massa
+
+### Descrição
+
+Implemente scripts para gerenciar permissões em massa para múltiplos objetos e usuários.
+
+### Requisitos
+
+* Conceder permissões em massa
+
+* Revogar permissões em massa
+
+* Sincronizar permissões entre ambientes
+
+* Documentar permissões concedidas
+
+### Solução
+
+```SQL
+-- Função para conceder permissões em massa
+CREATE OR REPLACE FUNCTION administracao.conceder_permissoes_em_massa(
+    p_schema TEXT,
+    p_role TEXT,
+    p_privilegios TEXT
+) RETURNS void AS $$
+DECLARE
+    v_tabela TEXT;
+BEGIN
+    FOR v_tabela IN 
+        SELECT table_name 
+        FROM information_schema.tables 
+        WHERE table_schema = p_schema
+        AND table_type = 'BASE TABLE'
+    LOOP
+        EXECUTE 'GRANT ' || p_privilegios || ' ON ' || 
+                p_schema || '.' || v_tabela || 
+                ' TO ' || p_role;
+                
+        -- Registrar na auditoria
+        INSERT INTO administracao.auditoria_permissoes
+        (usuario_executor, comando, objeto_afetado, usuario_afetado, tipo_operacao)
+        VALUES (
+            current_user,
+            'GRANT ' || p_privilegios || ' ON ' || p_schema || '.' || v_tabela || ' TO ' || p_role,
+            p_schema || '.' || v_tabela,
+            p_role,
+            'GRANT_MASSA'
+        );
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Função para revogar permissões em massa
+CREATE OR REPLACE FUNCTION administracao.revogar_permissoes_em_massa(
+    p_schema TEXT,
+    p_role TEXT,
+    p_privilegios TEXT DEFAULT 'ALL PRIVILEGES'
+) RETURNS void AS $$
+DECLARE
+    v_tabela TEXT;
+BEGIN
+    FOR v_tabela IN 
+        SELECT table_name 
+        FROM information_schema.tables 
+        WHERE table_schema = p_schema
+        AND table_type = 'BASE TABLE'
+    LOOP
+        EXECUTE 'REVOKE ' || p_privilegios || ' ON ' || 
+                p_schema || '.' || v_tabela || 
+                ' FROM ' || p_role;
+                
+        -- Registrar na auditoria
+        INSERT INTO administracao.auditoria_permissoes
+        (usuario_executor, comando, objeto_afetado, usuario_afetado, tipo_operacao)
+        VALUES (
+            current_user,
+            'REVOKE ' || p_privilegios || ' ON ' || p_schema || '.' || v_tabela || ' FROM ' || p_role,
+            p_schema || '.' || v_tabela,
+            p_role,
+            'REVOKE_MASSA'
+        );
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Função para exportar permissões (para sincronização entre ambientes)
+CREATE OR REPLACE FUNCTION administracao.exportar_permissoes(
+    p_schema TEXT DEFAULT NULL
+) RETURNS TABLE (comando TEXT) AS $$
+BEGIN
+    RETURN QUERY
+    WITH perms AS (
+        SELECT 
+            'GRANT ' || string_agg(privilege_type, ', ') || 
+            ' ON ' || table_schema || '.' || table_name || 
+            ' TO ' || grantee || ';' AS cmd
+        FROM information_schema.table_privileges
+        WHERE (p_schema IS NULL OR table_schema = p_schema)
+        AND table_schema NOT LIKE 'pg_%'
+        AND table_schema != 'information_schema'
+        GROUP BY table_schema, table_name, grantee
+        
+        UNION ALL
+        
+        SELECT 
+            'GRANT ' || string_agg(privilege_type, ', ') || 
+            ' ON SCHEMA ' || table_schema || 
+            ' TO ' || grantee || ';' AS cmd
+        FROM information_schema.schema_privileges
+        WHERE (p_schema IS NULL OR table_schema = p_schema)
+        AND table_schema NOT LIKE 'pg_%'
+        AND table_schema != 'information_schema'
+        GROUP BY table_schema, grantee
+    )
+    SELECT cmd FROM perms
+    ORDER BY cmd;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+
+
+# Exercícios Avançados de DCL
+
+## Exercício 1: Implementação de Políticas de Segurança
+
+### Descrição
+
+Implemente políticas de segurança abrangentes para um sistema empresarial.
+
+### Requisitos
+
+* Definir políticas por departamento
+
+* Implementar controle de acesso granular
+
+* Estabelecer hierarquia de permissões
+
+* Documentar políticas implementadas
+
+### Solução
+
+```SQL
+-- Criar roles para departamentos
+CREATE ROLE dept_vendas_role;
+CREATE ROLE dept_financeiro_role;
+CREATE ROLE dept_rh_role;
+CREATE ROLE dept_ti_role;
+
+-- Criar roles para níveis hierárquicos
+CREATE ROLE nivel_operacional_role;
+CREATE ROLE nivel_gerencial_role;
+CREATE ROLE nivel_diretoria_role;
+
+-- Estabelecer hierarquia
+GRANT nivel_operacional_role TO nivel_gerencial_role;
+GRANT nivel_gerencial_role TO nivel_diretoria_role;
+
+-- Definir permissões por departamento - Vendas
+GRANT USAGE ON SCHEMA aplicacao TO dept_vendas_role;
+GRANT SELECT, INSERT ON aplicacao.clientes TO dept_vendas_role;
+GRANT SELECT, INSERT ON aplicacao.pedidos TO dept_vendas_role;
+GRANT SELECT ON aplicacao.produtos TO dept_vendas_role;
+
+-- Definir permissões por departamento - Financeiro
+GRANT USAGE ON SCHEMA aplicacao, relatorios TO dept_financeiro_role;
+GRANT SELECT ON aplicacao.pedidos TO dept
+```
+
+
+
+# Laboratórios de DCL
+
+## Visão Geral
+
+Os laboratórios práticos de DCL (Data Control Language) são projetados para fornecer experiência hands-on com operações de controle de acesso em ambientes PostgreSQL. Cada laboratório apresenta cenários reais e desafios práticos comumente encontrados em ambientes de produção.
+
+## Estrutura dos Laboratórios
+
+Cada laboratório segue uma estrutura consistente:
+
+1. Preparação do Ambiente
+
+* Configuração inicial
+
+* Pré-requisitos
+
+* Scripts de setup
+
+2. Objetivos de Aprendizado
+
+* Conceitos principais
+
+* Habilidades técnicas
+
+* Resultados esperados
+
+3. Roteiro Prático
+
+* Instruções passo a passo
+
+* Comandos e scripts
+
+* Pontos de verificação
+
+4. Avaliação
+
+* Critérios de conclusão
+
+* Testes de validação
+
+* Métricas de sucesso
+
+## Ambiente de Laboratório
+
+```SQL
+-- Criar database dedicado para laboratórios
+CREATE DATABASE lab_dcl;
+
+-- Schema para isolamento de exercícios
+CREATE SCHEMA lab_workspace;
+
+-- Tabelas para os laboratórios
+CREATE TABLE lab_workspace.clientes (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    data_cadastro DATE DEFAULT CURRENT_DATE,
+    status VARCHAR(20) DEFAULT 'Ativo',
+    segmento VARCHAR(50),
+    limite_credito DECIMAL(10,2) DEFAULT 1000.00,
+    dados_sensíveis TEXT
+);
+
+CREATE TABLE lab_workspace.produtos (
+    id SERIAL PRIMARY KEY,
+    codigo VARCHAR(20) UNIQUE,
+    nome VARCHAR(100) NOT NULL,
+    descricao TEXT,
+    preco DECIMAL(10,2) NOT NULL CHECK (preco > 0),
+    estoque INTEGER DEFAULT 0,
+    categoria VARCHAR(50),
+    data_cadastro DATE DEFAULT CURRENT_DATE,
+    status VARCHAR(20) DEFAULT 'Ativo'
+);
+
+CREATE TABLE lab_workspace.pedidos (
+    id SERIAL PRIMARY KEY,
+    cliente_id INTEGER REFERENCES lab_workspace.clientes(id),
+    data_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    valor_total DECIMAL(10,2) DEFAULT 0,
+    status VARCHAR(20) DEFAULT 'Pendente',
+    observacoes TEXT
+);
+
+CREATE TABLE lab_workspace.itens_pedido (
+    id SERIAL PRIMARY KEY,
+    pedido_id INTEGER REFERENCES lab_workspace.pedidos(id),
+    produto_id INTEGER REFERENCES lab_workspace.produtos(id),
+    quantidade INTEGER NOT NULL CHECK (quantidade > 0),
+    preco_unitario DECIMAL(10,2) NOT NULL,
+    desconto DECIMAL(5,2) DEFAULT 0
+);
+
+CREATE TABLE lab_workspace.usuarios (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    nome_completo VARCHAR(100) NOT NULL,
+    departamento VARCHAR(50),
+    cargo VARCHAR(50),
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ultimo_acesso TIMESTAMP,
+    status VARCHAR(20) DEFAULT 'Ativo'
+);
+
+CREATE TABLE lab_workspace.log_acessos (
+    id SERIAL PRIMARY KEY,
+    usuario_id INTEGER REFERENCES lab_workspace.usuarios(id),
+    data_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    operacao VARCHAR(20),
+    tabela_acessada VARCHAR(50),
+    detalhes TEXT
+);
+
+-- Tabela de controle de progresso
+CREATE TABLE lab_workspace.lab_progress (
+    lab_id SERIAL PRIMARY KEY,
+    lab_name VARCHAR(100),
+    start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    completion_time TIMESTAMP,
+    status VARCHAR(20) DEFAULT 'IN_PROGRESS',
+    notes TEXT
+);
+```
+
+## Laboratórios Disponíveis
+
+### 1. Gerenciamento de Usuários
+
+* Criação e configuração de usuários
+
+* Atribuição de permissões básicas
+
+* Gerenciamento de senhas e políticas
+
+* Monitoramento de atividades
+
+### 2. Hierarquia de Roles
+
+* Implementação de estrutura de roles
+
+* Herança de permissões
+
+* Separação de responsabilidades
+
+* Melhores práticas de design
+
+### 3. Auditoria de Segurança
+
+* Configuração de logs de auditoria
+
+* Monitoramento de atividades suspeitas
+
+* Análise de padrões de acesso
+
+* Relatórios de conformidade
+
+### 4. Migração de Permissões
+
+* Exportação de permissões existentes
+
+* Planejamento de migração
+
+* Implementação de novas políticas
+
+* Validação e testes de acesso
+
+## Fluxo de Trabalho Recomendado
+
+```MERMAID
+graph TD
+    A[Preparação] --> B[Execução]
+    B --> C[Validação]
+    C --> D[Documentação]
+    D --> E[Revisão]
+    E --> F[Conclusão]
+```
+
+## Boas Práticas
+
+```
+╔════════════════════════════════════════════╗
+║  DIRETRIZES DE SEGURANÇA:                 ║
+║  ✓ Privilégio mínimo necessário           ║
+║  ✓ Separação de responsabilidades         ║
+║  ✓ Auditoria regular                      ║
+║  ✓ Documentação de políticas              ║
+║  ✓ Testes de penetração                   ║
+╚════════════════════════════════════════════╝
+```
+
+## Ferramentas Necessárias
+
+1. PostgreSQL Client
+
+* psql
+
+* pgAdmin 4
+
+* DBeaver
+
+2. Utilitários de Segurança
+
+* pg_dump (para backup de permissões)
+
+* pgAudit (para auditoria avançada)
+
+* Ferramentas de análise de logs
+
+3. Scripts de Suporte
+
+```SQL
+-- Script de verificação de ambiente
+CREATE OR REPLACE FUNCTION lab_workspace.check_security_environment()
+RETURNS TABLE (
+    check_item VARCHAR,
+    status VARCHAR,
+    details TEXT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 'Database Version'::VARCHAR,
+           version()::VARCHAR,
+           'Verificação da versão do PostgreSQL'::TEXT
+    UNION ALL
+    SELECT 'Authentication Method',
+           current_setting('password_encryption'),
+           'Método de criptografia de senhas'
+    UNION ALL
+    SELECT 'SSL Status',
+           CASE WHEN current_setting('ssl') = 'on' THEN 'Enabled' ELSE 'Disabled' END,
+           'Status da conexão SSL';
+END;
+$$ LANGUAGE plpgsql;
+```
+
+## Navegação dos Laboratórios
+
+* [Laboratório de Gerenciamento de Usuários](lab-user-management.html)
+
+* [Laboratório de Hierarquia de Roles](lab-role-hierarchy.html)
+
+* [Laboratório de Auditoria de Segurança](lab-security-audit.html)
+
+* [Laboratório de Migração de Permissões](lab-permission-migration.html)
+
+## Suporte e Recursos
+
+### Documentação
+
+* [PostgreSQL Official Documentation](https://www.postgresql.org/docs/)
+
+* [DCL Reference Guide](https://www.postgresql.org/docs/current/ddl-priv.html)
+
+* [Security Best Practices](https://www.postgresql.org/docs/current/user-manag.html)
+
+### Comunidade
+
+* Fórum PostgreSQL
+
+* Stack Overflow
+
+* GitHub Discussions
+
+## Conclusão
+
+Os laboratórios DCL fornecem uma base prática essencial para o desenvolvimento de habilidades em segurança de banco de dados. A prática regular destes exercícios contribuirá significativamente para sua expertise em controle de acesso e segurança em ambientes PostgreSQL.
+
+## Próximos Passos
+
+1. Preparação
+
+* Configure seu ambiente local
+
+* Revise os pré-requisitos
+
+* Familiarize-se com as ferramentas
+
+2. Execução
+
+* Siga os laboratórios em ordem
+
+* Complete todos os exercícios
+
+* Documente seus resultados
+
+3. Avançado
+
+* Explore variações dos exercícios
+
+* Crie seus próprios cenários
+
+* Compartilhe experiências
+
+Tip:
+
+Nota: Certifique-se de manter backups e usar ambientes de teste apropriados durante a execução dos laboratórios. Nunca pratique operações de segurança em ambientes de produção sem a devida autorização e planejamento.
+
+
+
+# Laboratório: Gerenciamento de Usuários
+
+## Objetivo
+
+Praticar a criação, configuração e gerenciamento de usuários em um banco de dados PostgreSQL, aplicando boas práticas de segurança e controle de acesso.
+
+## Cenário
+
+Você é um administrador de banco de dados em uma empresa que está implementando um novo sistema de gerenciamento de permissões. Sua tarefa é configurar usuários com diferentes níveis de acesso de acordo com suas funções na organização.
+
+## Setup Inicial
+
+```SQL
+-- Conectar ao banco de dados como superusuário
+-- psql -U postgres -d lab_dcl
+
+-- Verificar usuários existentes
+SELECT usename, usecreatedb, usesuper, passwd IS NOT NULL AS has_password
+FROM pg_catalog.pg_user;
+
+-- Registrar início do laboratório
+INSERT INTO lab_workspace.lab_progress (lab_name)
+VALUES ('Gerenciamento de Usuários');
+```
+
+## Parte 1: Criação de Usuários Básicos
+
+### 1.1 Criação de Usuários
+
+```SQL
+-- Criar usuário básico
+CREATE USER app_user WITH PASSWORD 'app123';
+
+-- Criar usuário com data de expiração
+CREATE USER temp_user WITH 
+    PASSWORD 'temp456' 
+    VALID UNTIL '2023-12-31 23:59:59';
+
+-- Criar usuário sem privilégios de login
+CREATE USER app_service WITH 
+    PASSWORD 'srv789' 
+    NOLOGIN;
+
+-- Verificar usuários criados
+SELECT usename, usesuper, usecreatedb, valuntil 
+FROM pg_catalog.pg_user 
+WHERE usename IN ('app_user', 'temp_user', 'app_service');
+```
+
+### 1.2 Configuração de Parâmetros
+
+```SQL
+-- Alterar configurações de usuário
+ALTER USER app_user SET search_path TO lab_workspace, public;
+ALTER USER app_user SET statement_timeout = '30s';
+ALTER USER app_user SET idle_in_transaction_session_timeout = '60s';
+
+-- Verificar configurações
+SELECT usename, useconfig 
+FROM pg_catalog.pg_user 
+WHERE usename = 'app_user';
+```
+
+## Parte 2: Atribuição de Permissões
+
+### 2.1 Permissões Básicas
+
+```SQL
+-- Conceder permissões de conexão
+GRANT CONNECT ON DATABASE lab_dcl TO app_user;
+GRANT CONNECT ON DATABASE lab_dcl TO temp_user;
+
+-- Conceder permissões de uso no schema
+GRANT USAGE ON SCHEMA lab_workspace TO app_user;
+GRANT USAGE ON SCHEMA lab_workspace TO temp_user;
+
+-- Conceder permissões de leitura para app_user
+GRANT SELECT ON ALL TABLES IN SCHEMA lab_workspace TO app_user;
+
+-- Conceder permissões específicas para temp_user
+GRANT SELECT ON lab_workspace.clientes TO temp_user;
+GRANT SELECT ON lab_workspace.produtos TO temp_user;
+```
+
+### 2.2 Permissões Avançadas
+
+```SQL
+-- Conceder permissões de modificação em tabelas específicas
+GRANT INSERT, UPDATE ON lab_workspace.clientes TO app_user;
+GRANT INSERT, UPDATE, DELETE ON lab_workspace.pedidos TO app_user;
+GRANT INSERT, UPDATE, DELETE ON lab_workspace.itens_pedido TO app_user;
+
+-- Conceder permissões em nível de coluna
+GRANT UPDATE (nome, email, status) ON lab_workspace.clientes TO app_user;
+GRANT UPDATE (status, observacoes) ON lab_workspace.pedidos TO temp_user;
+
+-- Revogar permissões sensíveis
+REVOKE UPDATE (limite_credito, dados_sensíveis) ON lab_workspace.clientes FROM app_user;
+```
+
+## Parte 3: Gerenciamento de Senhas e Políticas
+
+### 3.1 Alteração de Senhas
+
+```SQL
+-- Alterar senha de usuário
+ALTER USER app_user WITH PASSWORD 'novasenha123';
+
+-- Forçar expiração de senha
+ALTER USER temp_user VALID UNTIL '2023-10-31 23:59:59';
+
+-- Desabilitar usuário temporariamente
+ALTER USER temp_user WITH NOLOGIN;
+```
+
+### 3.2 Implementação de Políticas
+
+```SQL
+-- Criar função para registrar acessos
+CREATE OR REPLACE FUNCTION lab_workspace.log_user_access()
+RETURNS trigger AS $$
+BEGIN
+    INSERT INTO lab_workspace.log_acessos (
+        usuario_id,
+        operacao,
+        tabela_acessada,
+        detalhes
+    ) VALUES (
+        (SELECT id FROM lab_workspace.usuarios WHERE username = current_user),
+        TG_OP,
+        TG_TABLE_NAME,
+        'Acesso em ' || now()
+    );
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Criar trigger para auditoria
+CREATE TRIGGER log_clientes_access
+AFTER INSERT OR UPDATE OR DELETE ON lab_workspace.clientes
+FOR EACH STATEMENT EXECUTE FUNCTION lab_workspace.log_user_access();
+```
+
+## Parte 4: Monitoramento e Auditoria
+
+### 4.1 Visualização de Atividades
+
+```SQL
+-- Consultar atividades de usuários
+SELECT usename, application_name, client_addr, backend_start, state
+FROM pg_stat_activity
+WHERE usename IN ('app_user', 'temp_user');
+
+-- Consultar permissões concedidas
+SELECT grantee, table_schema, table_name, privilege_type
+FROM information_schema.table_privileges
+WHERE grantee IN ('app_user', 'temp_user')
+ORDER BY grantee, table_schema, table_name;
+```
+
+### 4.2 Relatórios de Segurança
+
+```SQL
+-- Criar visão para relatório de permissões
+CREATE OR REPLACE VIEW lab_workspace.user_permissions_report AS
+SELECT 
+    u.usename AS username,
+    s.nspname AS schema,
+    t.relname AS table,
+    array_agg(p.privilege_type) AS privileges
+FROM pg_user u
+CROSS JOIN pg_namespace s
+JOIN pg_class t ON t.relnamespace = s.oid
+JOIN information_schema.table_privileges p ON 
+    p.table_schema = s.nspname AND 
+    p.table_name = t.relname AND 
+    p.grantee = u.usename
+WHERE s.nspname = 'lab_workspace'
+GROUP BY u.usename, s.nspname, t.relname
+ORDER BY u.usename, s.nspname, t.relname;
+
+-- Consultar relatório
+SELECT * FROM lab_workspace.user_permissions_report;
+```
+
+## Verificações e Testes
+
+1. Conecte-se como cada usuário e verifique suas permissões:
+
+```
+psql -U app_user -d lab_dcl
+```
+
+2. Tente executar operações permitidas e não permitidas:
+
+```SQL
+-- Como app_user
+SELECT * FROM lab_workspace.clientes;
+UPDATE lab_workspace.clientes SET nome = 'Teste' WHERE id = 1;
+UPDATE lab_workspace.clientes SET limite_credito = 5000 WHERE id = 1; -- Deve falhar
+```
+
+3. Verifique os logs de auditoria:
+
+```SQL
+SELECT * FROM lab_workspace.log_acessos ORDER BY data_hora DESC;
+```
+
+## Conclusão
+
+Neste laboratório, você praticou:
+
+* Criação e configuração de usuários
+
+* Atribuição de permissões em diferentes níveis
+
+* Gerenciamento de senhas e políticas de segurança
+
+* Monitoramento e auditoria de atividades
+
+Estas habilidades são fundamentais para implementar um sistema de controle de acesso robusto e seguro em ambientes PostgreSQL.
+
+## Próximos Passos
+
+1. Explore a criação de roles para agrupar permissões
+
+2. Implemente políticas de segurança mais avançadas
+
+3. Configure autenticação externa (LDAP, SSO)
+
+4. Desenvolva um sistema de auditoria mais abrangente
+
+Tip:
+
+Nota: Registre a conclusão do laboratório:
+
+```SQL
+UPDATE lab_workspace.lab_progress 
+SET completion_time = CURRENT_TIMESTAMP, status = 'COMPLETED' 
+WHERE lab_name = 'Gerenciamento de Usuários';
+```
+
+
+
+# Laboratório: Hierarquia de Roles
+
+## Objetivo
+
+Implementar uma estrutura hierárquica de roles em um banco de dados PostgreSQL, aplicando o princípio de separação de responsabilidades e herança de permissões.
+
+## Cenário
+
+Você é um arquiteto de segurança em uma empresa com múltiplos departamentos e níveis hierárquicos. Sua tarefa é implementar uma estrutura de roles que reflita a organização da empresa e facilite o gerenciamento de permissões.
+
+## Setup Inicial
+
+```SQL
+-- Conectar ao banco de dados como superusuário
+-- psql -U postgres -d lab_dcl
+
+-- Verificar roles existentes
+SELECT rolname, rolsuper, rolinherit, rolcanlogin
+FROM pg_roles
+WHERE rolname NOT LIKE 'pg_%';
+
+-- Registrar início do laboratório
+INSERT INTO lab_workspace.lab_progress (lab_name)
+VALUES ('Hierarquia de Roles');
+```
+
+## Parte 1: Criação de Estrutura Básica de Roles
+
+### 1.1 Roles Departamentais
+
+```SQL
+-- Criar roles para departamentos
+CREATE ROLE dept_vendas;
+CREATE ROLE dept_marketing;
+CREATE ROLE dept_financeiro;
+CREATE ROLE dept_ti;
+
+-- Verificar roles criadas
+SELECT rolname FROM pg_roles WHERE rolname LIKE 'dept_%';
+```
+
+### 1.2 Roles Hierárquicas
+
+```SQL
+-- Criar roles para níveis hierárquicos
+CREATE ROLE nivel_operacional;
+CREATE ROLE nivel_tatico;
+CREATE ROLE nivel_estrategico;
+
+-- Criar roles para funções específicas
+CREATE ROLE analista;
+CREATE ROLE supervisor;
+CREATE ROLE gerente;
+CREATE ROLE diretor;
+
+-- Estabelecer hierarquia
+GRANT analista TO nivel_operacional;
+GRANT supervisor TO nivel_tatico;
+GRANT gerente TO nivel_tatico;
+GRANT diretor TO nivel_estrategico;
+```
+
+## Parte 2: Implementação de Herança de Permissões
+
+### 2.1 Permissões Departamentais
+
+```SQL
+-- Conceder permissões aos departamentos
+-- Vendas
+GRANT USAGE ON SCHEMA lab_workspace TO dept_vendas;
+GRANT SELECT, INSERT ON lab_workspace.clientes TO dept_vendas;
+GRANT SELECT, INSERT, UPDATE ON lab_workspace.pedidos TO dept_vendas;
+GRANT SELECT, INSERT, UPDATE ON lab_workspace.itens_pedido TO dept_vendas;
+GRANT SELECT ON lab_workspace.produtos TO dept_vendas;
+
+-- Marketing
+GRANT USAGE ON SCHEMA lab_workspace TO dept_marketing;
+GRANT SELECT ON lab_workspace.clientes TO dept_marketing;
+GRANT SELECT ON lab_workspace.pedidos TO dept_marketing;
+GRANT SELECT ON lab_workspace.produtos TO dept_marketing;
+
+-- Financeiro
+GRANT USAGE ON SCHEMA lab_workspace TO dept_financeiro;
+GRANT SELECT ON lab_workspace.clientes TO dept_financeiro;
+GRANT SELECT ON lab_workspace.pedidos TO dept_financeiro;
+GRANT SELECT ON lab_workspace.itens_pedido TO dept_financeiro;
+GRANT UPDATE (limite_credito) ON lab_workspace.clientes TO dept_financeiro;
+
+-- TI
+GRANT USAGE ON SCHEMA lab_workspace TO dept_ti;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA lab_workspace TO dept_ti;
+```
+
+### 2.2 Permissões por Nível Hierárquico
+
+```SQL
+-- Nível Operacional
+GRANT SELECT ON ALL TABLES IN SCHEMA lab_workspace TO nivel_operacional;
+
+-- Nível Tático
+GRANT nivel_operacional TO nivel_tatico;
+GRANT INSERT, UPDATE ON ALL TABLES IN SCHEMA lab_workspace TO nivel_tatico;
+
+-- Nível Estratégico
+GRANT nivel_tatico TO nivel_estrategico;
+GRANT DELETE ON ALL TABLES IN SCHEMA lab_workspace TO nivel_estrategico;
+GRANT USAGE, CREATE ON SCHEMA lab_workspace TO nivel_estrategico;
+```
+
+## Parte 3: Criação de Usuários com Múltiplas Roles
+
+### 3.1 Usuários Departamentais
+
+```SQL
+-- Criar usuários com roles departamentais e hierárquicas
+CREATE USER vendedor01 WITH PASSWORD 'v123' IN ROLE dept_vendas, nivel_operacional;
+CREATE USER supervisor_vendas WITH PASSWORD 's123' IN ROLE dept_vendas, nivel_tatico;
+CREATE USER gerente_vendas WITH PASSWORD 'g123' IN ROLE dept_vendas, nivel_tatico;
+CREATE USER diretor_vendas WITH PASSWORD 'd123' IN ROLE dept_vendas, nivel_estrategico;
+
+CREATE USER analista_marketing WITH PASSWORD 'a123' IN ROLE dept_marketing, nivel_operacional;
+CREATE USER gerente_marketing WITH PASSWORD 'g123' IN ROLE dept_marketing, nivel_tatico;
+
+CREATE USER analista_financeiro WITH PASSWORD 'a123' IN ROLE dept_financeiro, nivel_operacional;
+CREATE USER controller WITH PASSWORD 'c123' IN ROLE dept_financeiro, nivel_tatico;
+
+CREATE USER admin_ti WITH PASSWORD 'a123' IN ROLE dept_ti, nivel_estrategico;
+```
+
+### 3.2 Verificação de Membros de Roles
+
+```SQL
+-- Verificar membros de cada role
+SELECT r.rolname, u.usename
+FROM pg_roles r
+JOIN pg_auth_members m ON r.oid = m.roleid
+JOIN pg_roles u ON m.member = u.oid
+WHERE r.rolname LIKE 'dept_%' OR r.rolname LIKE 'nivel_%'
+ORDER BY r.rolname, u.usename;
+```
+
+## Parte 4: Implementação de Roles Funcionais
+
+### 4.1 Roles para Funções Específicas
+
+```SQL
+-- Criar roles para funções específicas
+CREATE ROLE atendimento_cliente;
+GRANT SELECT, INSERT, UPDATE ON lab_workspace.clientes TO atendimento_cliente;
+GRANT SELECT ON lab_workspace.pedidos TO atendimento_cliente;
+
+CREATE ROLE gestor_estoque;
+GRANT SELECT, UPDATE ON lab_workspace.produtos TO gestor_estoque;
+
+CREATE ROLE processador_pedidos;
+GRANT SELECT, UPDATE ON lab_workspace.pedidos TO processador_pedidos;
+GRANT SELECT, INSERT, UPDATE ON lab_workspace.itens_pedido TO processador_pedidos;
+GRANT SELECT ON lab_workspace.produtos TO processador_pedidos;
+GRANT SELECT ON lab_workspace.clientes TO processador_pedidos;
+
+-- Atribuir roles funcionais aos usuários
+GRANT atendimento_cliente TO vendedor01;
+GRANT gestor_estoque TO supervisor_vendas;
+GRANT processador_pedidos TO vendedor01, supervisor_vendas;
+```
+
+### 4.2 Roles Temporárias
+
+```SQL
+-- Criar role para acesso temporário
+CREATE ROLE acesso_auditoria;
+GRANT SELECT ON ALL TABLES IN SCHEMA lab_workspace TO acesso_auditoria;
+
+-- Criar role com restrição de tempo
+CREATE ROLE acesso_noturno;
+GRANT SELECT ON ALL TABLES IN SCHEMA lab_workspace TO acesso_noturno;
+
+-- Implementar controle de acesso baseado em tempo
+CREATE OR REPLACE FUNCTION lab_workspace.check_time_access()
+RETURNS boolean AS $$
+DECLARE
+    current_hour integer;
+BEGIN
+    current_hour := EXTRACT(HOUR FROM CURRENT_TIME);
+    RETURN current_hour BETWEEN 18 AND 6;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Nota: Em um ambiente real, você usaria Row-Level Security para implementar isso
+-- Este é apenas um exemplo conceitual
+```
+
+## Parte 5: Análise e Auditoria de Roles
+
+### 5.1 Visualização da Hierarquia de Roles
+
+```SQL
+-- Criar função para visualizar hierarquia de roles
+CREATE OR REPLACE FUNCTION lab_workspace.role_hierarchy(role_name text)
+RETURNS TABLE (role text, level int) AS $$
+WITH RECURSIVE role_tree AS (
+    SELECT r.rolname AS role, 1 AS level
+    FROM pg_roles r
+    WHERE r.rolname = role_name
+    
+    UNION ALL
+    
+    SELECT r.rolname, rt.level + 1
+    FROM role_tree rt
+    JOIN pg_auth_members m ON rt.role = (SELECT rolname FROM pg_roles WHERE oid = m.roleid)
+    JOIN pg_roles r ON r.oid = m.member
+)
+SELECT role, level FROM role_tree ORDER BY level, role;
+$$ LANGUAGE sql;
+
+-- Visualizar hierarquia para um usuário específico
+SELECT * FROM lab_workspace.role_hierarchy('diretor_vendas');
+```
+
+### 5.2 Relatório de Permissões Efetivas
+
+```SQL
+-- Criar visão para relatório de permissões efetivas
+CREATE OR REPLACE VIEW lab_workspace.effective_permissions AS
+WITH role_members AS (
+    SELECT r.rolname AS role, u.usename AS username
+    FROM pg_roles r
+    JOIN pg_auth_members m ON r.oid = m.roleid
+    JOIN pg_roles u ON m.member = u.oid
+    WHERE u.rolcanlogin
+    
+    UNION
+    
+    SELECT r.rolname AS role, r.rolname AS username
+    FROM pg_roles r
+    WHERE r.rolcanlogin
+)
+SELECT 
+    rm.username,
+    t.table_schema,
+    t.table_name,
+    t.privilege_type
+FROM role_members rm
+JOIN information_schema.role_table_grants t ON rm.role = t.grantee
+WHERE t.table_schema = 'lab_workspace'
+ORDER BY rm.username, t.table_schema, t.table_name, t.privilege_type;
+
+-- Consultar permissões efetivas
+SELECT * FROM lab_workspace.effective_permissions WHERE username = 'vendedor01';
+```
+
+## Verificações e Testes
+
+1. Conecte-se como diferentes usuários e verifique suas permissões:
+
+```
+psql -U vendedor01 -d lab_dcl
+psql -U gerente_marketing -d lab_dcl
+psql -U admin_ti -d lab_dcl
+```
+
+2. Teste operações permitidas e não permitidas:
+
+```SQL
+-- Como vendedor01
+SELECT * FROM lab_workspace.clientes;
+INSERT INTO lab_workspace.clientes (nome, email) VALUES ('Cliente Teste', 'teste@email.com');
+DELETE FROM lab_workspace.clientes WHERE id = 1; -- Deve falhar
+
+-- Como gerente_vendas
+SELECT * FROM lab_workspace.clientes;
+INSERT INTO lab_workspace.clientes (nome, email) VALUES ('Cliente Gerente', 'gerente@email.com');
+UPDATE lab_workspace.clientes SET status = 'Inativo' WHERE id = 1;
+
+-- Como admin_ti
+CREATE TABLE lab_workspace.teste_admin (id serial primary key, descricao text);
+DROP TABLE lab_workspace.teste_admin;
+```
+
+3. Verifique a hierarquia de roles:
+
+```SQL
+SELECT * FROM lab_workspace.role_hierarchy('nivel_estrategico');
+SELECT * FROM lab_workspace.role_hierarchy('gerente_vendas');
+```
+
+## Conclusão
+
+Neste laboratório, você implementou:
+
+* Uma estrutura hierárquica de roles que reflete a organização da empresa
+
+* Herança de permissões entre níveis hierárquicos
+
+* Separação de responsabilidades por departamento
+
+* Roles funcionais para tarefas específicas
+
+* Ferramentas para análise e auditoria de permissões
+
+Esta abordagem estruturada para gerenciamento de permissões oferece vários benefícios:
+
+1. Simplicidade de administração: Alterações em permissões podem ser feitas em nível de role, afetando automaticamente todos os usuários associados
+
+2. Consistência: Usuários com funções similares recebem permissões consistentes
+
+3. Segurança: O princípio de privilégio mínimo é aplicado em cada nível
+
+4. Flexibilidade: Usuários podem pertencer a múltiplas roles, combinando permissões conforme necessário
+
+## Próximos Passos
+
+1. Implemente Row-Level Security (RLS) para controle de acesso mais granular
+
+2. Desenvolva um sistema automatizado para gerenciamento de roles
+
+3. Integre com sistemas de identidade externos (LDAP, Active Directory)
+
+4. Implemente rotação automática de credenciais
+
+Tip:
+
+Nota: Registre a conclusão do laboratório:
+
+```SQL
+UPDATE lab_workspace.lab_progress 
+SET completion_time = CURRENT_TIMESTAMP, status = 'COMPLETED' 
+WHERE lab_name = 'Hierarquia de Roles';
+```
+
+
+
+# Laboratório: Auditoria de Segurança
+
+## Objetivo
+
+Implementar e configurar um sistema abrangente de auditoria de segurança em um banco de dados PostgreSQL, identificando atividades suspeitas e garantindo conformidade com políticas de segurança.
+
+## Cenário
+
+Você é um especialista em segurança de dados em uma instituição financeira que precisa implementar controles de auditoria rigorosos para atender a requisitos regulatórios e de compliance. Sua tarefa é configurar um sistema de auditoria que capture todas as atividades relevantes no banco de dados.
+
+## Setup Inicial
+
+```SQL
+-- Conectar ao banco de dados como superusuário
+-- psql -U postgres -d lab_dcl
+
+-- Verificar extensões disponíveis
+SELECT name, default_version, installed_version
+FROM pg_available_extensions
+WHERE name IN ('pgaudit', 'pg_stat_statements');
+
+-- Registrar início do laboratório
+INSERT INTO lab_workspace.lab_progress (lab_name)
+VALUES ('Auditoria de Segurança');
+```
+
+## Parte 1: Configuração de Logs Básicos
+
+### 1.1 Configuração de Parâmetros de Log
+
+```SQL
+-- Verificar configurações atuais
+SHOW log_destination;
+SHOW logging_collector;
+SHOW log_directory;
+SHOW log_filename;
+SHOW log_statement;
+
+-- Configurar parâmetros (em postgresql.conf ou via ALTER SYSTEM)
+-- Nota: Em um ambiente real, você alteraria o postgresql.conf
+-- Aqui usamos ALTER SYSTEM para demonstração
+
+ALTER SYSTEM SET log_destination = 'csvlog';
+ALTER SYSTEM SET logging_collector = 'on';
+ALTER SYSTEM SET log_directory = 'pg_log';
+ALTER SYSTEM SET log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log';
+ALTER SYSTEM SET log_rotation_age = '1d';
+ALTER SYSTEM SET log_rotation_size = '10MB';
+
+-- Configurar o que será logado
+ALTER SYSTEM SET log_statement = 'mod';  -- Loga todas as modificações (INSERT, UPDATE, DELETE, etc.)
+ALTER SYSTEM SET log_min_duration_statement = '1000';  -- Loga queries que demoram mais de 1 segundo
+ALTER SYSTEM SET log_connections = 'on';
+ALTER SYSTEM SET log_disconnections = 'on';
+ALTER SYSTEM SET log_duration = 'on';
+
+-- Aplicar alterações (requer reinicialização do servidor)
+-- SELECT pg_reload_conf();
+```
+
+### 1.2 Criação de Tabelas de Auditoria
+
+```SQL
+-- Criar schema dedicado para auditoria
+CREATE SCHEMA IF NOT EXISTS audit;
+
+-- Tabela para registro de atividades
+CREATE TABLE audit.activity_log (
+    id SERIAL PRIMARY KEY,
+    event_time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    username TEXT NOT NULL,
+    database_name TEXT NOT NULL,
+    schema_name TEXT NOT NULL,
+    table_name TEXT,
+    action_type TEXT NOT NULL,
+    query TEXT,
+    old_data JSONB,
+    new_data JSONB,
+    client_ip TEXT,
+    application_name TEXT
+);
+
+-- Tabela para registro de logins
+CREATE TABLE audit.login_attempts (
+    id SERIAL PRIMARY KEY,
+    event_time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    username TEXT NOT NULL,
+    success BOOLEAN NOT NULL,
+    client_ip TEXT,
+    connection_type TEXT,
+    application_name TEXT,
+    details TEXT
+);
+
+-- Tabela para registro de alterações de permissões
+CREATE TABLE audit.permission_changes (
+    id SERIAL PRIMARY KEY,
+    event_time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    username TEXT NOT NULL,
+    action_type TEXT NOT NULL,
+    object_type TEXT NOT NULL,
+    object_name TEXT NOT NULL,
+    grantee TEXT,
+    permission TEXT,
+    query TEXT
+);
+```
+
+## Parte 2: Implementação de Triggers de Auditoria
+
+### 2.1 Função Genérica de Auditoria
+
+```SQL
+-- Criar função para auditoria de alterações em tabelas
+CREATE OR REPLACE FUNCTION audit.log_table_changes()
+RETURNS TRIGGER AS $$
+DECLARE
+    old_data JSONB := NULL;
+    new_data JSONB := NULL;
+BEGIN
+    IF TG_OP = 'DELETE' THEN
+        old_data := row_to_json(OLD)::JSONB;
+    ELSIF TG_OP = 'UPDATE' THEN
+        old_data := row_to_json(OLD)::JSONB;
+        new_data := row_to_json(NEW)::JSONB;
+    ELSIF TG_OP = 'INSERT' THEN
+        new_data := row_to_json(NEW)::JSONB;
+    END IF;
+
+    INSERT INTO audit.activity_log (
+        username,
+        database_name,
+        schema_name,
+        table_name,
+        action_type,
+        query,
+        old_data,
+        new_data,
+        client_ip,
+        application_name
+    ) VALUES (
+        current_user,
+        current_database(),
+        TG_TABLE_SCHEMA,
+        TG_TABLE_NAME,
+        TG_OP,
+        current_query(),
+        old_data,
+        new_data,
+        inet_client_addr(),
+        current_setting('application_name')
+    );
+
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+```
+
+### 2.2 Aplicação de Triggers nas Tabelas
+
+```SQL
+-- Aplicar triggers nas tabelas principais
+CREATE TRIGGER audit_clientes
+AFTER INSERT OR UPDATE OR DELETE ON lab_workspace.clientes
+FOR EACH ROW EXECUTE FUNCTION audit.log_table_changes();
+
+CREATE TRIGGER audit_produtos
+AFTER INSERT OR UPDATE OR DELETE ON lab_workspace.produtos
+FOR EACH ROW EXECUTE FUNCTION audit.log_table_changes();
+
+CREATE TRIGGER audit_pedidos
+AFTER INSERT OR UPDATE OR DELETE ON lab_workspace.pedidos
+FOR EACH ROW EXECUTE FUNCTION audit.log_table_changes();
+
+CREATE TRIGGER audit_itens_pedido
+AFTER INSERT OR UPDATE OR DELETE ON lab_workspace.itens_pedido
+FOR EACH ROW EXECUTE FUNCTION audit.log_table_changes();
+
+CREATE TRIGGER audit_usuarios
+AFTER INSERT OR UPDATE OR DELETE ON lab_workspace.usuarios
+FOR EACH ROW EXECUTE FUNCTION audit.log_table_changes();
+```
+
+## Parte 3: Monitoramento de Atividades Sensíveis
+
+### 3.1 Auditoria de Permissões
+
+```SQL
+-- Função para auditoria de alterações de permissões
+CREATE OR REPLACE FUNCTION audit.log_permission_changes()
+RETURNS event_trigger AS $$
+DECLARE
+    obj record;
+    query text;
+BEGIN
+    query := current_query();
+    
+    IF query ~* 'grant|revoke' THEN
+        INSERT INTO audit.permission_changes (
+            username,
+            action_type,
+            object_type,
+            object_name,
+            query
+        ) VALUES (
+            current_user,
+            CASE 
+                WHEN query ~* 'grant' THEN 'GRANT'
+                WHEN query ~* 'revoke' THEN 'REVOKE'
+                ELSE 'UNKNOWN'
+            END,
+            CASE 
+                WHEN query ~* 'table' THEN 'TABLE'
+                WHEN query ~* 'function' THEN 'FUNCTION'
+                WHEN query ~* 'schema' THEN 'SCHEMA'
+                WHEN query ~* 'sequence' THEN 'SEQUENCE'
+                ELSE 'UNKNOWN'
+            END,
+            regexp_replace(query, '.*(?:on|ON)\s+([^\s]+).*', '\1'),
+            query
+        );
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Criar event trigger para capturar alterações de permissões
+CREATE EVENT TRIGGER permission_audit ON ddl_command_end
+WHEN TAG IN ('GRANT', 'REVOKE')
+EXECUTE FUNCTION audit.log_permission_changes();
+```
+
+### 3.2 Auditoria de Logins
+
+```SQL
+-- Função para simular auditoria de logins
+-- Nota: Em um ambiente real, isso seria implementado via configuração do PostgreSQL
+-- ou usando extensões como pgaudit
+
+CREATE OR REPLACE FUNCTION audit.simulate_login_audit()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO audit.login_attempts (
+        username,
+        success,
+        client_ip,
+        application_name
+    ) VALUES (
+        NEW.username,
+        TRUE,
+        inet_client_addr(),
+        current_setting('application_name')
+    );
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Aplicar trigger na tabela de usuários para simular login
+-- (apenas para demonstração - em ambiente real seria diferente)
+CREATE TRIGGER simulate_login
+AFTER UPDATE OF ultimo_acesso ON lab_workspace.usuarios
+FOR EACH ROW EXECUTE FUNCTION audit.simulate_login_audit();
+
+-- Função para registrar login manualmente (para demonstração)
+CREATE OR REPLACE FUNCTION lab_workspace.register_login(username text)
+RETURNS void AS $$
+BEGIN
+    UPDATE lab_workspace.usuarios
+    SET ultimo_acesso = CURRENT_TIMESTAMP
+    WHERE username = register_login.username;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+## Parte 4: Análise e Relatórios de Auditoria
+
+### 4.1 Visões para Análise
+
+```SQL
+-- Visão para atividades por usuário
+CREATE OR REPLACE VIEW audit.user_activity AS
+SELECT 
+    username,
+    COUNT(*) AS total_actions,
+    COUNT(*) FILTER (WHERE action_type = 'INSERT') AS inserts,
+    COUNT(*) FILTER (WHERE action_type = 'UPDATE') AS updates,
+    COUNT(*) FILTER (WHERE action_type = 'DELETE') AS deletes,
+    MIN(event_time) AS first_activity,
+    MAX(event_time) AS last_activity
+FROM audit.activity_log
+GROUP BY username
+ORDER BY total_actions DESC;
+
+-- Visão para atividades por tabela
+CREATE OR REPLACE VIEW audit.table_activity AS
+SELECT 
+    schema_name,
+    table_name,
+    COUNT(*) AS total_actions,
+    COUNT(*) FILTER (WHERE action_type = 'INSERT') AS inserts,
+    COUNT(*) FILTER (WHERE action_type = 'UPDATE') AS updates,
+    COUNT(*) FILTER (WHERE action_type = 'DELETE') AS deletes,
+    MIN(event_time) AS first_activity,
+    MAX(event_time) AS last_activity
+FROM audit.activity_log
+GROUP BY schema_name, table_name
+ORDER BY total_actions DESC;
+
+-- Visão para alterações sensíveis
+CREATE OR REPLACE VIEW audit.sensitive_changes AS
+SELECT 
+    a.id,
+    a.event_time,
+    a.username,
+    a.table_name,
+    a.action_type,
+    a.old_data,
+    a.new_data
+FROM audit.activity_log a
+WHERE 
+    (a.table_name = 'clientes' AND 
+     (a.old_data->>'limite_credito' IS DISTINCT FROM a.new_data->>'limite_credito' OR
+      a.old_data->>'dados_sensíveis' IS DISTINCT FROM a.new_data->>'dados_sensíveis'))
+    OR
+    (a.table_name = 'usuarios' AND a.action_type IN ('INSERT', 'DELETE'))
+ORDER BY a.event_time DESC;
+```
+
+### 4.2 Funções para Relatórios
+
+```SQL
+-- Função para relatório de atividades em um período
+CREATE OR REPLACE FUNCTION audit.activity_report(
+    start_time timestamp with time zone,
+    end_time timestamp with time zone
+)
+RETURNS TABLE (
+    username text,
+    action_type text,
+    table_name text,
+    count bigint
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        a.username,
+        a.action_type,
+        a.table_name,
+        COUNT(*) AS count
+    FROM audit.activity_log a
+    WHERE a.event_time BETWEEN start_time AND end_time
+    GROUP BY a.username, a.action_type, a.table_name
+    ORDER BY count DESC;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Função para detectar atividades suspeitas
+CREATE OR REPLACE FUNCTION audit.detect_suspicious_activity()
+RETURNS TABLE (
+    id integer,
+    event_time timestamp with time zone,
+    username text,
+    action_type text,
+    table_name text,
+    suspicion_reason text
+) AS $$
+BEGIN
+    RETURN QUERY
+    
+    -- Atividades fora do horário comercial
+    SELECT 
+        a.id,
+        a.event_time,
+        a.username,
+        a.action_type,
+        a.table_name,
+        'Atividade fora do horário comercial' AS suspicion_reason
+    FROM audit.activity_log a
+    WHERE 
+        EXTRACT(HOUR FROM a.event_time) < 8 OR
+        EXTRACT(HOUR FROM a.event_time) > 18
+        
+    UNION ALL
+    
+    -- Volume anormal de operações
+    SELECT 
+        a.id,
+        a.event_time,
+        a.username,
+        a.action_type,
+        a.table_name,
+        'Volume anormal de operações' AS suspicion_reason
+    FROM audit.activity_log a
+    JOIN (
+        SELECT 
+            username, 
+            table_name, 
+            COUNT(*) AS action_count
+        FROM audit.activity_log
+        WHERE event_time > CURRENT_TIMESTAMP - INTERVAL '1 hour'
+        GROUP BY username, table_name
+        HAVING COUNT(*) > 50
+    ) high_volume ON a.username = high_volume.username AND a.table_name = high_volume.table_name
+    
+    UNION ALL
+    
+    -- Alterações em dados sensíveis
+    SELECT 
+        a.id,
+        a.event_time,
+        a.username,
+        a.action_type,
+        a.table_name,
+        'Alteração em dados sensíveis' AS suspicion_reason
+    FROM audit.activity_log a
+    WHERE 
+        a.table_name = 'clientes' AND
+        a.action_type = 'UPDATE' AND
+        a.old_data->>'limite_credito' IS DISTINCT FROM a.new_data->>'limite_credito'
+    
+    ORDER BY event_time DESC;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+## Verificações e Testes
+
+1. Gerar atividades para teste:
+
+```SQL
+-- Inserir dados de teste
+INSERT INTO lab_workspace.clientes (nome, email, segmento, limite_credito)
+VALUES ('Cliente Auditoria', 'auditoria@email.com', 'Varejo', 1000.00);
+
+UPDATE lab_workspace.clientes
+SET limite_credito = 5000.00
+WHERE email = 'auditoria@email.com';
+
+DELETE FROM lab_workspace.clientes
+WHERE email = 'auditoria@email.com';
+
+-- Simular login
+SELECT lab_workspace.register_login('app_user');
+```
+
+2. Verificar logs de auditoria:
+
+```SQL
+-- Verificar logs de atividade
+SELECT * FROM audit.activity_log ORDER BY event_time DESC LIMIT 10;
+
+-- Verificar logs de login
+SELECT * FROM audit.login_attempts ORDER BY event_time DESC LIMIT 10;
+
+-- Verificar logs de permissões
+SELECT * FROM audit.permission_changes ORDER BY event_time DESC LIMIT 10;
+```
+
+3. Executar relatórios:
+
+```SQL
+-- Relatório de atividades do dia
+SELECT * FROM audit.activity_report(
+    CURRENT_DATE,
+    CURRENT_DATE + INTERVAL '1 day'
+);
+
+-- Verificar atividades suspeitas
+SELECT * FROM audit.detect_suspicious_activity();
+
+-- Verificar visões de resumo
+SELECT * FROM audit.user_activity;
+SELECT * FROM audit.table_activity;
+SELECT * FROM audit.sensitive_changes;
+```
+
+## Conclusão
+
+Neste laboratório, você implementou:
+
+* Um sistema abrangente de auditoria para banco de dados PostgreSQL
+
+* Captura automática de alterações em tabelas via triggers
+
+* Monitoramento de atividades sensíveis como alterações de permissões
+
+* Relatórios e análises para identificação de atividades suspeitas
+
+Estas técnicas são essenciais para:
+
+1. Conformidade regulatória: Atender requisitos como GDPR, PCI-DSS, SOX, etc.
+
+2. Segurança: Detectar e investigar atividades maliciosas ou não autorizadas
+
+3. Forense digital: Reconstruir eventos em caso de incidentes de segurança
+
+4. Governança de dados: Manter controle sobre quem acessa e modifica dados sensíveis
+
+## Próximos Passos
+
+1. Implementar retenção e arquivamento de logs de auditoria
+
+2. Configurar alertas automáticos para atividades suspeitas
+
+3. Integrar com sistemas SIEM (Security Information and Event Management)
+
+4. Implementar criptografia para dados de auditoria sensíveis
+
+Tip:
+
+Nota: Registre a conclusão do laboratório:
+
+```SQL
+UPDATE lab_workspace.lab_progress 
+SET completion_time = CURRENT_TIMESTAMP, status = 'COMPLETED' 
+WHERE lab_name = 'Auditoria de Segurança';
+```
+
+
+
+# Laboratório: Migração de Permissões
+
+## Objetivo
+
+Planejar e executar a migração de permissões entre ambientes de banco de dados, garantindo a consistência e segurança durante o processo de transição.
+
+## Cenário
+
+Você é um DBA responsável por migrar um sistema de banco de dados de um ambiente de desenvolvimento para produção. Além da migração dos dados, você precisa garantir que todas as permissões sejam corretamente transferidas, mantendo a segurança e os controles de acesso.
+
+## Setup Inicial
+
+```SQL
+-- Conectar ao banco de dados como superusuário
+-- psql -U postgres -d lab_dcl
+
+-- Criar schemas para simular ambientes
+CREATE SCHEMA IF NOT EXISTS dev;
+CREATE SCHEMA IF NOT EXISTS homolog;
+CREATE SCHEMA IF NOT EXISTS prod;
+
+-- Registrar início do laboratório
+INSERT INTO lab_workspace.lab_progress (lab_name)
+VALUES ('Migração de Permissões');
+```
+
+## Parte 1: Preparação dos Ambientes
+
+### 1.1 Criação de Estruturas nos Ambientes
+
+```SQL
+-- Criar tabelas no ambiente de desenvolvimento
+CREATE TABLE dev.clientes (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    segmento VARCHAR(50),
+    limite_credito DECIMAL(10,2),
+    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE dev.produtos (
+    id SERIAL PRIMARY KEY,
+    codigo VARCHAR(20) UNIQUE,
+    nome VARCHAR(100) NOT NULL,
+    descricao TEXT,
+    preco DECIMAL(10,2) NOT NULL,
+    estoque INTEGER DEFAULT 0,
+    categoria VARCHAR(50)
+);
+
+CREATE TABLE dev.pedidos (
+    id SERIAL PRIMARY KEY,
+    cliente_id INTEGER REFERENCES dev.clientes(id),
+    data_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    valor_total DECIMAL(10,2),
+    status VARCHAR(20) DEFAULT 'Pendente',
+    observacoes TEXT
+);
+
+-- Criar tabelas no ambiente de homologação (estrutura idêntica)
+CREATE TABLE homolog.clientes (LIKE dev.clientes INCLUDING ALL);
+CREATE TABLE homolog.produtos (LIKE dev.produtos INCLUDING ALL);
+CREATE TABLE homolog.pedidos (LIKE dev.pedidos INCLUDING ALL);
+ALTER TABLE homolog.pedidos 
+    DROP CONSTRAINT IF EXISTS pedidos_cliente_id_fkey,
+    ADD CONSTRAINT pedidos_cliente_id_fkey 
+    FOREIGN KEY (cliente_id) REFERENCES homolog.clientes(id);
+
+-- Criar tabelas no ambiente de produção (estrutura idêntica)
+CREATE TABLE prod.clientes (LIKE dev.clientes INCLUDING ALL);
+CREATE TABLE prod.produtos (LIKE dev.produtos INCLUDING ALL);
+CREATE TABLE prod.pedidos (LIKE dev.pedidos INCLUDING ALL);
+ALTER TABLE prod.pedidos 
+    DROP CONSTRAINT IF EXISTS pedidos_cliente_id_fkey,
+    ADD CONSTRAINT pedidos_cliente_id_fkey 
+    FOREIGN KEY (cliente_id) REFERENCES prod.clientes(id);
+```
+
+### 1.2 Configuração de Usuários e Roles
+
+```SQL
+-- Criar roles para cada ambiente
+CREATE ROLE dev_role;
+CREATE ROLE homolog_role;
+CREATE ROLE prod_role;
+
+-- Criar roles funcionais
+CREATE ROLE analista_role;
+CREATE ROLE desenvolvedor_role;
+CREATE ROLE dba_role;
+CREATE ROLE suporte_role;
+
+-- Criar usuários para cada ambiente
+CREATE USER dev_user1 WITH PASSWORD 'dev123' IN ROLE desenvolvedor_role, dev_role;
+CREATE USER dev_user2 WITH PASSWORD 'dev123' IN ROLE analista_role, dev_role;
+CREATE USER homolog_user1 WITH PASSWORD 'hom123' IN ROLE analista_role, homolog_role;
+CREATE USER prod_user1 WITH PASSWORD 'prod123' IN ROLE suporte_role, prod_role;
+CREATE USER dba_user WITH PASSWORD 'dba123' IN ROLE dba_role;
+
+-- Conceder permissões no ambiente de desenvolvimento
+GRANT USAGE ON SCHEMA dev TO dev_role;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA dev TO desenvolvedor_role;
+GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA dev TO analista_role;
+
+-- Conceder permissões no ambiente de homologação
+GRANT USAGE ON SCHEMA homolog TO homolog_role;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA homolog TO analista_role;
+
+-- Conceder permissões no ambiente de produção
+GRANT USAGE ON SCHEMA prod TO prod_role;
+GRANT SELECT ON ALL TABLES IN SCHEMA prod TO suporte_role;
+
+-- Conceder permissões administrativas
+GRANT ALL PRIVILEGES ON SCHEMA dev, homolog, prod TO dba_role;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA dev, homolog, prod TO dba_role;
+```
+
+## Parte 2: Extração e Documentação de Permissões
+
+### 2.1 Extração de Permissões Existentes
+
+```SQL
+-- Criar tabela para documentar permissões
+CREATE TABLE lab_workspace.permission_inventory (
+    id SERIAL PRIMARY KEY,
+    environment VARCHAR(20) NOT NULL,
+    object_type VARCHAR(50) NOT NULL,
+    object_name TEXT NOT NULL,
+    grantee TEXT NOT NULL,
+    privilege_type TEXT NOT NULL,
+    is_grantable BOOLEAN,
+    extracted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Função para extrair e documentar permissões
+CREATE OR REPLACE FUNCTION lab_workspace.extract_permissions(env text)
+RETURNS void AS $$
+BEGIN
+    -- Limpar permissões anteriores do mesmo ambiente
+    DELETE FROM lab_workspace.permission_inventory
+    WHERE environment = env;
+    
+    -- Inserir permissões de tabelas
+    INSERT INTO lab_workspace.permission_inventory (
+        environment, object_type, object_name, grantee, privilege_type, is_grantable
+    )
+    SELECT 
+        env AS environment,
+        'TABLE' AS object_type,
+        table_schema || '.' || table_name AS object_name,
+        grantee,
+        privilege_type,
+        is_grantable::boolean
+    FROM information_schema.table_privileges
+    WHERE table_schema = env;
+    
+    -- Inserir permissões de schemas
+    INSERT INTO lab_workspace.permission_inventory (
+        environment, object_type, object_name, grantee, privilege_type, is_grantable
+    )
+    SELECT 
+        env AS environment,
+        'SCHEMA' AS object_type,
+        schema_name AS object_name,
+        grantee,
+        privilege_type,
+        is_grantable::boolean
+    FROM information_schema.usage_privileges
+    WHERE object_name = env;
+    
+    -- Inserir permissões de colunas
+    INSERT INTO lab_workspace.permission_inventory (
+        environment, object_type, object_name, grantee, privilege_type, is_grantable
+    )
+    SELECT 
+        env AS environment,
+        'COLUMN' AS object_type,
+        table_schema || '.' || table_name || '.' || column_name AS object_name,
+        grantee,
+        privilege_type,
+        is_grantable::boolean
+    FROM information_schema.column_privileges
+    WHERE table_schema = env;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Extrair permissões de cada ambiente
+SELECT lab_workspace.extract_permissions('dev');
+SELECT lab_workspace.extract_permissions('homolog');
+SELECT lab_workspace.extract_permissions('prod');
+```
+
+### 2.2 Análise de Permissões
+
+```SQL
+-- Criar visão para análise de permissões
+CREATE OR REPLACE VIEW lab_workspace.permission_analysis AS
+WITH role_members AS (
+    SELECT r.rolname AS role, u.usename AS username
+    FROM pg_roles r
+    JOIN pg_auth_members m ON r.oid = m.roleid
+    JOIN pg_roles u ON m.member = u.oid
+    WHERE u.rolcanlogin
+    
+    UNION
+    
+    SELECT r.rolname AS role, r.rolname AS username
+    FROM pg_roles r
+    WHERE r.rolcanlogin
+)
+SELECT 
+    pi.environment,
+    pi.object_type,
+    pi.object_name,
+    pi.grantee,
+    pi.privilege_type,
+    array_agg(DISTINCT rm.username) AS affected_users
+FROM lab_workspace.permission_inventory pi
+LEFT JOIN role_members rm ON pi.grantee = rm.role
+GROUP BY pi.environment, pi.object_type, pi.object_name, pi.grantee, pi.privilege_type;
+
+-- Consultar análise
+SELECT * FROM lab_workspace.permission_analysis
+ORDER BY environment, object_type, object_name;
+```
+
+## Parte 3: Planejamento da Migração
+
+### 3.1 Criação do Plano de Migração
+
+```SQL
+-- Criar tabela para plano de migração
+CREATE TABLE lab_workspace.migration_plan (
+    id SERIAL PRIMARY KEY,
+    source_environment VARCHAR(20) NOT NULL,
+    target_environment VARCHAR(20) NOT NULL,
+    object_type VARCHAR(50) NOT NULL,
+    object_name TEXT NOT NULL,
+    grantee TEXT NOT NULL,
+    privilege_type TEXT NOT NULL,
+    migration_status VARCHAR(20) DEFAULT 'Pending',
+    migration_date TIMESTAMP,
+    migration_notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Função para gerar plano de migração
+CREATE OR REPLACE FUNCTION lab_workspace.generate_migration_plan(
+    source_env text,
+    target_env text
+)
+RETURNS void AS $$
+BEGIN
+    -- Limpar plano anterior para os mesmos ambientes
+    DELETE FROM lab_workspace.migration_plan
+    WHERE source_environment = source_env AND target_environment = target_env;
+    
+    -- Inserir permissões a serem migradas
+    INSERT INTO lab_workspace.migration_plan (
+        source_environment,
+        target_environment,
+        object_type,
+        object_name,
+        grantee,
+        privilege_type,
+        migration_notes
+    )
+    SELECT 
+        source_env,
+        target_env,
+        pi.object_type,
+        -- Substituir o schema no nome do objeto
+        REPLACE(pi.object_name, source_env || '.', target_env || '.') AS object_name,
+        pi.grantee,
+        pi.privilege_type,
+        'Migrado automaticamente do plano'
+    FROM lab_workspace.permission_inventory pi
+    WHERE pi.environment = source_env;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Gerar plano de migração de dev para homolog
+SELECT lab_workspace.generate_migration_plan('dev', 'homolog');
+
+-- Gerar plano de migração de homolog para prod
+SELECT lab_workspace.generate_migration_plan('homolog', 'prod');
+```
+
+### 3.2 Revisão e Ajuste do Plano
+
+```SQL
+-- Ajustar plano para remover permissões sensíveis em produção
+UPDATE lab_workspace.migration_plan
+SET migration_status = 'Rejected', 
+    migration_notes = 'Permissão de DELETE não permitida em produção'
+WHERE target_environment = 'prod' 
+AND privilege_type = 'DELETE';
+
+-- Ajustar plano para adicionar permissões específicas
+INSERT INTO lab_workspace.migration_plan (
+    source_environment,
+    target_environment,
+    object_type,
+    object_name,
+    grantee,
+    privilege_type,
+    migration_status,
+    migration_notes
+)
+VALUES 
+('homolog', 'prod', 'TABLE', 'prod.clientes', 'suporte_role', 'SELECT', 'Pending', 'Permissão adicional para suporte'),
+('homolog', 'prod', 'TABLE', 'prod.pedidos', 'suporte_role', 'SELECT', 'Pending', 'Permissão adicional para suporte');
+
+-- Verificar plano final
+SELECT * FROM lab_workspace.migration_plan
+WHERE migration_status = 'Pending'
+ORDER BY target_environment, object_type, object_name;
+```
+
+## Parte 4: Execução da Migração
+
+### 4.1 Geração de Scripts de Migração
+
+```SQL
+-- Função para gerar script SQL de migração
+CREATE OR REPLACE FUNCTION lab_workspace.generate_migration_script(
+    target_env text
+)
+RETURNS TABLE (
+    script_order int,
+    sql_command text
+) AS $$
+BEGIN
+    RETURN QUERY
+    
+    -- Scripts para permissões de schema
+    SELECT 
+        1 AS script_order,
+        'GRANT ' || privilege_type || ' ON SCHEMA ' || 
+        SPLIT_PART(object_name, '.', 1) || ' TO ' || grantee || ';' AS sql_command
+    FROM lab_workspace.migration_plan
+    WHERE target_environment = target_env
+    AND migration_status = 'Pending'
+    AND object_type = 'SCHEMA'
+    
+    UNION ALL
+    
+    -- Scripts para permissões de tabela
+    SELECT 
+        2 AS script_order,
+        'GRANT ' || privilege_type || ' ON TABLE ' || 
+        object_name || ' TO ' || grantee || ';' AS sql_command
+    FROM lab_workspace.migration_plan
+    WHERE target_environment = target_env
+    AND migration_status = 'Pending'
+    AND object_type = 'TABLE'
+    
+    UNION ALL
+    
+    -- Scripts para permissões de coluna
+    SELECT 
+        3 AS script_order,
+        'GRANT ' || privilege_type || ' (' || 
+        SPLIT_PART(object_name, '.', 3) || ') ON TABLE ' || 
+        SPLIT_PART(object_name, '.', 1) || '.' || 
+        SPLIT_PART(object_name, '.', 2) || ' TO ' || grantee || ';' AS sql_command
+    FROM lab_workspace.migration_plan
+    WHERE target_environment = target_env
+    AND migration_status = 'Pending'
+    AND object_type = 'COLUMN'
+    
+    ORDER BY script_order, sql_command;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Gerar script para homologação
+SELECT * FROM lab_workspace.generate_migration_script('homolog');
+
+-- Gerar script para produção
+SELECT * FROM lab_workspace.generate_migration_script('prod');
+```
+
+### 4.2 Execução e Validação
+
+```SQL
+-- Função para executar migração
+CREATE OR REPLACE FUNCTION lab_workspace.execute_migration(
+    target_env text
+)
+RETURNS TABLE (
+    command_id int,
+    sql_command text,
+    execution_status text
+) AS $$
+DECLARE
+    cmd record;
+    cmd_count int := 0;
+    cmd_status text;
+BEGIN
+    -- Atualizar status para "Em Progresso"
+    UPDATE lab_workspace.migration_plan
+    SET migration_status = 'In Progress'
+    WHERE target_environment = target_env
+    AND migration_status = 'Pending';
+    
+    -- Executar cada comando
+    FOR cmd IN SELECT * FROM lab_workspace.generate_migration_script(target_env) LOOP
+        cmd_count := cmd_count + 1;
+        BEGIN
+            EXECUTE cmd.sql_command;
+            cmd_status := 'Success';
+            
+            command_id := cmd_count;
+            sql_command := cmd.sql_command;
+            execution_status := cmd_status;
+            RETURN NEXT;
+        EXCEPTION WHEN OTHERS THEN
+            cmd_status := 'Error: ' || SQLERRM;
+            
+            command_id := cmd_count;
+            sql_command := cmd.sql_command;
+            execution_status := cmd_status;
+            RETURN NEXT;
+        END;
+    END LOOP;
+    
+    -- Atualizar status para "Concluído"
+    UPDATE lab_workspace.migration_plan
+    SET 
+        migration_status = 'Completed',
+        migration_date = CURRENT_TIMESTAMP
+    WHERE target_environment = target_env
+    AND migration_status = 'In Progress';
+    
+    RETURN;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Executar migração para homologação
+SELECT * FROM lab_workspace.execute_migration('homolog');
+
+-- Executar migração para produção
+SELECT * FROM lab_workspace.execute_migration('prod');
+```
+
+## Parte 5: Verificação e Documentação
+
+### 5.1 Verificação de Permissões Migradas
+
+```SQL
+-- Extrair permissões atualizadas
+SELECT lab_workspace.extract_permissions('homolog');
+SELECT lab_workspace.extract_permissions('prod');
+
+-- Comparar permissões planejadas vs. implementadas
+CREATE OR REPLACE VIEW lab_workspace.migration_verification AS
+SELECT 
+    mp.target_environment,
+    mp.object_type,
+    mp.object_name,
+    mp.grantee,
+    mp.privilege_type,
+    mp.migration_status,
+    CASE 
+        WHEN pi.id IS NOT NULL THEN 'Verificado'
+        ELSE 'Não Encontrado'
+    END AS verification_status
+FROM lab_workspace.migration_plan mp
+LEFT JOIN lab_workspace.permission_inventory pi ON
+    mp.target_environment = pi.environment AND
+    mp.object_type = pi.object_type AND
+    mp.object_name = pi.object_name AND
+    mp.grantee = pi.grantee AND
+    mp.privilege_type = pi.privilege_type
+WHERE mp.migration_status = 'Completed';
+
+-- Consultar verificação
+SELECT * FROM lab_workspace.migration_verification
+ORDER BY target_environment, verification_status DESC, object_type, object_name;
+```
+
+### 5.2 Documentação Final
+
+```SQL
+-- Criar relatório final de migração
+CREATE OR REPLACE VIEW lab_workspace.migration_report AS
+SELECT 
+    target_environment,
+    COUNT(*) AS total_permissions,
+    COUNT(*) FILTER (WHERE migration_status = 'Completed') AS migrated_permissions,
+    COUNT(*) FILTER (WHERE migration_status = 'Rejected') AS rejected_permissions,
+    COUNT(*) FILTER (WHERE migration_status = 'Completed' AND verification_status = 'Verificado') AS verified_permissions,
+    COUNT(*) FILTER (WHERE migration_status = 'Completed' AND verification_status = 'Não Encontrado') AS missing_permissions
+FROM lab_workspace.migration_verification
+GROUP BY target_environment;
+
+-- Consultar relatório
+SELECT * FROM lab_workspace.migration_report;
+```
+
+## Verificações e Testes
+
+1. Verificar permissões como diferentes usuários:
+
+```
+psql -U dev_user1 -d lab_dcl
+psql -U homolog_user1 -d lab_dcl
+psql -U prod_user1 -d lab_dcl
+```
+
+2. Testar operações em cada ambiente:
+
+```SQL
+-- Como dev_user1
+INSERT INTO dev.clientes (nome, email) VALUES ('Cliente Dev', 'dev@email.com');
+
+-- Como homolog_user1
+INSERT INTO homolog.clientes (nome, email) VALUES ('Cliente Homolog', 'homolog@email.com');
+
+-- Como prod_user1
+SELECT * FROM prod.clientes;
+INSERT INTO prod.clientes (nome, email) VALUES ('Cliente Prod', 'prod@email.com'); -- Deve falhar
+```
+
+3. Verificar inventário de permissões:
+
+```SQL
+SELECT * FROM lab_workspace.permission_inventory
+WHERE environment = 'prod'
+ORDER BY object_type, object_name;
+```
+
+## Conclusão
+
+Neste laboratório, você implementou:
+
+* Um processo estruturado para migração de permissões entre ambientes
+
+* Ferramentas para extração e documentação de permissões existentes
+
+* Mecanismos para planejamento e revisão de migrações
+
+* Scripts automatizados para execução de migrações
+
+* Métodos para verificação e validação de permissões migradas
+
+Esta abordagem sistemática para migração de permissões oferece vários benefícios:
+
+1. Consistência: Garante que todas as permissões sejam corretamente transferidas entre ambientes
+
+2. Segurança: Mantém os controles de acesso e privilégios definidos
+
+3. Eficiência: Automatiza o processo de migração, reduzindo erros humanos
+
+4. Documentação: Fornece um registro detalhado das permissões em cada ambiente
+
+5. Flexibilidade: Permite ajustes e revisões no plano de migração antes da execução
+
+
+
+# Linguagem de Controle de Transação (TCL)
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║  NEURAL.MATRIX >> TCL.FUNDAMENTOS                           ║
+║  STATUS: ATIVO                                             ║
+║  SEGURANÇA: CRIPTOGRAFADO                                  ║
+║  ACESSO: CONHECIMENTO_PROFUNDO                             ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+## ACID_QUEEN.PERSPECTIVA: Visão Geral
+
+```
+┌────────────────────────────┐
+│ COMANDOS.CORE             │
+├────────────────────────────┤
+│ ► BEGIN                   │
+│ ► COMMIT                  │
+│ ► ROLLBACK                │
+│ ► SAVEPOINT               │
+└────────────────────────────┘
+```
+
+## ARQUITETURA.TCL
+
+```MERMAID
+graph TD
+    A[Transação] --> B[BEGIN]
+    B --> C{Operações}
+    C --> D[COMMIT]
+    C --> E[ROLLBACK]
+    C --> F[SAVEPOINT]
+    F --> G[ROLLBACK TO]
+    D --> H[Fim da Transação]
+    E --> H
+    G --> C
+```
+
+## NOSQL_PUNK.ALERTA: Conceitos Fundamentais
+
+### 1. Transações
+
+* Unidade lógica de trabalho
+
+* Conjunto de operações indivisíveis
+
+* Garantia de consistência
+
+### 2. Propriedades ACID
+
+* Atomicidade: tudo ou nada
+
+* Consistência: integridade preservada
+
+* Isolamento: transações independentes
+
+* Durabilidade: mudanças permanentes
+
+### 3. Estados da Transação
+
+* Ativa: durante a execução
+
+* Parcialmente confirmada: após última operação
+
+* Confirmada: após COMMIT
+
+* Falha: erro durante execução
+
+* Abortada: após ROLLBACK
+
+## SEC_PHANTOM.DIRETRIZES: Boas Práticas
+
+### Transações Eficientes
+
+* Mantenha transações curtas
+
+* Minimize bloqueios
+
+* Evite operações externas dentro de transações
+
+### Tratamento de Erros
+
+* Implemente tratamento de exceções
+
+* Utilize SAVEPOINT para recuperação parcial
+
+* Monitore deadlocks
+
+### Isolamento
+
+* Escolha o nível adequado
+
+* Entenda as anomalias de concorrência
+
+* Considere o impacto no desempenho
+
+## TIME_LORD.CRONOLOGIA: Evolução Histórica
+
+```MERMAID
+timeline
+    title Evolução do Controle Transacional
+    1970 : Primeiros SGBDs comerciais
+         : Conceito básico de transações
+    1980 : Formalização das propriedades ACID
+         : Implementação de níveis de isolamento
+    1990 : Transações distribuídas
+         : Protocolos 2PC e 3PC
+    2000 : Otimizações de concorrência
+         : MVCC (Multi-Version Concurrency Control)
+    2010 : Modelos transacionais NoSQL
+         : Consistência eventual
+    2020 : Transações em sistemas distribuídos modernos
+         : Modelos híbridos de consistência
+```
+
+## BACKUP_PRIESTESS.RITUAL: Comandos Essenciais
+
+### BEGIN
+
+Inicia uma transação:
+
+```SQL
+BEGIN;
+-- ou
+BEGIN TRANSACTION;
+-- ou
+START TRANSACTION;
+```
+
+### COMMIT
+
+Confirma as alterações:
+
+```SQL
+COMMIT;
+-- ou
+COMMIT TRANSACTION;
+```
+
+### ROLLBACK
+
+Desfaz as alterações:
+
+```SQL
+ROLLBACK;
+-- ou
+ROLLBACK TRANSACTION;
+```
+
+### SAVEPOINT
+
+Cria um ponto de salvamento:
+
+```SQL
+SAVEPOINT nome_savepoint;
+```
+
+### ROLLBACK TO SAVEPOINT
+
+Retorna a um ponto de salvamento:
+
+```SQL
+ROLLBACK TO SAVEPOINT nome_savepoint;
+-- ou
+ROLLBACK TO nome_savepoint;
+```
+
+## Navegação do Conteúdo
+
+* [Fundamentos de Transações](transaction-basics.html)
+
+* [Commit e Rollback](commit-rollback.html)
+
+* [Gerenciamento de Savepoints](savepoint-management.html)
+
+## Conclusão
+
+O controle transacional é fundamental para garantir a integridade dos dados em sistemas de banco de dados. Através dos comandos TCL, os desenvolvedores podem gerenciar o comportamento das transações, garantindo que as operações sejam executadas de forma atômica, consistente, isolada e durável.
+
+A compreensão profunda dos mecanismos transacionais permite o desenvolvimento de aplicações robustas que mantêm a integridade dos dados mesmo em cenários de falha ou concorrência.
+
+
+
+# Fundamentos de Transações
+
+## Definição
+
+Uma transação é uma unidade lógica de trabalho que contém uma ou mais operações de banco de dados. Todas as operações em uma transação são tratadas como uma única unidade atômica de trabalho que deve ser completamente executada ou completamente revertida.
+
+```MERMAID
+graph LR
+    A[Início da Transação] --> B[Operações DML]
+    B --> C{Sucesso?}
+    C -->|Sim| D[Commit]
+    C -->|Não| E[Rollback]
+    D --> F[Fim da Transação]
+    E --> F
+```
+
+## Propriedades ACID
+
+As transações são caracterizadas pelas propriedades ACID:
+
+### Atomicidade (Atomicity)
+
+* Garante que todas as operações dentro da transação sejam tratadas como uma única unidade
+
+* Ou todas as operações são executadas com sucesso, ou nenhuma é
+
+* Não existem estados intermediários
+
+```SQL
+BEGIN;
+  UPDATE contas SET saldo = saldo - 1000 WHERE id = 1;
+  UPDATE contas SET saldo = saldo + 1000 WHERE id = 2;
+COMMIT;
+```
+
+Se qualquer uma das operações falhar, nenhuma alteração será aplicada.
+
+### Consistência (Consistency)
+
+* Garante que o banco de dados mude de um estado válido para outro estado válido
+
+* Todas as regras de integridade são respeitadas
+
+* Constraints, triggers e regras de negócio são preservadas
+
+```SQL
+BEGIN;
+  -- Esta operação viola uma constraint de saldo mínimo
+  UPDATE contas SET saldo = -5000 WHERE id = 1;
+COMMIT; -- Falha se houver uma constraint CHECK (saldo >= 0)
+```
+
+### Isolamento (Isolation)
+
+* Garante que as transações sejam isoladas umas das outras
+
+* Uma transação não deve ser afetada por outras transações concorrentes
+
+* Diferentes níveis de isolamento oferecem diferentes garantias
+
+```SQL
+-- Transação 1
+BEGIN;
+  UPDATE produtos SET estoque = estoque - 1 WHERE id = 101;
+  -- Outras operações...
+COMMIT;
+
+-- Transação 2 (concorrente)
+BEGIN;
+  SELECT estoque FROM produtos WHERE id = 101; -- O que será visto depende do nível de isolamento
+COMMIT;
+```
+
+### Durabilidade (Durability)
+
+* Garante que uma vez que uma transação seja confirmada, suas alterações são permanentes
+
+* As alterações persistem mesmo em caso de falha do sistema
+
+* Implementada através de logs de transação e mecanismos de recuperação
+
+## Níveis de Isolamento
+
+Os SGBDs oferecem diferentes níveis de isolamento que equilibram consistência e desempenho:
+
+### Read Uncommitted
+
+* Nível mais baixo de isolamento
+
+* Permite leitura de dados não confirmados (dirty reads)
+
+* Maior desempenho, menor consistência
+
+```SQL
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+BEGIN;
+  -- Pode ler dados não confirmados de outras transações
+  SELECT * FROM pedidos;
+COMMIT;
+```
+
+### Read Committed
+
+* Evita leituras sujas (dirty reads)
+
+* Permite leituras não repetíveis (non-repeatable reads)
+
+* Nível padrão em muitos SGBDs
+
+```SQL
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+BEGIN;
+  -- Só lê dados confirmados, mas pode obter resultados diferentes em leituras repetidas
+  SELECT * FROM pedidos;
+  -- Algum processamento...
+  SELECT * FROM pedidos; -- Pode retornar resultados diferentes
+COMMIT;
+```
+
+### Repeatable Read
+
+* Evita leituras sujas e não repetíveis
+
+* Permite leituras fantasmas (phantom reads)
+
+* Maior consistência, menor desempenho
+
+```SQL
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+BEGIN;
+  -- Mesmos dados serão lidos em consultas repetidas
+  SELECT * FROM clientes WHERE saldo > 1000;
+  -- Algum processamento...
+  SELECT * FROM clientes WHERE saldo > 1000; -- Mesmos resultados que a primeira consulta
+COMMIT;
+```
+
+### Serializable
+
+* Nível mais alto de isolamento
+
+* Evita todos os problemas de concorrência
+
+* Menor desempenho, maior consistência
+
+```SQL
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+BEGIN;
+  -- Transações são completamente isoladas
+  SELECT * FROM estoque WHERE produto_id = 101;
+  -- Nenhuma outra transação pode modificar estes dados até o COMMIT
+COMMIT;
+```
+
+## Anomalias de Concorrência
+
+### Dirty Read (Leitura Suja)
+
+Ocorre quando uma transação lê dados que foram modificados por outra transação não confirmada.
+
+```MERMAID
+sequenceDiagram
+    participant T1 as Transação 1
+    participant DB as Banco de Dados
+    participant T2 as Transação 2
+    
+    T1->>DB: BEGIN
+    T1->>DB: UPDATE saldo = 1000 WHERE id = 1
+    T2->>DB: BEGIN
+    T2->>DB: SELECT saldo WHERE id = 1 (retorna 1000)
+    T1->>DB: ROLLBACK
+    T2->>DB: Usa valor 1000 (que nunca foi confirmado)
+    T2->>DB: COMMIT
+```
+
+### Non-repeatable Read (Leitura Não Repetível)
+
+Ocorre quando uma transação relê dados e encontra que foram modificados por outra transação confirmada.
+
+```MERMAID
+sequenceDiagram
+    participant T1 as Transação 1
+    participant DB as Banco de Dados
+    participant T2 as Transação 2
+    
+    T1->>DB: BEGIN
+    T1->>DB: SELECT saldo WHERE id = 1 (retorna 500)
+    T2->>DB: BEGIN
+    T2->>DB: UPDATE saldo = 700 WHERE id = 1
+    T2->>DB: COMMIT
+    T1->>DB: SELECT saldo WHERE id = 1 (retorna 700)
+    T1->>DB: COMMIT
+```
+
+### Phantom Read (Leitura Fantasma)
+
+Ocorre quando uma transação relê um conjunto de linhas que satisfazem uma condição e encontra que o conjunto mudou devido a outra transação.
+
+```MERMAID
+sequenceDiagram
+    participant T1 as Transação 1
+    participant DB as Banco de Dados
+    participant T2 as Transação 2
+    
+    T1->>DB: BEGIN
+    T1->>DB: SELECT * FROM produtos WHERE preco > 100 (retorna 5 linhas)
+    T2->>DB: BEGIN
+    T2->>DB: INSERT INTO produtos VALUES (novo produto com preco = 150)
+    T2->>DB: COMMIT
+    T1->>DB: SELECT * FROM produtos WHERE preco > 100 (retorna 6 linhas)
+    T1->>DB: COMMIT
+```
+
+## Bloqueios (Locks)
+
+Os SGBDs utilizam bloqueios para implementar o isolamento:
+
+### Tipos de Bloqueios
+
+* Compartilhado (Shared): Permite leitura, mas não escrita
+
+* Exclusivo (Exclusive): Permite leitura e escrita, bloqueia outros acessos
+
+* Atualização (Update): Inicialmente compartilhado, pode ser promovido para exclusivo
+
+* Intenção (Intent): Indica intenção de adquirir bloqueios em níveis inferiores
+
+### Granularidade de Bloqueios
+
+* Banco de dados: Bloqueia todo o banco
+
+* Tabela: Bloqueia uma tabela inteira
+
+* Página: Bloqueia uma página de dados
+
+* Linha: Bloqueia apenas uma linha
+
+* Coluna: Bloqueia apenas uma coluna
+
+### Deadlocks
+
+Situação onde duas ou mais transações estão esperando uma pela outra para liberar recursos.
+
+```MERMAID
+graph LR
+    A[Transação 1] -->|Bloqueia| B[Recurso A]
+    C[Transação 2] -->|Bloqueia| D[Recurso B]
+    A -->|Espera por| D
+    C -->|Espera por| B
+```
+
+## Controle de Concorrência Multiversão (MVCC)
+
+Muitos SGBDs modernos utilizam MVCC (Multi-Version Concurrency Control):
+
+* Mantém múltiplas versões dos dados
+
+* Leitores não bloqueiam escritores
+
+* Escritores não bloqueiam leitores
+
+* Cada transação vê um snapshot consistente do banco de dados
+
+* Implementado em PostgreSQL, Oracle, MySQL InnoDB, etc.
+
+```
+Linha 1, versão 1 (txid 100): {id: 1, nome: "João", saldo: 500}
+Linha 1, versão 2 (txid 105): {id: 1, nome: "João", saldo: 700}
+```
+
+## Exemplos Práticos
+
+### Transferência Bancária
+
+```SQL
+BEGIN;
+  -- Verificar saldo
+  SELECT saldo FROM contas WHERE id = 101;
+  
+  -- Debitar da conta origem
+  UPDATE contas SET saldo = saldo - 1000 WHERE id = 101;
+  
+  -- Creditar na conta destino
+  UPDATE contas SET saldo = saldo + 1000 WHERE id = 102;
+  
+  -- Registrar a transferência
+  INSERT INTO transferencias (origem, destino, valor, data)
+  VALUES (101, 102, 1000, CURRENT_TIMESTAMP);
+  
+  -- Confirmar todas as operações
+  COMMIT;
+```
+
+### Processamento de Pedido
+
+```SQL
+BEGIN;
+  -- Inserir pedido
+  INSERT INTO pedidos (cliente_id, data, valor_total)
+  VALUES (201, CURRENT_DATE, 0)
+  RETURNING id INTO v_pedido_id;
+  
+  -- Inserir itens do pedido
+  INSERT INTO itens_pedido (pedido_id, produto_id, quantidade, preco_unitario)
+  VALUES 
+    (v_pedido_id, 301, 2, 29.90),
+    (v_pedido_id, 302, 1, 49.90);
+  
+  -- Atualizar estoque
+  UPDATE produtos SET estoque = estoque - 2 WHERE id = 301;
+  UPDATE produtos SET estoque = estoque - 1 WHERE id = 302;
+  
+  -- Calcular valor total
+  UPDATE pedidos 
+  SET valor_total = (
+    SELECT SUM(quantidade * preco_unitario) 
+    FROM itens_pedido 
+    WHERE pedido_id = v_pedido_id
+  )
+  WHERE id = v_pedido_id;
+  
+  -- Confirmar todas as operações
+  COMMIT;
+```
+
+## Conclusão
+
+As transações são fundamentais para garantir a integridade dos dados em sistemas de banco de dados. Compreender seus princípios e mecanismos é essencial para desenvolver aplicações robustas e confiáveis.
+
+Os conceitos ACID, níveis de isolamento e controle de concorrência são pilares do processamento transacional que permitem que múltiplos usuários trabalhem simultaneamente com os dados, mantendo a consistência e a integridade do banco de dados.
+
+
+
+# Commit e Rollback
+
+## Visão Geral
+
+Os comandos `COMMIT` e `ROLLBACK` são fundamentais para o controle transacional em bancos de dados. Eles determinam o destino final das operações realizadas dentro de uma transação.
+
+```MERMAID
+graph TD
+    A[BEGIN TRANSACTION] --> B[Operações DML]
+    B --> C{Decisão}
+    C -->|Sucesso| D[COMMIT]
+    C -->|Falha| E[ROLLBACK]
+    D --> F[Alterações Permanentes]
+    E --> G[Alterações Descartadas]
+```
+
+## Comando COMMIT
+
+O comando `COMMIT` finaliza a transação atual e torna permanentes todas as alterações realizadas desde o início da transação.
+
+### Sintaxe
+
+```SQL
+COMMIT [TRANSACTION];
+-- ou simplesmente
+COMMIT;
+```
+
+### Efeitos do COMMIT
+
+1. Persistência: Todas as alterações se tornam permanentes no banco de dados
+
+2. Visibilidade: As alterações se tornam visíveis para outras transações
+
+3. Liberação de Bloqueios: Todos os bloqueios adquiridos pela transação são liberados
+
+4. Pontos de Salvamento: Todos os savepoints criados na transação são descartados
+
+5. Finalização: A transação é encerrada e uma nova transação é iniciada automaticamente em alguns SGBDs
+
+### Exemplos de COMMIT
+
+#### Exemplo Básico
+
+```SQL
+BEGIN;
+    INSERT INTO clientes (nome, email) 
+    VALUES ('Maria Silva', 'maria@email.com');
+    
+    UPDATE produtos 
+    SET estoque = estoque - 1 
+    WHERE id = 101;
+COMMIT;
+```
+
+#### Commit Condicional
+
+```SQL
+BEGIN;
+    UPDATE contas 
+    SET saldo = saldo - 1000 
+    WHERE id = 1;
+    
+    UPDATE contas 
+    SET saldo = saldo + 1000 
+    WHERE id = 2;
+    
+    -- Verificar se ambas as contas existem
+    IF (SELECT COUNT(*) FROM contas WHERE id IN (1, 2)) = 2 THEN
+        COMMIT;
+    ELSE
+        ROLLBACK;
+    END IF;
+```
+
+## Comando ROLLBACK
+
+O comando `ROLLBACK` desfaz todas as alterações realizadas desde o início da transação ou desde um ponto de salvamento específico.
+
+### Sintaxe
+
+```SQL
+ROLLBACK [TRANSACTION];
+-- ou simplesmente
+ROLLBACK;
+
+-- Para rollback parcial até um savepoint
+ROLLBACK [TRANSACTION] TO [SAVEPOINT] savepoint_name;
+```
+
+### Efeitos do ROLLBACK
+
+1. Reversão: Todas as alterações são desfeitas
+
+2. Liberação de Bloqueios: Todos os bloqueios adquiridos pela transação são liberados
+
+3. Pontos de Salvamento: Todos os savepoints são descartados (exceto em rollback parcial)
+
+4. Finalização: A transação é encerrada e uma nova transação é iniciada automaticamente em alguns SGBDs
+
+### Exemplos de ROLLBACK
+
+#### Rollback Completo
+
+```SQL
+BEGIN;
+    DELETE FROM pedidos WHERE cliente_id = 101;
+    
+    -- Ops, não era para excluir todos os pedidos!
+    ROLLBACK;
+```
+
+#### Rollback com Tratamento de Erros
+
+```SQL
+BEGIN;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SELECT 'Transação abortada devido a erro' AS mensagem;
+    END;
+    
+    UPDATE produtos SET preco = preco * 1.1;
+    INSERT INTO log_alteracoes (tabela, descricao) 
+    VALUES ('produtos', 'Aumento de 10% nos preços');
+    
+    COMMIT;
+END;
+```
+
+## Commit vs. Rollback: Quando Usar
+
+### Use COMMIT quando:
+
+1. Operações Bem-Sucedidas: Todas as operações foram concluídas com sucesso
+
+2. Dados Válidos: Os dados estão em um estado consistente
+
+3. Ponto de Finalização: Você atingiu um ponto lógico de conclusão no processamento
+
+### Use ROLLBACK quando:
+
+1. Erros Detectados: Ocorreram erros durante o processamento
+
+2. Dados Inválidos: Os dados não atendem às regras de negócio ou restrições
+
+3. Operação Cancelada: O usuário ou o sistema decidiu cancelar a operação
+
+4. Teste ou Simulação: Você está apenas testando ou simulando operações
+
+## Auto-Commit
+
+Muitos SGBDs e ferramentas de cliente possuem um modo "auto-commit" que automaticamente confirma cada instrução SQL individual como uma transação separada.
+
+### Habilitando/Desabilitando Auto-Commit
+
+```SQL
+-- PostgreSQL
+SET autocommit = ON; -- ou OFF
+
+-- MySQL
+SET autocommit = 1; -- ou 0
+
+-- SQL Server
+SET IMPLICIT_TRANSACTIONS OFF; -- auto-commit ON
+SET IMPLICIT_TRANSACTIONS ON;  -- auto-commit OFF
+
+-- Oracle
+-- Sempre requer COMMIT explícito, exceto para DDL
+```
+
+### Implicações do Auto-Commit
+
+* Vantagens: Simplicidade, menor risco de deixar transações abertas
+
+* Desvantagens: Perda de atomicidade para operações múltiplas, potencial redução de desempenho
+
+## Commit Implícito
+
+Algumas operações podem causar um commit implícito, mesmo dentro de uma transação explícita:
+
+1. Comandos DDL: CREATE, ALTER, DROP, etc.
+
+2. Comandos DCL: GRANT, REVOKE, etc.
+
+3. Comandos de Administração: ANALYZE, VACUUM, etc.
+
+4. Conexão/Desconexão: Dependendo do SGBD e configuração
+
+```SQL
+BEGIN;
+    INSERT INTO tabela1 VALUES (1, 'teste');
+    
+    -- Em muitos SGBDs, isto causa um commit implícito
+    CREATE INDEX idx_tabela1 ON tabela1(coluna1);
+    
+    -- Esta operação já estará em uma nova transação
+    UPDATE tabela2 SET coluna1 = 'valor';
+COMMIT;
+```
+
+## Práticas Recomendadas
+
+### 1. Transações Curtas e Focadas
+
+```SQL
+-- Preferível: Transações pequenas e focadas
+BEGIN;
+    UPDATE estoque SET quantidade = quantidade - 10 WHERE produto_id = 101;
+    INSERT INTO movimentos (produto_id, quantidade, tipo) VALUES (101, 10, 'SAÍDA');
+COMMIT;
+
+BEGIN;
+    -- Outra operação lógica separada
+    UPDATE faturamento SET total = total + 1000 WHERE mes = CURRENT_MONTH;
+COMMIT;
+```
+
+### 2. Tratamento Adequado de Erros
+
+```SQL
+BEGIN;
+    SAVEPOINT antes_operacoes_criticas;
+    
+    -- Tente executar operações críticas
+    UPDATE contas SET saldo = saldo - 5000 WHERE id = 101;
+    
+    -- Verifique se a conta tem saldo suficiente
+    IF (SELECT saldo FROM contas WHERE id = 101) < 0 THEN
+        -- Desfaça apenas as operações críticas
+        ROLLBACK TO antes_operacoes_criticas;
+        -- Continue com outras operações
+    ELSE
+        -- Prossiga com o restante da transação
+    END IF;
+    
+    -- Operações não críticas
+    INSERT INTO log_atividades (descricao) VALUES ('Tentativa de saque');
+    
+COMMIT;
+```
+
+### 3. Evite Transações de Longa Duração
+
+```SQL
+-- Evite:
+BEGIN;
+    -- Processamento em lote de milhões de registros
+    UPDATE grande_tabela SET status = 'PROCESSADO' WHERE status = 'PENDENTE';
+    -- Pode levar muito tempo e bloquear outros processos
+COMMIT;
+
+-- Prefira:
+DO $$
+DECLARE
+    batch_size INT := 1000;
+    total_updated INT := 0;
+BEGIN
+    LOOP
+        BEGIN
+            UPDATE grande_tabela 
+            SET status = 'PROCESSADO' 
+            WHERE id IN (
+                SELECT id 
+                FROM grande_tabela 
+                WHERE status = 'PENDENTE' 
+                LIMIT batch_size
+            );
+            
+            GET DIAGNOSTICS total_updated = ROW_COUNT;
+            
+            EXIT WHEN total_updated = 0;
+            
+            COMMIT;
+        END;
+    END LOOP;
+END $$;
+```
+
+## Conclusão
+
+Os comandos `COMMIT` e `ROLLBACK` são ferramentas essenciais para garantir a integridade dos dados em sistemas de banco de dados. Eles permitem que os desenvolvedores controlem precisamente quando as alterações devem ser aplicadas permanentemente ou descartadas.
+
+O uso adequado desses comandos, combinado com uma estratégia bem planejada de transações, é fundamental para desenvolver aplicações robustas que mantenham a consistência dos dados mesmo em cenários de falha ou concorrência.
+
+
+
+# Gerenciamento de Savepoints
+
+## Introdução aos Savepoints
+
+Savepoints são marcadores dentro de uma transação que permitem o rollback parcial, desfazendo apenas parte das operações realizadas, sem precisar abortar toda a transação.
+
+```MERMAID
+graph TD
+    A[BEGIN TRANSACTION] --> B[Operações 1]
+    B --> C[SAVEPOINT sp1]
+    C --> D[Operações 2]
+    D --> E[SAVEPOINT sp2]
+    E --> F[Operações 3]
+    F --> G{Decisão}
+    G -->|Tudo OK| H[COMMIT]
+    G -->|Problema nas Operações 3| I[ROLLBACK TO sp2]
+    G -->|Problema nas Operações 2 e 3| J[ROLLBACK TO sp1]
+    G -->|Problema em tudo| K[ROLLBACK]
+    I --> L[Novas Operações]
+    J --> M[Novas Operações]
+    L --> H
+    M --> H
+```
+
+## Comandos Básicos
+
+### Criação de Savepoint
+
+```SQL
+SAVEPOINT nome_do_savepoint;
+```
+
+### Rollback para um Savepoint
+
+```SQL
+ROLLBACK TO [SAVEPOINT] nome_do_savepoint;
+-- ou em alguns SGBDs
+ROLLBACK TRANSACTION TO [SAVEPOINT] nome_do_savepoint;
+```
+
+### Liberação de Savepoint
+
+Em alguns SGBDs, é possível liberar um savepoint que não é mais necessário:
+
+```SQL
+RELEASE SAVEPOINT nome_do_savepoint;
+```
+
+## Comportamento dos Savepoints
+
+### Ciclo de Vida
+
+* Criação: Um savepoint é criado com o comando `SAVEPOINT`
+
+* Uso: Um savepoint pode ser usado como destino de um `ROLLBACK TO`
+
+* Liberação: Um savepoint pode ser liberado explicitamente com `RELEASE SAVEPOINT`
+
+* Descarte: Todos os savepoints são descartados quando a transação é finalizada com `COMMIT` ou `ROLLBACK`
+
+### Aninhamento
+
+Savepoints podem ser aninhados, permitindo níveis de granularidade no controle de transações:
+
+```SQL
+BEGIN;
+    INSERT INTO tabela1 VALUES (1);
+    
+    SAVEPOINT sp1;
+    UPDATE tabela2 SET coluna1 = 'valor1';
+    
+    SAVEPOINT sp2;
+    DELETE FROM tabela3 WHERE id = 5;
+    
+    -- Desfaz apenas o DELETE
+    ROLLBACK TO sp2;
+    
+    -- Continua a transação
+    INSERT INTO tabela4 VALUES (2);
+    
+    -- Desfaz o UPDATE e o INSERT em tabela4
+    ROLLBACK TO sp1;
+    
+    -- Continua a transação
+    UPDATE tabela5 SET coluna1 = 'valor2';
+COMMIT;
+```
+
+### Comportamento em Diferentes SGBDs
+
+#### PostgreSQL
+
+* Suporta savepoints aninhados
+
+* Permite `RELEASE SAVEPOINT`
+
+* Savepoints persistem após `ROLLBACK TO`
+
+```SQL
+BEGIN;
+    INSERT INTO tabela VALUES (1);
+    SAVEPOINT sp1;
+    INSERT INTO tabela VALUES (2);
+    SAVEPOINT sp2;
+    INSERT INTO tabela VALUES (3);
+    ROLLBACK TO sp1;
+    -- Neste ponto, sp2 ainda existe, mas é inútil
+    INSERT INTO tabela VALUES (4);
+COMMIT;
+-- Resultado: tabela contém valores 1 e 4
+```
+
+#### MySQL
+
+* Suporta savepoints aninhados
+
+* Permite `RELEASE SAVEPOINT`
+
+* Comportamento similar ao PostgreSQL
+
+#### Oracle
+
+* Suporta savepoints aninhados
+
+* Permite `ROLLBACK TO` sem a palavra `SAVEPOINT`
+
+* Não mantém savepoints após um rollback para um savepoint anterior
+
+```SQL
+BEGIN;
+    INSERT INTO tabela VALUES (1);
+    SAVEPOINT sp1;
+    INSERT INTO tabela VALUES (2);
+    SAVEPOINT sp2;
+    INSERT INTO tabela VALUES (3);
+    ROLLBACK TO sp1;
+    -- Em Oracle, sp2 não existe mais neste ponto
+COMMIT;
+```
+
+#### SQL Server
+
+* Suporta savepoints
+
+* Usa `SAVE TRANSACTION` em vez de `SAVEPOINT`
+
+* Não suporta `RELEASE SAVEPOINT`
+
+```SQL
+BEGIN TRANSACTION;
+    INSERT INTO tabela VALUES (1);
+    SAVE TRANSACTION sp1;
+    INSERT INTO tabela VALUES (2);
+    ROLLBACK TRANSACTION sp1;
+    INSERT INTO tabela VALUES (3);
+COMMIT;
+-- Resultado: tabela contém valores 1 e 3
+```
+
+## Casos de Uso
+
+### 1. Processamento em Etapas
+
+Útil quando uma transação tem várias etapas lógicas e você deseja poder reverter para o início de qualquer etapa.
+
+```SQL
+BEGIN;
+    -- Etapa 1: Criar pedido
+    INSERT INTO pedidos (cliente_id, data) 
+    VALUES (101, CURRENT_DATE)
+    RETURNING id INTO v_pedido_id;
+    
+    SAVEPOINT apos_criar_pedido;
+    
+    -- Etapa 2: Adicionar itens
+    INSERT INTO itens_pedido (pedido_id, produto_id, quantidade, preco)
+    VALUES 
+        (v_pedido_id, 201, 2, 29.90),
+        (v_pedido_id, 202, 1, 49.90);
+    
+    SAVEPOINT apos_adicionar_itens;
+    
+    -- Etapa 3: Atualizar estoque
+    UPDATE produtos SET estoque = estoque - 2 WHERE id = 201;
+    UPDATE produtos SET estoque = estoque - 1 WHERE id = 202;
+    
+    -- Verificar se há estoque suficiente
+    IF EXISTS (SELECT 1 FROM produtos WHERE id IN (201, 202) AND estoque < 0) THEN
+        -- Desfazer apenas a atualização de estoque
+        ROLLBACK TO apos_adicionar_itens;
+        -- Marcar pedido como "aguardando estoque"
+        UPDATE pedidos SET status = 'AGUARDANDO_ESTOQUE' WHERE id = v_pedido_id;
+    END IF;
+    
+    -- Finalizar transação
+    COMMIT;
+```
+
+### 2. Tratamento de Erros
+
+Permite implementar lógica de recuperação de erros sem abortar toda a transação.
+
+```SQL
+BEGIN;
+    -- Operações principais
+    INSERT INTO clientes (nome, email) VALUES ('João Silva', 'joao@email.com');
+    
+    SAVEPOINT apos_cliente;
+    
+    -- Operações que podem falhar
+    BEGIN
+        -- Tenta inserir endereço
+        INSERT INTO enderecos (cliente_id, cep, logradouro) 
+        VALUES (LASTVAL(), '12345-678', 'Rua das Flores, 123');
+    EXCEPTION WHEN OTHERS THEN
+        -- Se falhar, volta para depois de inserir o cliente
+        ROLLBACK TO apos_cliente;
+        -- Registra o problema
+        INSERT INTO log_erros (operacao, mensagem) 
+        VALUES ('inserir_endereco', SQLERRM);
+    END;
+    
+    -- Continua com outras operações
+    INSERT INTO contatos (cliente_id, telefone) 
+    VALUES (LASTVAL(), '(11) 98765-4321');
+    
+    COMMIT;
+```
+
+### 3. Validação de Dados em Etapas
+
+Permite validar dados em etapas, revertendo apenas as etapas com problemas.
+
+```SQL
+BEGIN;
+    -- Etapa 1: Importar dados de clientes
+    INSERT INTO clientes_temp
+    SELECT * FROM arquivo_importacao_clientes;
+    
+    SAVEPOINT apos_importar_clientes;
+    
+    -- Etapa 2: Validar dados de clientes
+    DELETE FROM clientes_temp 
+    WHERE email IS NULL OR email NOT LIKE '%@%.%';
+    
+    -- Verificar se muitos registros foram removidos
+    IF (SELECT COUNT(*) FROM clientes_temp) < 
+       (SELECT COUNT(*) * 0.9 FROM arquivo_importacao_clientes) THEN
+        -- Muitos registros inválidos, voltar e tentar corrigir
+        ROLLBACK TO apos_importar_clientes;
+        
+        -- Tentar corrigir emails
+        UPDATE clientes_temp
+        SET email = nome || '@dominio.com'
+        WHERE email IS NULL OR email NOT LIKE '%@%.%';
+    END IF;
+    
+    SAVEPOINT apos_validar_clientes;
+    
+    -- Etapa 3: Mover para tabela definitiva
+    INSERT INTO clientes
+    SELECT * FROM clientes_temp;
+    
+    COMMIT;
+```
+
+## Práticas Recomendadas
+
+### 1. Nomeação Clara e Consistente
+
+Use nomes descritivos que indiquem o estado da transação após cada savepoint:
+
+```SQL
+-- Bom: nomes descritivos
+SAVEPOINT apos_criar_cliente;
+SAVEPOINT apos_processar_pagamento;
+SAVEPOINT apos_atualizar_estoque;
+
+-- Evite: nomes genéricos ou numéricos
+SAVEPOINT sp1;
+SAVEPOINT ponto2;
+SAVEPOINT x123;
+```
+
+
+

@@ -1,0 +1,427 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en-US" data-preset="contrast" data-primary-color="#E8488B"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="built-on" content="2025-05-09T19:38:37.782142495"><title>Laborat&oacute;rio: Auditoria de Seguran&ccedil;a | Database Management Systems: A Complete Guide</title><script type="application/json" id="virtual-toc-data">[{"id":"objetivo","level":0,"title":"Objetivo","anchor":"#objetivo"},{"id":"cen-rio","level":0,"title":"Cenário","anchor":"#cen-rio"},{"id":"setup-inicial","level":0,"title":"Setup Inicial","anchor":"#setup-inicial"},{"id":"parte-1-configura-o-de-logs-b-sicos","level":0,"title":"Parte 1: Configuração de Logs Básicos","anchor":"#parte-1-configura-o-de-logs-b-sicos"},{"id":"parte-2-implementa-o-de-triggers-de-auditoria","level":0,"title":"Parte 2: Implementação de Triggers de Auditoria","anchor":"#parte-2-implementa-o-de-triggers-de-auditoria"},{"id":"parte-3-monitoramento-de-atividades-sens-veis","level":0,"title":"Parte 3: Monitoramento de Atividades Sensíveis","anchor":"#parte-3-monitoramento-de-atividades-sens-veis"},{"id":"parte-4-an-lise-e-relat-rios-de-auditoria","level":0,"title":"Parte 4: Análise e Relatórios de Auditoria","anchor":"#parte-4-an-lise-e-relat-rios-de-auditoria"},{"id":"verifica-es-e-testes","level":0,"title":"Verificações e Testes","anchor":"#verifica-es-e-testes"},{"id":"conclus-o","level":0,"title":"Conclusão","anchor":"#conclus-o"},{"id":"pr-ximos-passos","level":0,"title":"Próximos Passos","anchor":"#pr-ximos-passos"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.css" rel="stylesheet"><link href="static/custom.css" rel="stylesheet"><link rel="icon" type="image/svg" sizes="16x16" href="images/logo-primary.svg"><meta name="image" content=""><!-- Open Graph --><meta property="og:title" content="Laborat&oacute;rio: Auditoria de Seguran&ccedil;a | Database Management Systems: A Complete Guide"><meta property="og:description" content=""><meta property="og:image" content=""><meta property="og:site_name" content="Database Management Systems: A Complete Guide Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="writerside-documentation/lab-security-audit.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content=""><meta name="twitter:title" content="Laborat&oacute;rio: Auditoria de Seguran&ccedil;a | Database Management Systems: A Complete Guide"><meta name="twitter:description" content=""><meta name="twitter:creator" content=""><meta name="twitter:image:src" content=""><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    "@id": "writerside-documentation/lab-security-audit.html#webpage",
+    "url": "writerside-documentation/lab-security-audit.html",
+    "name": "Laborat&oacute;rio: Auditoria de Seguran&ccedil;a | Database Management Systems: A Complete Guide",
+    "description": "",
+    "image": "",
+    "inLanguage":"en-US"
+}</script><!-- End Schema.org --><!-- Schema.org WebSite --><script type="application/ld+json">{
+    "@type": "WebSite",
+    "@id": "writerside-documentation/#website",
+    "url": "writerside-documentation/",
+    "name": "Database Management Systems: A Complete Guide Help"
+}</script><!-- End Schema.org --></head><body data-id="lab-security-audit" data-main-title="Laboratório: Auditoria de Segurança" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs="sql-fundamentals.md|Fundamentos SQL///sql-dcl.md|DCL - Linguagem de Controle de Dados///dcl-labs.md|Laboratórios de DCL"><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>Database Management Systems: A Complete Guide  Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="lab-security-audit" id="lab-security-audit.md">Laboratório: Auditoria de Segurança</h1><section class="chapter"><h2 id="objetivo" data-toc="objetivo">Objetivo</h2><p id="z8uf9p2_13">Implementar e configurar um sistema abrangente de auditoria de seguran&ccedil;a em um banco de dados PostgreSQL, identificando atividades suspeitas e garantindo conformidade com pol&iacute;ticas de seguran&ccedil;a.</p></section><section class="chapter"><h2 id="cen-rio" data-toc="cen-rio">Cen&aacute;rio</h2><p id="z8uf9p2_14">Voc&ecirc; &eacute; um especialista em seguran&ccedil;a de dados em uma institui&ccedil;&atilde;o financeira que precisa implementar controles de auditoria rigorosos para atender a requisitos regulat&oacute;rios e de compliance. Sua tarefa &eacute; configurar um sistema de auditoria que capture todas as atividades relevantes no banco de dados.</p></section><section class="chapter"><h2 id="setup-inicial" data-toc="setup-inicial">Setup Inicial</h2><div class="code-block" data-lang="sql">
+-- Conectar ao banco de dados como superusuário
+-- psql -U postgres -d lab_dcl
+
+-- Verificar extensões disponíveis
+SELECT name, default_version, installed_version
+FROM pg_available_extensions
+WHERE name IN ('pgaudit', 'pg_stat_statements');
+
+-- Registrar início do laboratório
+INSERT INTO lab_workspace.lab_progress (lab_name)
+VALUES ('Auditoria de Segurança');
+</div></section><section class="chapter"><h2 id="parte-1-configura-o-de-logs-b-sicos" data-toc="parte-1-configura-o-de-logs-b-sicos">Parte 1: Configura&ccedil;&atilde;o de Logs B&aacute;sicos</h2><section class="chapter"><h3 id="1-1-configura-o-de-par-metros-de-log" data-toc="1-1-configura-o-de-par-metros-de-log">1.1 Configura&ccedil;&atilde;o de Par&acirc;metros de Log</h3><div class="code-block" data-lang="sql">
+-- Verificar configurações atuais
+SHOW log_destination;
+SHOW logging_collector;
+SHOW log_directory;
+SHOW log_filename;
+SHOW log_statement;
+
+-- Configurar parâmetros (em postgresql.conf ou via ALTER SYSTEM)
+-- Nota: Em um ambiente real, você alteraria o postgresql.conf
+-- Aqui usamos ALTER SYSTEM para demonstração
+
+ALTER SYSTEM SET log_destination = 'csvlog';
+ALTER SYSTEM SET logging_collector = 'on';
+ALTER SYSTEM SET log_directory = 'pg_log';
+ALTER SYSTEM SET log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log';
+ALTER SYSTEM SET log_rotation_age = '1d';
+ALTER SYSTEM SET log_rotation_size = '10MB';
+
+-- Configurar o que será logado
+ALTER SYSTEM SET log_statement = 'mod';  -- Loga todas as modificações (INSERT, UPDATE, DELETE, etc.)
+ALTER SYSTEM SET log_min_duration_statement = '1000';  -- Loga queries que demoram mais de 1 segundo
+ALTER SYSTEM SET log_connections = 'on';
+ALTER SYSTEM SET log_disconnections = 'on';
+ALTER SYSTEM SET log_duration = 'on';
+
+-- Aplicar alterações (requer reinicialização do servidor)
+-- SELECT pg_reload_conf();
+</div></section><section class="chapter"><h3 id="1-2-cria-o-de-tabelas-de-auditoria" data-toc="1-2-cria-o-de-tabelas-de-auditoria">1.2 Cria&ccedil;&atilde;o de Tabelas de Auditoria</h3><div class="code-block" data-lang="sql">
+-- Criar schema dedicado para auditoria
+CREATE SCHEMA IF NOT EXISTS audit;
+
+-- Tabela para registro de atividades
+CREATE TABLE audit.activity_log (
+    id SERIAL PRIMARY KEY,
+    event_time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    username TEXT NOT NULL,
+    database_name TEXT NOT NULL,
+    schema_name TEXT NOT NULL,
+    table_name TEXT,
+    action_type TEXT NOT NULL,
+    query TEXT,
+    old_data JSONB,
+    new_data JSONB,
+    client_ip TEXT,
+    application_name TEXT
+);
+
+-- Tabela para registro de logins
+CREATE TABLE audit.login_attempts (
+    id SERIAL PRIMARY KEY,
+    event_time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    username TEXT NOT NULL,
+    success BOOLEAN NOT NULL,
+    client_ip TEXT,
+    connection_type TEXT,
+    application_name TEXT,
+    details TEXT
+);
+
+-- Tabela para registro de alterações de permissões
+CREATE TABLE audit.permission_changes (
+    id SERIAL PRIMARY KEY,
+    event_time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    username TEXT NOT NULL,
+    action_type TEXT NOT NULL,
+    object_type TEXT NOT NULL,
+    object_name TEXT NOT NULL,
+    grantee TEXT,
+    permission TEXT,
+    query TEXT
+);
+</div></section></section><section class="chapter"><h2 id="parte-2-implementa-o-de-triggers-de-auditoria" data-toc="parte-2-implementa-o-de-triggers-de-auditoria">Parte 2: Implementa&ccedil;&atilde;o de Triggers de Auditoria</h2><section class="chapter"><h3 id="2-1-fun-o-gen-rica-de-auditoria" data-toc="2-1-fun-o-gen-rica-de-auditoria">2.1 Fun&ccedil;&atilde;o Gen&eacute;rica de Auditoria</h3><div class="code-block" data-lang="sql">
+-- Criar função para auditoria de alterações em tabelas
+CREATE OR REPLACE FUNCTION audit.log_table_changes()
+RETURNS TRIGGER AS $$
+DECLARE
+    old_data JSONB := NULL;
+    new_data JSONB := NULL;
+BEGIN
+    IF TG_OP = 'DELETE' THEN
+        old_data := row_to_json(OLD)::JSONB;
+    ELSIF TG_OP = 'UPDATE' THEN
+        old_data := row_to_json(OLD)::JSONB;
+        new_data := row_to_json(NEW)::JSONB;
+    ELSIF TG_OP = 'INSERT' THEN
+        new_data := row_to_json(NEW)::JSONB;
+    END IF;
+
+    INSERT INTO audit.activity_log (
+        username,
+        database_name,
+        schema_name,
+        table_name,
+        action_type,
+        query,
+        old_data,
+        new_data,
+        client_ip,
+        application_name
+    ) VALUES (
+        current_user,
+        current_database(),
+        TG_TABLE_SCHEMA,
+        TG_TABLE_NAME,
+        TG_OP,
+        current_query(),
+        old_data,
+        new_data,
+        inet_client_addr(),
+        current_setting('application_name')
+    );
+
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+</div></section><section class="chapter"><h3 id="2-2-aplica-o-de-triggers-nas-tabelas" data-toc="2-2-aplica-o-de-triggers-nas-tabelas">2.2 Aplica&ccedil;&atilde;o de Triggers nas Tabelas</h3><div class="code-block" data-lang="sql">
+-- Aplicar triggers nas tabelas principais
+CREATE TRIGGER audit_clientes
+AFTER INSERT OR UPDATE OR DELETE ON lab_workspace.clientes
+FOR EACH ROW EXECUTE FUNCTION audit.log_table_changes();
+
+CREATE TRIGGER audit_produtos
+AFTER INSERT OR UPDATE OR DELETE ON lab_workspace.produtos
+FOR EACH ROW EXECUTE FUNCTION audit.log_table_changes();
+
+CREATE TRIGGER audit_pedidos
+AFTER INSERT OR UPDATE OR DELETE ON lab_workspace.pedidos
+FOR EACH ROW EXECUTE FUNCTION audit.log_table_changes();
+
+CREATE TRIGGER audit_itens_pedido
+AFTER INSERT OR UPDATE OR DELETE ON lab_workspace.itens_pedido
+FOR EACH ROW EXECUTE FUNCTION audit.log_table_changes();
+
+CREATE TRIGGER audit_usuarios
+AFTER INSERT OR UPDATE OR DELETE ON lab_workspace.usuarios
+FOR EACH ROW EXECUTE FUNCTION audit.log_table_changes();
+</div></section></section><section class="chapter"><h2 id="parte-3-monitoramento-de-atividades-sens-veis" data-toc="parte-3-monitoramento-de-atividades-sens-veis">Parte 3: Monitoramento de Atividades Sens&iacute;veis</h2><section class="chapter"><h3 id="3-1-auditoria-de-permiss-es" data-toc="3-1-auditoria-de-permiss-es">3.1 Auditoria de Permiss&otilde;es</h3><div class="code-block" data-lang="sql">
+-- Função para auditoria de alterações de permissões
+CREATE OR REPLACE FUNCTION audit.log_permission_changes()
+RETURNS event_trigger AS $$
+DECLARE
+    obj record;
+    query text;
+BEGIN
+    query := current_query();
+    
+    IF query ~* 'grant|revoke' THEN
+        INSERT INTO audit.permission_changes (
+            username,
+            action_type,
+            object_type,
+            object_name,
+            query
+        ) VALUES (
+            current_user,
+            CASE 
+                WHEN query ~* 'grant' THEN 'GRANT'
+                WHEN query ~* 'revoke' THEN 'REVOKE'
+                ELSE 'UNKNOWN'
+            END,
+            CASE 
+                WHEN query ~* 'table' THEN 'TABLE'
+                WHEN query ~* 'function' THEN 'FUNCTION'
+                WHEN query ~* 'schema' THEN 'SCHEMA'
+                WHEN query ~* 'sequence' THEN 'SEQUENCE'
+                ELSE 'UNKNOWN'
+            END,
+            regexp_replace(query, '.*(?:on|ON)\s+([^\s]+).*', '\1'),
+            query
+        );
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Criar event trigger para capturar alterações de permissões
+CREATE EVENT TRIGGER permission_audit ON ddl_command_end
+WHEN TAG IN ('GRANT', 'REVOKE')
+EXECUTE FUNCTION audit.log_permission_changes();
+</div></section><section class="chapter"><h3 id="3-2-auditoria-de-logins" data-toc="3-2-auditoria-de-logins">3.2 Auditoria de Logins</h3><div class="code-block" data-lang="sql">
+-- Função para simular auditoria de logins
+-- Nota: Em um ambiente real, isso seria implementado via configuração do PostgreSQL
+-- ou usando extensões como pgaudit
+
+CREATE OR REPLACE FUNCTION audit.simulate_login_audit()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO audit.login_attempts (
+        username,
+        success,
+        client_ip,
+        application_name
+    ) VALUES (
+        NEW.username,
+        TRUE,
+        inet_client_addr(),
+        current_setting('application_name')
+    );
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Aplicar trigger na tabela de usuários para simular login
+-- (apenas para demonstração - em ambiente real seria diferente)
+CREATE TRIGGER simulate_login
+AFTER UPDATE OF ultimo_acesso ON lab_workspace.usuarios
+FOR EACH ROW EXECUTE FUNCTION audit.simulate_login_audit();
+
+-- Função para registrar login manualmente (para demonstração)
+CREATE OR REPLACE FUNCTION lab_workspace.register_login(username text)
+RETURNS void AS $$
+BEGIN
+    UPDATE lab_workspace.usuarios
+    SET ultimo_acesso = CURRENT_TIMESTAMP
+    WHERE username = register_login.username;
+END;
+$$ LANGUAGE plpgsql;
+</div></section></section><section class="chapter"><h2 id="parte-4-an-lise-e-relat-rios-de-auditoria" data-toc="parte-4-an-lise-e-relat-rios-de-auditoria">Parte 4: An&aacute;lise e Relat&oacute;rios de Auditoria</h2><section class="chapter"><h3 id="4-1-vis-es-para-an-lise" data-toc="4-1-vis-es-para-an-lise">4.1 Vis&otilde;es para An&aacute;lise</h3><div class="code-block" data-lang="sql">
+-- Visão para atividades por usuário
+CREATE OR REPLACE VIEW audit.user_activity AS
+SELECT 
+    username,
+    COUNT(*) AS total_actions,
+    COUNT(*) FILTER (WHERE action_type = 'INSERT') AS inserts,
+    COUNT(*) FILTER (WHERE action_type = 'UPDATE') AS updates,
+    COUNT(*) FILTER (WHERE action_type = 'DELETE') AS deletes,
+    MIN(event_time) AS first_activity,
+    MAX(event_time) AS last_activity
+FROM audit.activity_log
+GROUP BY username
+ORDER BY total_actions DESC;
+
+-- Visão para atividades por tabela
+CREATE OR REPLACE VIEW audit.table_activity AS
+SELECT 
+    schema_name,
+    table_name,
+    COUNT(*) AS total_actions,
+    COUNT(*) FILTER (WHERE action_type = 'INSERT') AS inserts,
+    COUNT(*) FILTER (WHERE action_type = 'UPDATE') AS updates,
+    COUNT(*) FILTER (WHERE action_type = 'DELETE') AS deletes,
+    MIN(event_time) AS first_activity,
+    MAX(event_time) AS last_activity
+FROM audit.activity_log
+GROUP BY schema_name, table_name
+ORDER BY total_actions DESC;
+
+-- Visão para alterações sensíveis
+CREATE OR REPLACE VIEW audit.sensitive_changes AS
+SELECT 
+    a.id,
+    a.event_time,
+    a.username,
+    a.table_name,
+    a.action_type,
+    a.old_data,
+    a.new_data
+FROM audit.activity_log a
+WHERE 
+    (a.table_name = 'clientes' AND 
+     (a.old_data-&gt;&gt;'limite_credito' IS DISTINCT FROM a.new_data-&gt;&gt;'limite_credito' OR
+      a.old_data-&gt;&gt;'dados_sensíveis' IS DISTINCT FROM a.new_data-&gt;&gt;'dados_sensíveis'))
+    OR
+    (a.table_name = 'usuarios' AND a.action_type IN ('INSERT', 'DELETE'))
+ORDER BY a.event_time DESC;
+</div></section><section class="chapter"><h3 id="4-2-fun-es-para-relat-rios" data-toc="4-2-fun-es-para-relat-rios">4.2 Fun&ccedil;&otilde;es para Relat&oacute;rios</h3><div class="code-block" data-lang="sql">
+-- Função para relatório de atividades em um período
+CREATE OR REPLACE FUNCTION audit.activity_report(
+    start_time timestamp with time zone,
+    end_time timestamp with time zone
+)
+RETURNS TABLE (
+    username text,
+    action_type text,
+    table_name text,
+    count bigint
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        a.username,
+        a.action_type,
+        a.table_name,
+        COUNT(*) AS count
+    FROM audit.activity_log a
+    WHERE a.event_time BETWEEN start_time AND end_time
+    GROUP BY a.username, a.action_type, a.table_name
+    ORDER BY count DESC;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Função para detectar atividades suspeitas
+CREATE OR REPLACE FUNCTION audit.detect_suspicious_activity()
+RETURNS TABLE (
+    id integer,
+    event_time timestamp with time zone,
+    username text,
+    action_type text,
+    table_name text,
+    suspicion_reason text
+) AS $$
+BEGIN
+    RETURN QUERY
+    
+    -- Atividades fora do horário comercial
+    SELECT 
+        a.id,
+        a.event_time,
+        a.username,
+        a.action_type,
+        a.table_name,
+        'Atividade fora do horário comercial' AS suspicion_reason
+    FROM audit.activity_log a
+    WHERE 
+        EXTRACT(HOUR FROM a.event_time) &lt; 8 OR
+        EXTRACT(HOUR FROM a.event_time) &gt; 18
+        
+    UNION ALL
+    
+    -- Volume anormal de operações
+    SELECT 
+        a.id,
+        a.event_time,
+        a.username,
+        a.action_type,
+        a.table_name,
+        'Volume anormal de operações' AS suspicion_reason
+    FROM audit.activity_log a
+    JOIN (
+        SELECT 
+            username, 
+            table_name, 
+            COUNT(*) AS action_count
+        FROM audit.activity_log
+        WHERE event_time &gt; CURRENT_TIMESTAMP - INTERVAL '1 hour'
+        GROUP BY username, table_name
+        HAVING COUNT(*) &gt; 50
+    ) high_volume ON a.username = high_volume.username AND a.table_name = high_volume.table_name
+    
+    UNION ALL
+    
+    -- Alterações em dados sensíveis
+    SELECT 
+        a.id,
+        a.event_time,
+        a.username,
+        a.action_type,
+        a.table_name,
+        'Alteração em dados sensíveis' AS suspicion_reason
+    FROM audit.activity_log a
+    WHERE 
+        a.table_name = 'clientes' AND
+        a.action_type = 'UPDATE' AND
+        a.old_data-&gt;&gt;'limite_credito' IS DISTINCT FROM a.new_data-&gt;&gt;'limite_credito'
+    
+    ORDER BY event_time DESC;
+END;
+$$ LANGUAGE plpgsql;
+</div></section></section><section class="chapter"><h2 id="verifica-es-e-testes" data-toc="verifica-es-e-testes">Verifica&ccedil;&otilde;es e Testes</h2><ol class="list _decimal" id="z8uf9p2_32" type="1"><li class="list__item" id="z8uf9p2_33"><p id="z8uf9p2_36">Gerar atividades para teste:</p><div class="code-block" data-lang="sql">
+-- Inserir dados de teste
+INSERT INTO lab_workspace.clientes (nome, email, segmento, limite_credito)
+VALUES ('Cliente Auditoria', 'auditoria@email.com', 'Varejo', 1000.00);
+
+UPDATE lab_workspace.clientes
+SET limite_credito = 5000.00
+WHERE email = 'auditoria@email.com';
+
+DELETE FROM lab_workspace.clientes
+WHERE email = 'auditoria@email.com';
+
+-- Simular login
+SELECT lab_workspace.register_login('app_user');
+</div></li><li class="list__item" id="z8uf9p2_34"><p id="z8uf9p2_38">Verificar logs de auditoria:</p><div class="code-block" data-lang="sql">
+-- Verificar logs de atividade
+SELECT * FROM audit.activity_log ORDER BY event_time DESC LIMIT 10;
+
+-- Verificar logs de login
+SELECT * FROM audit.login_attempts ORDER BY event_time DESC LIMIT 10;
+
+-- Verificar logs de permissões
+SELECT * FROM audit.permission_changes ORDER BY event_time DESC LIMIT 10;
+</div></li><li class="list__item" id="z8uf9p2_35"><p id="z8uf9p2_40">Executar relat&oacute;rios:</p><div class="code-block" data-lang="sql">
+-- Relatório de atividades do dia
+SELECT * FROM audit.activity_report(
+    CURRENT_DATE,
+    CURRENT_DATE + INTERVAL '1 day'
+);
+
+-- Verificar atividades suspeitas
+SELECT * FROM audit.detect_suspicious_activity();
+
+-- Verificar visões de resumo
+SELECT * FROM audit.user_activity;
+SELECT * FROM audit.table_activity;
+SELECT * FROM audit.sensitive_changes;
+</div></li></ol></section><section class="chapter"><h2 id="conclus-o" data-toc="conclus-o">Conclus&atilde;o</h2><p id="z8uf9p2_42">Neste laborat&oacute;rio, voc&ecirc; implementou:</p><ul class="list _bullet" id="z8uf9p2_43"><li class="list__item" id="z8uf9p2_46"><p id="z8uf9p2_50">Um sistema abrangente de auditoria para banco de dados PostgreSQL</p></li><li class="list__item" id="z8uf9p2_47"><p id="z8uf9p2_51">Captura autom&aacute;tica de altera&ccedil;&otilde;es em tabelas via triggers</p></li><li class="list__item" id="z8uf9p2_48"><p id="z8uf9p2_52">Monitoramento de atividades sens&iacute;veis como altera&ccedil;&otilde;es de permiss&otilde;es</p></li><li class="list__item" id="z8uf9p2_49"><p id="z8uf9p2_53">Relat&oacute;rios e an&aacute;lises para identifica&ccedil;&atilde;o de atividades suspeitas</p></li></ul><p id="z8uf9p2_44">Estas t&eacute;cnicas s&atilde;o essenciais para:</p><ol class="list _decimal" id="z8uf9p2_45" type="1"><li class="list__item" id="z8uf9p2_54"><p id="z8uf9p2_58"><span class="control" id="z8uf9p2_59">Conformidade regulat&oacute;ria</span>: Atender requisitos como GDPR, PCI-DSS, SOX, etc.</p></li><li class="list__item" id="z8uf9p2_55"><p id="z8uf9p2_60"><span class="control" id="z8uf9p2_61">Seguran&ccedil;a</span>: Detectar e investigar atividades maliciosas ou n&atilde;o autorizadas</p></li><li class="list__item" id="z8uf9p2_56"><p id="z8uf9p2_62"><span class="control" id="z8uf9p2_63">Forense digital</span>: Reconstruir eventos em caso de incidentes de seguran&ccedil;a</p></li><li class="list__item" id="z8uf9p2_57"><p id="z8uf9p2_64"><span class="control" id="z8uf9p2_65">Governan&ccedil;a de dados</span>: Manter controle sobre quem acessa e modifica dados sens&iacute;veis</p></li></ol></section><section class="chapter"><h2 id="pr-ximos-passos" data-toc="pr-ximos-passos">Pr&oacute;ximos Passos</h2><ol class="list _decimal" id="z8uf9p2_66" type="1"><li class="list__item" id="z8uf9p2_69"><p id="z8uf9p2_73">Implementar reten&ccedil;&atilde;o e arquivamento de logs de auditoria</p></li><li class="list__item" id="z8uf9p2_70"><p id="z8uf9p2_74">Configurar alertas autom&aacute;ticos para atividades suspeitas</p></li><li class="list__item" id="z8uf9p2_71"><p id="z8uf9p2_75">Integrar com sistemas SIEM (Security Information and Event Management)</p></li><li class="list__item" id="z8uf9p2_72"><p id="z8uf9p2_76">Implementar criptografia para dados de auditoria sens&iacute;veis</p></li></ol><aside class="prompt" data-type="tip" data-title="" id="z8uf9p2_68"><p id="z8uf9p2_77"><span class="control" id="z8uf9p2_79">Nota</span>: Registre a conclus&atilde;o do laborat&oacute;rio:</p><div class="code-block" data-lang="sql">
+UPDATE lab_workspace.lab_progress 
+SET completion_time = CURRENT_TIMESTAMP, status = 'COMPLETED' 
+WHERE lab_name = 'Auditoria de Segurança';
+</div></aside></section><div class="last-modified">09 maio 2025</div><div data-feedback-placeholder="true"></div><div class="navigation-links _bottom"><a href="lab-role-hierarchy.html" class="navigation-links__prev">Laborat&oacute;rio: Hierarquia de Roles</a><a href="lab-permission-migration.html" class="navigation-links__next">Laborat&oacute;rio: Migra&ccedil;&atilde;o de Permiss&otilde;es</a></div></article><div id="disqus_thread"></div></div></section></main></div><script src="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.js"></script></body></html>
