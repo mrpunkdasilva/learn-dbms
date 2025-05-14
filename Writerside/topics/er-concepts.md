@@ -36,33 +36,27 @@ Uma entidade representa um objeto ou conceito do mundo real que pode ser distint
 - **Entidades Fracas**: Dependem de outras entidades para existir
 - **Entidades Associativas**: Resultam da associação entre outras entidades
 
-```mermaid
-erDiagram
-    FUNCIONARIO {
-        string id PK
-        string nome
-        date data_admissao
-    }
-    DEPARTAMENTO {
-        string codigo PK
-        string nome
-        string localizacao
-    }
-    DEPENDENTE {
-        string id PK
-        string nome
-        string parentesco
-    }
-```
+- **Exemplo**:
+  - EMPLOYEE (entidade forte)
+  - DEPENDENT (entidade fraca)
+  - DEPARTAMENT (entidade associativa)
+
+![Entities Type](Entities Type)
+
+
 
 ### 2. Relacionamentos
 
 Representam associações entre entidades, descrevendo como elas interagem entre si.
 
+> Nunca crie relacionamentos entre atributos
+>
+> Sempre crie relacionamentos entre entidades! 
+> {style="warning"}
+
 #### Características dos Relacionamentos
 - **Grau**: Número de entidades participantes
 - **Papel**: Função de cada entidade no relacionamento
-- **Restrições**: Regras que governam a associação
 
 ```mermaid
 erDiagram
