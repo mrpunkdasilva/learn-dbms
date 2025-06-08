@@ -1,0 +1,195 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en-US" data-preset="contrast" data-primary-color="#E8488B"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="built-on" content="2025-06-08T20:14:42.933048776"><title>INSERT: Inserindo Dados | Database Management Systems: A Complete Guide</title><script type="application/json" id="virtual-toc-data">[{"id":"fundamentos-do-insert","level":0,"title":"Fundamentos do INSERT","anchor":"#fundamentos-do-insert"},{"id":"formas-de-inser-o","level":0,"title":"Formas de Inserção","anchor":"#formas-de-inser-o"},{"id":"tratamento-de-erros","level":0,"title":"Tratamento de Erros","anchor":"#tratamento-de-erros"},{"id":"inser-o-em-massa","level":0,"title":"Inserção em Massa","anchor":"#inser-o-em-massa"},{"id":"boas-pr-ticas","level":0,"title":"Boas Práticas","anchor":"#boas-pr-ticas"},{"id":"exemplos-pr-ticos","level":0,"title":"Exemplos Práticos","anchor":"#exemplos-pr-ticos"},{"id":"troubleshooting-comum","level":0,"title":"Troubleshooting Comum","anchor":"#troubleshooting-comum"},{"id":"conclus-o","level":0,"title":"Conclusão","anchor":"#conclus-o"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.css" rel="stylesheet"><link href="static/custom.css" rel="stylesheet"><link rel="icon" type="image/svg" sizes="16x16" href="images/logo-primary.svg"><meta name="image" content=""><!-- Open Graph --><meta property="og:title" content="INSERT: Inserindo Dados | Database Management Systems: A Complete Guide"><meta property="og:description" content=""><meta property="og:image" content=""><meta property="og:site_name" content="Database Management Systems: A Complete Guide Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="writerside-documentation/insert-statements.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content=""><meta name="twitter:title" content="INSERT: Inserindo Dados | Database Management Systems: A Complete Guide"><meta name="twitter:description" content=""><meta name="twitter:creator" content=""><meta name="twitter:image:src" content=""><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    "@id": "writerside-documentation/insert-statements.html#webpage",
+    "url": "writerside-documentation/insert-statements.html",
+    "name": "INSERT: Inserindo Dados | Database Management Systems: A Complete Guide",
+    "description": "",
+    "image": "",
+    "inLanguage":"en-US"
+}</script><!-- End Schema.org --><!-- Schema.org WebSite --><script type="application/ld+json">{
+    "@type": "WebSite",
+    "@id": "writerside-documentation/#website",
+    "url": "writerside-documentation/",
+    "name": "Database Management Systems: A Complete Guide Help"
+}</script><!-- End Schema.org --></head><body data-id="insert-statements" data-main-title="INSERT: Inserindo Dados" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs="sql-fundamentals.md|Fundamentos SQL///sql-dml.md|DML - Linguagem de Manipulação de Dados"><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>Database Management Systems: A Complete Guide  Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="insert-statements" id="insert-statements.md">INSERT: Inserindo Dados</h1><div class="code-block" data-lang="none">
+╔══════════════════════════════════════════════════════════════╗
+║  DATA_MASTER &gt;&gt; Inserção de Dados                          ║
+║  INSTRUTOR: INSERT_SPECIALIST                              ║
+╚══════════════════════════════════════════════════════════════╝
+</div><section class="chapter"><h2 id="fundamentos-do-insert" data-toc="fundamentos-do-insert">Fundamentos do INSERT</h2><p id="-jvx9xm_12">INSERT_SPECIALIST explica: &quot;O comando INSERT &eacute; fundamental para adicionar dados em suas tabelas.&quot;</p><section class="chapter"><h3 id="sintaxe-b-sica" data-toc="sintaxe-b-sica">Sintaxe B&aacute;sica</h3><div class="code-block" data-lang="sql">
+-- Inserção simples
+INSERT INTO tabela (coluna1, coluna2) 
+VALUES (valor1, valor2);
+
+-- Múltiplos registros
+INSERT INTO tabela (coluna1, coluna2) 
+VALUES 
+    (valor1, valor2),
+    (valor3, valor4),
+    (valor5, valor6);
+</div></section></section><section class="chapter"><h2 id="formas-de-inser-o" data-toc="formas-de-inser-o">Formas de Inser&ccedil;&atilde;o</h2><section class="chapter"><h3 id="1-valores-expl-citos" data-toc="1-valores-expl-citos">1. Valores Expl&iacute;citos</h3><div class="code-block" data-lang="sql">
+-- Com todas as colunas
+INSERT INTO produtos (
+    nome,
+    preco,
+    categoria,
+    estoque
+) VALUES (
+    'Smartphone X',
+    999.99,
+    'Eletrônicos',
+    100
+);
+
+-- Com colunas específicas
+INSERT INTO usuarios (
+    email,
+    nome
+) VALUES (
+    'user@email.com',
+    'João Silva'
+);
+</div></section><section class="chapter"><h3 id="2-inser-o-via-select" data-toc="2-inser-o-via-select">2. Inser&ccedil;&atilde;o via SELECT</h3><p id="-jvx9xm_19">DATA_TRANSFER_EXPERT demonstra: &quot;Copie dados de outras tabelas!&quot;</p><div class="code-block" data-lang="sql">
+-- Inserção básica via SELECT
+INSERT INTO produtos_backup
+SELECT * FROM produtos
+WHERE categoria = 'Eletrônicos';
+
+-- Inserção seletiva
+INSERT INTO resumo_vendas (produto, total_vendido)
+SELECT 
+    p.nome,
+    SUM(v.quantidade)
+FROM vendas v
+JOIN produtos p ON v.produto_id = p.id
+GROUP BY p.nome;
+</div></section><section class="chapter"><h3 id="3-valores-default-e-express-es" data-toc="3-valores-default-e-express-es">3. Valores Default e Express&otilde;es</h3><div class="code-block" data-lang="sql">
+-- Usando DEFAULT
+INSERT INTO logs (
+    evento,
+    data_registro
+) VALUES (
+    'Login usuário',
+    DEFAULT  -- Usa CURRENT_TIMESTAMP
+);
+
+-- Com expressões
+INSERT INTO pedidos (
+    produto_id,
+    quantidade,
+    valor_total
+) VALUES (
+    101,
+    5,
+    (SELECT preco FROM produtos WHERE id = 101) * 5
+);
+</div></section></section><section class="chapter"><h2 id="tratamento-de-erros" data-toc="tratamento-de-erros">Tratamento de Erros</h2><p id="-jvx9xm_22">ERROR_HANDLER apresenta: &quot;Lidando com conflitos e erros&quot;</p><div class="code-block" data-lang="sql">
+-- Ignorar duplicados
+INSERT INTO logs (id, mensagem)
+ON CONFLICT (id) DO NOTHING;
+
+-- Atualizar em caso de conflito
+INSERT INTO produtos (codigo, nome, estoque)
+VALUES ('P123', 'Novo Produto', 100)
+ON CONFLICT (codigo) 
+DO UPDATE SET 
+    estoque = produtos.estoque + EXCLUDED.estoque;
+</div></section><section class="chapter"><h2 id="inser-o-em-massa" data-toc="inser-o-em-massa">Inser&ccedil;&atilde;o em Massa</h2><p id="-jvx9xm_24">BULK_INSERT_MASTER compartilha: &quot;Otimize inser&ccedil;&otilde;es grandes!&quot;</p><div class="code-block" data-lang="sql">
+-- Preparando statement
+PREPARE insert_produto (text, decimal, int) AS
+INSERT INTO produtos (nome, preco, estoque)
+VALUES ($1, $2, $3);
+
+-- Executando
+EXECUTE insert_produto('Produto A', 99.99, 50);
+EXECUTE insert_produto('Produto B', 149.99, 30);
+
+-- Limpando
+DEALLOCATE insert_produto;
+</div></section><section class="chapter"><h2 id="boas-pr-ticas" data-toc="boas-pr-ticas">Boas Pr&aacute;ticas</h2><p id="-jvx9xm_26">BEST_PRACTICES_SAGE recomenda:</p><section class="chapter"><h3 id="1-performance" data-toc="1-performance">1. Performance</h3><ul class="list _bullet" id="-jvx9xm_30"><li class="list__item" id="-jvx9xm_31"><p id="-jvx9xm_35">Use inser&ccedil;&atilde;o em lote para m&uacute;ltiplos registros</p></li><li class="list__item" id="-jvx9xm_32"><p id="-jvx9xm_36">Considere desativar &iacute;ndices para cargas grandes</p></li><li class="list__item" id="-jvx9xm_33"><p id="-jvx9xm_37">Utilize transa&ccedil;&otilde;es apropriadamente</p></li><li class="list__item" id="-jvx9xm_34"><p id="-jvx9xm_38">Monitore o tamanho dos lotes</p></li></ul></section><section class="chapter"><h3 id="2-integridade" data-toc="2-integridade">2. Integridade</h3><ul class="list _bullet" id="-jvx9xm_39"><li class="list__item" id="-jvx9xm_40"><p id="-jvx9xm_44">Valide dados antes da inser&ccedil;&atilde;o</p></li><li class="list__item" id="-jvx9xm_41"><p id="-jvx9xm_45">Use constraints apropriadas</p></li><li class="list__item" id="-jvx9xm_42"><p id="-jvx9xm_46">Mantenha consist&ecirc;ncia referencial</p></li><li class="list__item" id="-jvx9xm_43"><p id="-jvx9xm_47">Trate valores nulos adequadamente</p></li></ul></section><section class="chapter"><h3 id="3-manuten-o" data-toc="3-manuten-o">3. Manuten&ccedil;&atilde;o</h3><ul class="list _bullet" id="-jvx9xm_48"><li class="list__item" id="-jvx9xm_50"><p id="-jvx9xm_54">Documente processos de carga</p></li><li class="list__item" id="-jvx9xm_51"><p id="-jvx9xm_55">Mantenha logs de inser&ccedil;&atilde;o</p></li><li class="list__item" id="-jvx9xm_52"><p id="-jvx9xm_56">Implemente rollback strategy</p></li><li class="list__item" id="-jvx9xm_53"><p id="-jvx9xm_57">Monitore espa&ccedil;o em disco</p></li></ul><div class="code-block" data-lang="none">
+╔════════════════════════════════════════════╗
+║  CHECKLIST INSERT:                        ║
+║  □ Dados validados?                      ║
+║  □ Constraints verificadas?              ║
+║  □ Transação necessária?                 ║
+║  □ Índices considerados?                 ║
+║  □ Backup realizado?                     ║
+╚════════════════════════════════════════════╝
+</div></section></section><section class="chapter"><h2 id="exemplos-pr-ticos" data-toc="exemplos-pr-ticos">Exemplos Pr&aacute;ticos</h2><section class="chapter"><h3 id="sistema-de-e-commerce" data-toc="sistema-de-e-commerce">Sistema de E-commerce</h3><div class="code-block" data-lang="sql">
+-- Inserindo novo produto
+INSERT INTO produtos (
+    codigo,
+    nome,
+    descricao,
+    preco,
+    estoque,
+    categoria_id,
+    criado_em,
+    status
+) VALUES (
+    'PROD-123',
+    'Smartphone Ultimate',
+    'Smartphone de última geração',
+    1299.99,
+    50,
+    (SELECT id FROM categorias WHERE nome = 'Eletrônicos'),
+    CURRENT_TIMESTAMP,
+    'ativo'
+);
+
+-- Registrando pedido
+INSERT INTO pedidos (
+    cliente_id,
+    valor_total,
+    status,
+    data_pedido
+) VALUES (
+    1001,
+    1299.99,
+    'pendente',
+    CURRENT_TIMESTAMP
+);
+
+-- Inserindo itens do pedido
+INSERT INTO itens_pedido (
+    pedido_id,
+    produto_id,
+    quantidade,
+    preco_unitario
+) VALUES (
+    CURRVAL('pedidos_id_seq'),
+    (SELECT id FROM produtos WHERE codigo = 'PROD-123'),
+    1,
+    1299.99
+);
+</div></section></section><section class="chapter"><h2 id="troubleshooting-comum" data-toc="troubleshooting-comum">Troubleshooting Comum</h2><p id="-jvx9xm_60">PROBLEM_SOLVER apresenta solu&ccedil;&otilde;es para problemas frequentes:</p><ol class="list _decimal" id="-jvx9xm_61" type="1"><li class="list__item" id="-jvx9xm_65"><p id="-jvx9xm_66"><span class="control" id="-jvx9xm_67">Viola&ccedil;&atilde;o de Chave &Uacute;nica</span></p></li></ol><div class="code-block" data-lang="sql">
+-- Verificando existência
+SELECT COUNT(*) 
+FROM produtos 
+WHERE codigo = 'PROD-123';
+
+-- Inserção segura
+INSERT INTO produtos (codigo, nome)
+SELECT 'PROD-123', 'Novo Produto'
+WHERE NOT EXISTS (
+    SELECT 1 
+    FROM produtos 
+    WHERE codigo = 'PROD-123'
+);
+</div><ol class="list _decimal" id="-jvx9xm_63" type="1" start="2"><li class="list__item" id="-jvx9xm_68"><p id="-jvx9xm_69"><span class="control" id="-jvx9xm_70">Viola&ccedil;&atilde;o de Chave Estrangeira</span></p></li></ol><div class="code-block" data-lang="sql">
+-- Verificando referência
+SELECT id 
+FROM categorias 
+WHERE id = 5;
+
+-- Inserção com verificação
+INSERT INTO produtos (categoria_id, nome)
+SELECT 5, 'Novo Produto'
+WHERE EXISTS (
+    SELECT 1 
+    FROM categorias 
+    WHERE id = 5
+);
+</div></section><section class="chapter"><h2 id="conclus-o" data-toc="conclus-o">Conclus&atilde;o</h2><p id="-jvx9xm_71">INSERT_SPECIALIST conclui: &quot;O dom&iacute;nio do INSERT vai al&eacute;m da sintaxe b&aacute;sica. Considere sempre performance, integridade e manutenibilidade em suas opera&ccedil;&otilde;es de inser&ccedil;&atilde;o.&quot;</p><aside class="prompt" data-type="tip" data-title="" id="-jvx9xm_72"><p id="-jvx9xm_73"><span class="control" id="-jvx9xm_74">Dica Final</span>: Sempre teste suas inser&ccedil;&otilde;es em ambiente de desenvolvimento antes de aplicar em produ&ccedil;&atilde;o.</p></aside></section><div class="last-modified">26 abril 2025</div><div data-feedback-placeholder="true"></div><div class="navigation-links _bottom"><a href="select-statements.html" class="navigation-links__prev">SELECT: Recuperando Dados</a><a href="update-statements.html" class="navigation-links__next">UPDATE: Modificando Dados</a></div></article><div id="disqus_thread"></div></div></section></main></div><script src="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.js"></script></body></html>

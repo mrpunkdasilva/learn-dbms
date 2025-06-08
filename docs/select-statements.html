@@ -1,0 +1,163 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en-US" data-preset="contrast" data-primary-color="#E8488B"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="built-on" content="2025-06-08T20:14:42.88426795"><title>SELECT: Recuperando Dados | Database Management Systems: A Complete Guide</title><script type="application/json" id="virtual-toc-data">[{"id":"fundamentos-do-select","level":0,"title":"Fundamentos do SELECT","anchor":"#fundamentos-do-select"},{"id":"cl-usulas-principais","level":0,"title":"Cláusulas Principais","anchor":"#cl-usulas-principais"},{"id":"fun-es-e-express-es","level":0,"title":"Funções e Expressões","anchor":"#fun-es-e-express-es"},{"id":"subconsultas","level":0,"title":"Subconsultas","anchor":"#subconsultas"},{"id":"otimiza-o","level":0,"title":"Otimização","anchor":"#otimiza-o"},{"id":"boas-pr-ticas","level":0,"title":"Boas Práticas","anchor":"#boas-pr-ticas"},{"id":"conclus-o","level":0,"title":"Conclusão","anchor":"#conclus-o"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.css" rel="stylesheet"><link href="static/custom.css" rel="stylesheet"><link rel="icon" type="image/svg" sizes="16x16" href="images/logo-primary.svg"><meta name="image" content=""><!-- Open Graph --><meta property="og:title" content="SELECT: Recuperando Dados | Database Management Systems: A Complete Guide"><meta property="og:description" content=""><meta property="og:image" content=""><meta property="og:site_name" content="Database Management Systems: A Complete Guide Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="writerside-documentation/select-statements.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content=""><meta name="twitter:title" content="SELECT: Recuperando Dados | Database Management Systems: A Complete Guide"><meta name="twitter:description" content=""><meta name="twitter:creator" content=""><meta name="twitter:image:src" content=""><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    "@id": "writerside-documentation/select-statements.html#webpage",
+    "url": "writerside-documentation/select-statements.html",
+    "name": "SELECT: Recuperando Dados | Database Management Systems: A Complete Guide",
+    "description": "",
+    "image": "",
+    "inLanguage":"en-US"
+}</script><!-- End Schema.org --><!-- Schema.org WebSite --><script type="application/ld+json">{
+    "@type": "WebSite",
+    "@id": "writerside-documentation/#website",
+    "url": "writerside-documentation/",
+    "name": "Database Management Systems: A Complete Guide Help"
+}</script><!-- End Schema.org --></head><body data-id="select-statements" data-main-title="SELECT: Recuperando Dados" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs="sql-fundamentals.md|Fundamentos SQL///sql-dml.md|DML - Linguagem de Manipulação de Dados"><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>Database Management Systems: A Complete Guide  Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="select-statements" id="select-statements.md">SELECT: Recuperando Dados</h1><div class="code-block" data-lang="none">
+╔══════════════════════════════════════════════════════════════╗
+║  QUERY_MASTER &gt;&gt; Arte da Consulta de Dados                 ║
+║  INSTRUTOR: SELECT_SPECIALIST                              ║
+╚══════════════════════════════════════════════════════════════╝
+</div><section class="chapter"><h2 id="fundamentos-do-select" data-toc="fundamentos-do-select">Fundamentos do SELECT</h2><p id="-3um7pj_11">SELECT_SPECIALIST explica: &quot;O comando SELECT &eacute; a base para recupera&ccedil;&atilde;o de dados em SQL.&quot;</p><section class="chapter"><h3 id="sintaxe-b-sica" data-toc="sintaxe-b-sica">Sintaxe B&aacute;sica</h3><div class="code-block" data-lang="sql">
+SELECT coluna1, coluna2
+FROM tabela
+WHERE condição
+GROUP BY coluna
+HAVING condição_grupo
+ORDER BY coluna;
+</div></section></section><section class="chapter"><h2 id="cl-usulas-principais" data-toc="cl-usulas-principais">Cl&aacute;usulas Principais</h2><section class="chapter"><h3 id="1-from" data-toc="1-from">1. FROM</h3><p id="-3um7pj_19">DATA_SOURCE_EXPERT demonstra: &quot;Define a fonte dos dados&quot;</p><div class="code-block" data-lang="sql">
+-- Tabela única
+FROM produtos
+
+-- Múltiplas tabelas
+FROM produtos p, categorias c
+
+-- Subquery
+FROM (SELECT * FROM vendas WHERE ano = 2023) v
+</div></section><section class="chapter"><h3 id="2-where" data-toc="2-where">2. WHERE</h3><p id="-3um7pj_21">FILTER_MASTER apresenta: &quot;Filtra os registros&quot;</p><div class="code-block" data-lang="sql">
+-- Comparações básicas
+WHERE preco &gt; 100
+AND categoria = 'Eletrônicos'
+
+-- Operadores IN/BETWEEN
+WHERE status IN ('Ativo', 'Pendente')
+AND data_criacao BETWEEN '2023-01-01' AND '2023-12-31'
+
+-- Pattern matching
+WHERE nome LIKE 'A%'
+AND descricao ILIKE '%premium%'
+</div></section><section class="chapter"><h3 id="3-join" data-toc="3-join">3. JOIN</h3><p id="-3um7pj_23">JOIN_SPECIALIST explica: &quot;Combina dados de m&uacute;ltiplas tabelas&quot;</p><div class="code-block" data-lang="sql">
+-- INNER JOIN
+SELECT p.nome, c.categoria
+FROM produtos p
+INNER JOIN categorias c ON p.categoria_id = c.id
+
+-- LEFT JOIN
+SELECT c.nome, COUNT(p.id) as total_pedidos
+FROM clientes c
+LEFT JOIN pedidos p ON c.id = p.cliente_id
+GROUP BY c.nome
+
+-- Multiple JOINs
+SELECT p.nome, c.categoria, f.nome as fornecedor
+FROM produtos p
+JOIN categorias c ON p.categoria_id = c.id
+JOIN fornecedores f ON p.fornecedor_id = f.id
+</div></section><section class="chapter"><h3 id="4-group-by" data-toc="4-group-by">4. GROUP BY</h3><p id="-3um7pj_25">AGGREGATION_MASTER demonstra: &quot;Agrupa resultados&quot;</p><div class="code-block" data-lang="sql">
+-- Agrupamento simples
+SELECT categoria, COUNT(*) as total
+FROM produtos
+GROUP BY categoria
+
+-- Múltiplas colunas
+SELECT categoria, status, SUM(valor) as total
+FROM vendas
+GROUP BY categoria, status
+
+-- Com HAVING
+SELECT cliente_id, COUNT(*) as total_pedidos
+FROM pedidos
+GROUP BY cliente_id
+HAVING COUNT(*) &gt; 5
+</div></section><section class="chapter"><h3 id="5-order-by" data-toc="5-order-by">5. ORDER BY</h3><p id="-3um7pj_27">SORT_EXPERT apresenta: &quot;Ordena resultados&quot;</p><div class="code-block" data-lang="sql">
+-- Ordenação simples
+ORDER BY data_criacao DESC
+
+-- Múltiplas colunas
+ORDER BY categoria ASC, preco DESC
+
+-- Com expressões
+ORDER BY (preco * quantidade) DESC
+</div></section></section><section class="chapter"><h2 id="fun-es-e-express-es" data-toc="fun-es-e-express-es">Fun&ccedil;&otilde;es e Express&otilde;es</h2><section class="chapter"><h3 id="1-agrega-o" data-toc="1-agrega-o">1. Agrega&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+SELECT 
+    COUNT(*) as total,
+    SUM(valor) as valor_total,
+    AVG(preco) as preco_medio,
+    MAX(data) as data_mais_recente,
+    MIN(data) as data_mais_antiga
+FROM vendas;
+</div></section><section class="chapter"><h3 id="2-string" data-toc="2-string">2. String</h3><div class="code-block" data-lang="sql">
+SELECT 
+    UPPER(nome) as nome_maiusculo,
+    LOWER(email) as email_minusculo,
+    SUBSTRING(descricao, 1, 100) as descricao_curta,
+    CONCAT(nome, ' - ', categoria) as nome_completo
+FROM produtos;
+</div></section><section class="chapter"><h3 id="3-data-hora" data-toc="3-data-hora">3. Data/Hora</h3><div class="code-block" data-lang="sql">
+SELECT 
+    DATE_TRUNC('month', data_criacao) as mes,
+    EXTRACT(YEAR FROM data_criacao) as ano,
+    data_criacao + INTERVAL '7 days' as data_vencimento
+FROM pedidos;
+</div></section></section><section class="chapter"><h2 id="subconsultas" data-toc="subconsultas">Subconsultas</h2><p id="-3um7pj_35">SUBQUERY_MASTER explica: &quot;Consultas dentro de consultas&quot;</p><div class="code-block" data-lang="sql">
+-- Subconsulta no WHERE
+SELECT nome
+FROM produtos
+WHERE categoria_id IN (
+    SELECT id 
+    FROM categorias 
+    WHERE ativo = true
+);
+
+-- Subconsulta no FROM
+SELECT dept_nome, total_funcionarios
+FROM (
+    SELECT departamento_id, COUNT(*) as total
+    FROM funcionarios
+    GROUP BY departamento_id
+) f
+JOIN departamentos d ON f.departamento_id = d.id;
+
+-- Subconsulta correlacionada
+SELECT p.nome
+FROM produtos p
+WHERE preco &gt; (
+    SELECT AVG(preco)
+    FROM produtos
+    WHERE categoria_id = p.categoria_id
+);
+</div></section><section class="chapter"><h2 id="otimiza-o" data-toc="otimiza-o">Otimiza&ccedil;&atilde;o</h2><p id="-3um7pj_37">PERFORMANCE_GURU compartilha dicas essenciais:</p><section class="chapter"><h3 id="1-ndices" data-toc="1-ndices">1. &Iacute;ndices</h3><div class="code-block" data-lang="sql">
+-- Use índices apropriados
+CREATE INDEX idx_produtos_categoria 
+ON produtos(categoria_id);
+
+-- Índice composto para consultas frequentes
+CREATE INDEX idx_pedidos_cliente_data 
+ON pedidos(cliente_id, data_criacao);
+</div></section><section class="chapter"><h3 id="2-an-lise-de-execu-o" data-toc="2-an-lise-de-execu-o">2. An&aacute;lise de Execu&ccedil;&atilde;o</h3><div class="code-block" data-lang="sql">
+-- Analise o plano de execução
+EXPLAIN ANALYZE
+SELECT c.nome, COUNT(p.id) as total_pedidos
+FROM clientes c
+JOIN pedidos p ON c.id = p.cliente_id
+GROUP BY c.nome;
+</div></section></section><section class="chapter"><h2 id="boas-pr-ticas" data-toc="boas-pr-ticas">Boas Pr&aacute;ticas</h2><p id="-3um7pj_42">BEST_PRACTICE_MASTER recomenda:</p><ol class="list _decimal" id="-3um7pj_43" type="1"><li class="list__item" id="-3um7pj_45"><p id="-3um7pj_48"><span class="control" id="-3um7pj_50">Performance</span></p><ul class="list _bullet" id="-3um7pj_49"><li class="list__item" id="-3um7pj_51"><p id="-3um7pj_55">Evite SELECT *</p></li><li class="list__item" id="-3um7pj_52"><p id="-3um7pj_56">Use JOINs apropriados</p></li><li class="list__item" id="-3um7pj_53"><p id="-3um7pj_57">Limite resultados grandes</p></li><li class="list__item" id="-3um7pj_54"><p id="-3um7pj_58">Utilize &iacute;ndices corretamente</p></li></ul></li><li class="list__item" id="-3um7pj_46"><p id="-3um7pj_59"><span class="control" id="-3um7pj_61">Legibilidade</span></p><ul class="list _bullet" id="-3um7pj_60"><li class="list__item" id="-3um7pj_62"><p id="-3um7pj_66">Use aliases descritivos</p></li><li class="list__item" id="-3um7pj_63"><p id="-3um7pj_67">Formate SQL adequadamente</p></li><li class="list__item" id="-3um7pj_64"><p id="-3um7pj_68">Comente consultas complexas</p></li><li class="list__item" id="-3um7pj_65"><p id="-3um7pj_69">Mantenha consist&ecirc;ncia</p></li></ul></li><li class="list__item" id="-3um7pj_47"><p id="-3um7pj_70"><span class="control" id="-3um7pj_72">Manuten&ccedil;&atilde;o</span></p><ul class="list _bullet" id="-3um7pj_71"><li class="list__item" id="-3um7pj_73"><p id="-3um7pj_77">Documente consultas importantes</p></li><li class="list__item" id="-3um7pj_74"><p id="-3um7pj_78">Use views para consultas comuns</p></li><li class="list__item" id="-3um7pj_75"><p id="-3um7pj_79">Implemente pagina&ccedil;&atilde;o</p></li><li class="list__item" id="-3um7pj_76"><p id="-3um7pj_80">Monitore performance</p></li></ul></li></ol><div class="code-block" data-lang="none">
+╔════════════════════════════════════════════╗
+║  CHECKLIST SELECT:                        ║
+║  □ Colunas necessárias apenas?           ║
+║  □ Índices apropriados?                  ║
+║  □ JOINs otimizados?                     ║
+║  □ WHERE eficiente?                      ║
+║  □ Resultados limitados?                 ║
+╚════════════════════════════════════════════╝
+</div></section><section class="chapter"><h2 id="conclus-o" data-toc="conclus-o">Conclus&atilde;o</h2><p id="-3um7pj_81">SELECT_SPECIALIST conclui: &quot;O dom&iacute;nio do SELECT &eacute; fundamental para qualquer desenvolvedor SQL. Pratique diferentes tipos de consultas e sempre considere performance e manutenibilidade.&quot;</p><aside class="prompt" data-type="tip" data-title="" id="-3um7pj_82"><p id="-3um7pj_83"><span class="control" id="-3um7pj_84">Dica Final</span>: Teste suas consultas com volumes de dados realistas para garantir performance em produ&ccedil;&atilde;o.</p></aside></section><div class="last-modified">26 abril 2025</div><div data-feedback-placeholder="true"></div><div class="navigation-links _bottom"><a href="sql-dml.html" class="navigation-links__prev">DML - Linguagem de Manipula&ccedil;&atilde;o de Dados</a><a href="insert-statements.html" class="navigation-links__next">INSERT: Inserindo Dados</a></div></article><div id="disqus_thread"></div></div></section></main></div><script src="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.js"></script></body></html>

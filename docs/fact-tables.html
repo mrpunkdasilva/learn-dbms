@@ -1,0 +1,67 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en-US" data-preset="contrast" data-primary-color="#E8488B"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="built-on" content="2025-06-08T20:14:47.280874166"><title>Tabelas Fato | Database Management Systems: A Complete Guide</title><script type="application/json" id="virtual-toc-data">[{"id":"tipos-de-fatos","level":0,"title":"Tipos de Fatos","anchor":"#tipos-de-fatos"},{"id":"granularidade","level":0,"title":"Granularidade","anchor":"#granularidade"},{"id":"m-tricas","level":0,"title":"Métricas","anchor":"#m-tricas"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.css" rel="stylesheet"><link href="static/custom.css" rel="stylesheet"><link rel="icon" type="image/svg" sizes="16x16" href="images/logo-primary.svg"><meta name="image" content=""><!-- Open Graph --><meta property="og:title" content="Tabelas Fato | Database Management Systems: A Complete Guide"><meta property="og:description" content=""><meta property="og:image" content=""><meta property="og:site_name" content="Database Management Systems: A Complete Guide Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="writerside-documentation/fact-tables.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content=""><meta name="twitter:title" content="Tabelas Fato | Database Management Systems: A Complete Guide"><meta name="twitter:description" content=""><meta name="twitter:creator" content=""><meta name="twitter:image:src" content=""><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    "@id": "writerside-documentation/fact-tables.html#webpage",
+    "url": "writerside-documentation/fact-tables.html",
+    "name": "Tabelas Fato | Database Management Systems: A Complete Guide",
+    "description": "",
+    "image": "",
+    "inLanguage":"en-US"
+}</script><!-- End Schema.org --><!-- Schema.org WebSite --><script type="application/ld+json">{
+    "@type": "WebSite",
+    "@id": "writerside-documentation/#website",
+    "url": "writerside-documentation/",
+    "name": "Database Management Systems: A Complete Guide Help"
+}</script><!-- End Schema.org --></head><body data-id="fact-tables" data-main-title="Tabelas Fato" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs="data-modeling.md|Modelagem de Dados///dimensional-modeling.md|Modelagem Dimensional"><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>Database Management Systems: A Complete Guide  Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="fact-tables" id="fact-tables.md">Tabelas Fato</h1><section class="chapter"><h2 id="tipos-de-fatos" data-toc="tipos-de-fatos">Tipos de Fatos</h2><section class="chapter"><h3 id="1-fatos-transacionais" data-toc="1-fatos-transacionais">1. Fatos Transacionais</h3><div class="code-block" data-lang="sql">
+CREATE TABLE fato_vendas (
+    sk_data INT,
+    sk_produto INT,
+    sk_cliente INT,
+    sk_loja INT,
+    quantidade INT,
+    valor_venda DECIMAL(10,2),
+    custo DECIMAL(10,2),
+    PRIMARY KEY (sk_data, sk_produto, sk_cliente, sk_loja)
+);
+</div></section><section class="chapter"><h3 id="2-fatos-peri-dicos" data-toc="2-fatos-peri-dicos">2. Fatos Peri&oacute;dicos</h3><div class="code-block" data-lang="sql">
+CREATE TABLE fato_estoque_mensal (
+    sk_data INT,
+    sk_produto INT,
+    sk_loja INT,
+    quantidade_media INT,
+    valor_estoque DECIMAL(10,2),
+    giro_estoque DECIMAL(5,2)
+);
+</div></section><section class="chapter"><h3 id="3-fatos-acumulativos" data-toc="3-fatos-acumulativos">3. Fatos Acumulativos</h3><div class="code-block" data-lang="sql">
+CREATE TABLE fato_pedidos (
+    sk_pedido INT,
+    sk_cliente INT,
+    sk_data_pedido INT,
+    sk_data_aprovacao INT,
+    sk_data_envio INT,
+    sk_data_entrega INT,
+    valor_total DECIMAL(10,2)
+);
+</div></section></section><section class="chapter"><h2 id="granularidade" data-toc="granularidade">Granularidade</h2><section class="chapter"><h3 id="1-n-veis-comuns" data-toc="1-n-veis-comuns">1. N&iacute;veis Comuns</h3><ul class="list _bullet" id="khvzt4_14"><li class="list__item" id="khvzt4_15"><p id="khvzt4_19">Transa&ccedil;&atilde;o individual</p></li><li class="list__item" id="khvzt4_16"><p id="khvzt4_20">Di&aacute;rio</p></li><li class="list__item" id="khvzt4_17"><p id="khvzt4_21">Semanal</p></li><li class="list__item" id="khvzt4_18"><p id="khvzt4_22">Mensal</p></li></ul></section><section class="chapter"><h3 id="2-agrega-es" data-toc="2-agrega-es">2. Agrega&ccedil;&otilde;es</h3><div class="code-block" data-lang="sql">
+-- Exemplo de agregação
+CREATE TABLE fato_vendas_diarias AS
+SELECT 
+    sk_data,
+    sk_produto,
+    sk_loja,
+    SUM(quantidade) as qtd_total,
+    SUM(valor_venda) as valor_total
+FROM fato_vendas
+GROUP BY sk_data, sk_produto, sk_loja;
+</div></section></section><section class="chapter"><h2 id="m-tricas" data-toc="m-tricas">M&eacute;tricas</h2><section class="chapter"><h3 id="1-tipos-de-m-tricas" data-toc="1-tipos-de-m-tricas">1. Tipos de M&eacute;tricas</h3><ul class="list _bullet" id="khvzt4_26"><li class="list__item" id="khvzt4_27"><p id="khvzt4_30">Aditivas</p></li><li class="list__item" id="khvzt4_28"><p id="khvzt4_31">Semi-aditivas</p></li><li class="list__item" id="khvzt4_29"><p id="khvzt4_32">N&atilde;o-aditivas</p></li></ul></section><section class="chapter"><h3 id="2-c-lculos-comuns" data-toc="2-c-lculos-comuns">2. C&aacute;lculos Comuns</h3><div class="code-block" data-lang="sql">
+-- Exemplo de métricas calculadas
+SELECT 
+    d.mes,
+    SUM(f.valor_venda) as receita_total,
+    AVG(f.valor_venda) as ticket_medio,
+    SUM(f.valor_venda - f.custo) as margem_bruta
+FROM fato_vendas f
+JOIN dim_tempo d ON f.sk_data = d.sk_data
+GROUP BY d.mes;
+</div></section></section><div class="last-modified">26 abril 2025</div><div data-feedback-placeholder="true"></div><div class="navigation-links _bottom"><a href="snowflake-schema.html" class="navigation-links__prev">Schema Floco de Neve</a><a href="dimension-tables.html" class="navigation-links__next">Tabelas Dimens&atilde;o</a></div></article><div id="disqus_thread"></div></div></section></main></div><script src="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.js"></script></body></html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en-US" data-preset="contrast" data-primary-color="#E8488B"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="built-on" content="2025-06-08T20:14:46.751127391"><title>TRUNCATE: Limpeza R&aacute;pida de Dados | Database Management Systems: A Complete Guide</title><script type="application/json" id="virtual-toc-data">[{"id":"fundamentos-do-truncate","level":0,"title":"Fundamentos do TRUNCATE","anchor":"#fundamentos-do-truncate"},{"id":"truncate-vs-delete","level":0,"title":"TRUNCATE vs DELETE","anchor":"#truncate-vs-delete"},{"id":"cen-rios-de-uso","level":0,"title":"Cenários de Uso","anchor":"#cen-rios-de-uso"},{"id":"boas-pr-ticas","level":0,"title":"Boas Práticas","anchor":"#boas-pr-ticas"},{"id":"troubleshooting","level":0,"title":"Troubleshooting","anchor":"#troubleshooting"},{"id":"padr-es-de-uso","level":0,"title":"Padrões de Uso","anchor":"#padr-es-de-uso"},{"id":"conclus-o","level":0,"title":"Conclusão","anchor":"#conclus-o"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.css" rel="stylesheet"><link href="static/custom.css" rel="stylesheet"><link rel="icon" type="image/svg" sizes="16x16" href="images/logo-primary.svg"><meta name="image" content=""><!-- Open Graph --><meta property="og:title" content="TRUNCATE: Limpeza R&aacute;pida de Dados | Database Management Systems: A Complete Guide"><meta property="og:description" content=""><meta property="og:image" content=""><meta property="og:site_name" content="Database Management Systems: A Complete Guide Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="writerside-documentation/truncate-statements.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content=""><meta name="twitter:title" content="TRUNCATE: Limpeza R&aacute;pida de Dados | Database Management Systems: A Complete Guide"><meta name="twitter:description" content=""><meta name="twitter:creator" content=""><meta name="twitter:image:src" content=""><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    "@id": "writerside-documentation/truncate-statements.html#webpage",
+    "url": "writerside-documentation/truncate-statements.html",
+    "name": "TRUNCATE: Limpeza R&aacute;pida de Dados | Database Management Systems: A Complete Guide",
+    "description": "",
+    "image": "",
+    "inLanguage":"en-US"
+}</script><!-- End Schema.org --><!-- Schema.org WebSite --><script type="application/ld+json">{
+    "@type": "WebSite",
+    "@id": "writerside-documentation/#website",
+    "url": "writerside-documentation/",
+    "name": "Database Management Systems: A Complete Guide Help"
+}</script><!-- End Schema.org --></head><body data-id="truncate-statements" data-main-title="TRUNCATE: Limpeza Rápida de Dados" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs="sql-fundamentals.md|Fundamentos SQL///sql-ddl.md|DDL - Linguagem de Definição de Dados"><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>Database Management Systems: A Complete Guide  Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="truncate-statements" id="truncate-statements.md">TRUNCATE: Limpeza Rápida de Dados</h1><div class="code-block" data-lang="none">
+╔══════════════════════════════════════════════════════════════╗
+║  DATA_CLEANER &gt;&gt; Limpeza Eficiente de Dados               ║
+║  INSTRUTOR: TRUNCATE_SPECIALIST                           ║
+╚══════════════════════════════════════════════════════════════╝
+</div><section class="chapter"><h2 id="fundamentos-do-truncate" data-toc="fundamentos-do-truncate">Fundamentos do TRUNCATE</h2><p id="z4djmlf_11">TRUNCATE_SPECIALIST explica: &quot;TRUNCATE &eacute; a forma mais r&aacute;pida de remover todos os dados de uma tabela!&quot;</p><div class="code-block" data-lang="sql">
+-- Sintaxe básica
+TRUNCATE TABLE logs;
+
+-- Múltiplas tabelas
+TRUNCATE TABLE 
+    temp_data, 
+    staging_area, 
+    import_buffer;
+
+-- Com RESTART IDENTITY
+TRUNCATE TABLE produtos RESTART IDENTITY;
+
+-- Com CASCADE
+TRUNCATE TABLE clientes CASCADE;
+</div></section><section class="chapter"><h2 id="truncate-vs-delete" data-toc="truncate-vs-delete">TRUNCATE vs DELETE</h2><p id="z4djmlf_13">PERFORMANCE_GURU compara: &quot;Entenda quando usar cada um!&quot;</p><div class="table-wrapper"><table class="wide" id="z4djmlf_14"><thead><tr class="ijRowHead" id="z4djmlf_15"><th id="z4djmlf_20"><p>TRUNCATE</p></th><th id="z4djmlf_21"><p>DELETE</p></th></tr></thead><tbody><tr id="z4djmlf_16"><td id="z4djmlf_22"><p>Mais r&aacute;pido</p></td><td id="z4djmlf_23"><p>Mais flex&iacute;vel</p></td></tr><tr id="z4djmlf_17"><td id="z4djmlf_24"><p>N&atilde;o &eacute; transacional*</p></td><td id="z4djmlf_25"><p>Transacional</p></td></tr><tr id="z4djmlf_18"><td id="z4djmlf_26"><p>Reseta sequ&ecirc;ncias</p></td><td id="z4djmlf_27"><p>Mant&eacute;m sequ&ecirc;ncias</p></td></tr><tr id="z4djmlf_19"><td id="z4djmlf_28"><p>N&atilde;o dispara triggers</p></td><td id="z4djmlf_29"><p>Dispara triggers</p></td></tr></tbody></table></div></section><section class="chapter"><h2 id="cen-rios-de-uso" data-toc="cen-rios-de-uso">Cen&aacute;rios de Uso</h2><p id="z4djmlf_30">DATA_ARCHITECT apresenta: &quot;Situa&ccedil;&otilde;es ideais para TRUNCATE&quot;</p><section class="chapter"><h3 id="1-limpeza-de-ambiente" data-toc="1-limpeza-de-ambiente">1. Limpeza de Ambiente</h3><div class="code-block" data-lang="sql">
+-- Limpando tabelas temporárias
+TRUNCATE TABLE 
+    temp_imports,
+    staging_area,
+    etl_buffer
+RESTART IDENTITY;
+</div></section><section class="chapter"><h3 id="2-reset-de-desenvolvimento" data-toc="2-reset-de-desenvolvimento">2. Reset de Desenvolvimento</h3><div class="code-block" data-lang="sql">
+-- Resetando ambiente de testes
+TRUNCATE TABLE 
+    test_data,
+    test_logs,
+    test_metrics
+CASCADE;
+</div></section></section><section class="chapter"><h2 id="boas-pr-ticas" data-toc="boas-pr-ticas">Boas Pr&aacute;ticas</h2><p id="z4djmlf_35">SAFETY_MASTER compartilha diretrizes essenciais:</p><section class="chapter"><h3 id="1-seguran-a" data-toc="1-seguran-a">1. Seguran&ccedil;a</h3><ul class="list _bullet" id="z4djmlf_38"><li class="list__item" id="z4djmlf_39"><p id="z4djmlf_43">Fa&ccedil;a backup antes</p></li><li class="list__item" id="z4djmlf_40"><p id="z4djmlf_44">Verifique depend&ecirc;ncias</p></li><li class="list__item" id="z4djmlf_41"><p id="z4djmlf_45">Use em ambiente correto</p></li><li class="list__item" id="z4djmlf_42"><p id="z4djmlf_46">Documente opera&ccedil;&otilde;es</p></li></ul></section><section class="chapter"><h3 id="2-performance" data-toc="2-performance">2. Performance</h3><ul class="list _bullet" id="z4djmlf_47"><li class="list__item" id="z4djmlf_49"><p id="z4djmlf_53">Considere locks</p></li><li class="list__item" id="z4djmlf_50"><p id="z4djmlf_54">Avalie impacto</p></li><li class="list__item" id="z4djmlf_51"><p id="z4djmlf_55">Planeje janela de execu&ccedil;&atilde;o</p></li><li class="list__item" id="z4djmlf_52"><p id="z4djmlf_56">Monitore espa&ccedil;o em disco</p></li></ul><div class="code-block" data-lang="none">
+╔════════════════════════════════════════════╗
+║  CHECKLIST DE TRUNCATE:                   ║
+║  □ Backup realizado?                      ║
+║  □ Ambiente correto?                      ║
+║  □ Dependências verificadas?              ║
+║  □ Equipe notificada?                     ║
+║  □ Janela de manutenção definida?        ║
+╚════════════════════════════════════════════╝
+</div></section></section><section class="chapter"><h2 id="troubleshooting" data-toc="troubleshooting">Troubleshooting</h2><p id="z4djmlf_57">ERROR_HANDLER apresenta solu&ccedil;&otilde;es comuns:</p><section class="chapter"><h3 id="1-bloqueios" data-toc="1-bloqueios">1. Bloqueios</h3><div class="code-block" data-lang="sql">
+-- Verificando locks
+SELECT relation::regclass, mode, granted
+FROM pg_locks
+WHERE relation IN (
+    SELECT oid 
+    FROM pg_class 
+    WHERE relname = 'sua_tabela'
+);
+</div></section><section class="chapter"><h3 id="2-depend-ncias" data-toc="2-depend-ncias">2. Depend&ecirc;ncias</h3><div class="code-block" data-lang="sql">
+-- Verificando referências
+SELECT 
+    tc.table_schema, 
+    tc.table_name, 
+    kcu.column_name
+FROM information_schema.table_constraints tc
+JOIN information_schema.key_column_usage kcu
+    ON tc.constraint_name = kcu.constraint_name
+WHERE tc.constraint_type = 'FOREIGN KEY'
+AND kcu.referenced_table_name = 'sua_tabela';
+</div></section></section><section class="chapter"><h2 id="padr-es-de-uso" data-toc="padr-es-de-uso">Padr&otilde;es de Uso</h2><p id="z4djmlf_62">PATTERN_MASTER apresenta: &quot;Padr&otilde;es comuns de utiliza&ccedil;&atilde;o&quot;</p><section class="chapter"><h3 id="1-limpeza-peri-dica" data-toc="1-limpeza-peri-dica">1. Limpeza Peri&oacute;dica</h3><div class="code-block" data-lang="sql">
+-- Procedure de limpeza
+CREATE PROCEDURE limpar_logs()
+LANGUAGE SQL
+AS $$
+    TRUNCATE TABLE 
+        system_logs,
+        audit_logs,
+        error_logs;
+$$;
+</div></section><section class="chapter"><h3 id="2-reset-de-ambiente" data-toc="2-reset-de-ambiente">2. Reset de Ambiente</h3><div class="code-block" data-lang="sql">
+-- Script de reset
+BEGIN;
+    -- Desativa foreign key checks
+    SET CONSTRAINTS ALL DEFERRED;
+    
+    -- Limpa todas as tabelas
+    TRUNCATE TABLE 
+        tabela1,
+        tabela2,
+        tabela3
+    CASCADE;
+    
+    -- Reativa constraints
+    SET CONSTRAINTS ALL IMMEDIATE;
+COMMIT;
+</div></section></section><section class="chapter"><h2 id="conclus-o" data-toc="conclus-o">Conclus&atilde;o</h2><p id="z4djmlf_67">TRUNCATE_SPECIALIST conclui: &quot;TRUNCATE &eacute; uma ferramenta poderosa para limpeza de dados, mas deve ser usada com conhecimento e cautela.&quot;</p><aside class="prompt" data-type="tip" data-title="" id="z4djmlf_68"><p id="z4djmlf_69"><span class="control" id="z4djmlf_70">Dica Final</span>: Sempre tenha um plano de recupera&ccedil;&atilde;o antes de executar TRUNCATE em tabelas importantes. A opera&ccedil;&atilde;o &eacute; r&aacute;pida, mas irrevers&iacute;vel!</p></aside></section><div class="last-modified">26 abril 2025</div><div data-feedback-placeholder="true"></div><div class="navigation-links _bottom"><a href="drop-statements.html" class="navigation-links__prev">DROP Statements: Removendo Objetos do Banco de Dados</a><a href="ddl-exercises.html" class="navigation-links__next">Exerc&iacute;cios de DDL (Data Definition Language)</a></div></article><div id="disqus_thread"></div></div></section></main></div><script src="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.js"></script></body></html>

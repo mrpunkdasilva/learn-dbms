@@ -1,0 +1,171 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en-US" data-preset="contrast" data-primary-color="#E8488B"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="built-on" content="2025-06-08T20:14:42.985731184"><title>UPDATE: Modificando Dados | Database Management Systems: A Complete Guide</title><script type="application/json" id="virtual-toc-data">[{"id":"fundamentos-do-update","level":0,"title":"Fundamentos do UPDATE","anchor":"#fundamentos-do-update"},{"id":"formas-de-atualiza-o","level":0,"title":"Formas de Atualização","anchor":"#formas-de-atualiza-o"},{"id":"tratamento-de-erros","level":0,"title":"Tratamento de Erros","anchor":"#tratamento-de-erros"},{"id":"atualiza-es-em-massa","level":0,"title":"Atualizações em Massa","anchor":"#atualiza-es-em-massa"},{"id":"boas-pr-ticas","level":0,"title":"Boas Práticas","anchor":"#boas-pr-ticas"},{"id":"exemplos-pr-ticos","level":0,"title":"Exemplos Práticos","anchor":"#exemplos-pr-ticos"},{"id":"troubleshooting-comum","level":0,"title":"Troubleshooting Comum","anchor":"#troubleshooting-comum"},{"id":"conclus-o","level":0,"title":"Conclusão","anchor":"#conclus-o"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.css" rel="stylesheet"><link href="static/custom.css" rel="stylesheet"><link rel="icon" type="image/svg" sizes="16x16" href="images/logo-primary.svg"><meta name="image" content=""><!-- Open Graph --><meta property="og:title" content="UPDATE: Modificando Dados | Database Management Systems: A Complete Guide"><meta property="og:description" content=""><meta property="og:image" content=""><meta property="og:site_name" content="Database Management Systems: A Complete Guide Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="writerside-documentation/update-statements.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content=""><meta name="twitter:title" content="UPDATE: Modificando Dados | Database Management Systems: A Complete Guide"><meta name="twitter:description" content=""><meta name="twitter:creator" content=""><meta name="twitter:image:src" content=""><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    "@id": "writerside-documentation/update-statements.html#webpage",
+    "url": "writerside-documentation/update-statements.html",
+    "name": "UPDATE: Modificando Dados | Database Management Systems: A Complete Guide",
+    "description": "",
+    "image": "",
+    "inLanguage":"en-US"
+}</script><!-- End Schema.org --><!-- Schema.org WebSite --><script type="application/ld+json">{
+    "@type": "WebSite",
+    "@id": "writerside-documentation/#website",
+    "url": "writerside-documentation/",
+    "name": "Database Management Systems: A Complete Guide Help"
+}</script><!-- End Schema.org --></head><body data-id="update-statements" data-main-title="UPDATE: Modificando Dados" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs="sql-fundamentals.md|Fundamentos SQL///sql-dml.md|DML - Linguagem de Manipulação de Dados"><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>Database Management Systems: A Complete Guide  Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="update-statements" id="update-statements.md">UPDATE: Modificando Dados</h1><div class="code-block" data-lang="none">
+╔══════════════════════════════════════════════════════════════╗
+║  DATA_MASTER &gt;&gt; Atualização de Dados                       ║
+║  INSTRUTOR: UPDATE_SPECIALIST                              ║
+╚══════════════════════════════════════════════════════════════╝
+</div><section class="chapter"><h2 id="fundamentos-do-update" data-toc="fundamentos-do-update">Fundamentos do UPDATE</h2><p id="-6ugx2y_12">UPDATE_SPECIALIST explica: &quot;O comando UPDATE permite modificar dados existentes de forma precisa e controlada.&quot;</p><section class="chapter"><h3 id="sintaxe-b-sica" data-toc="sintaxe-b-sica">Sintaxe B&aacute;sica</h3><div class="code-block" data-lang="sql">
+-- Atualização simples
+UPDATE tabela
+SET coluna = valor
+WHERE condição;
+
+-- Múltiplas colunas
+UPDATE tabela
+SET 
+    coluna1 = valor1,
+    coluna2 = valor2
+WHERE condição;
+</div></section></section><section class="chapter"><h2 id="formas-de-atualiza-o" data-toc="formas-de-atualiza-o">Formas de Atualiza&ccedil;&atilde;o</h2><section class="chapter"><h3 id="1-valores-diretos" data-toc="1-valores-diretos">1. Valores Diretos</h3><div class="code-block" data-lang="sql">
+-- Atualização simples
+UPDATE produtos
+SET 
+    preco = 999.99,
+    ultima_atualizacao = CURRENT_TIMESTAMP
+WHERE id = 1001;
+
+-- Com expressões
+UPDATE produtos
+SET preco = preco * 1.1
+WHERE categoria = 'Eletrônicos';
+</div></section><section class="chapter"><h3 id="2-atualiza-o-com-join" data-toc="2-atualiza-o-com-join">2. Atualiza&ccedil;&atilde;o com JOIN</h3><p id="-6ugx2y_19">DATA_SYNC_EXPERT demonstra: &quot;Atualize baseado em outras tabelas!&quot;</p><div class="code-block" data-lang="sql">
+-- Atualização com JOIN
+UPDATE pedidos p
+SET status = 'aprovado'
+FROM clientes c
+WHERE p.cliente_id = c.id
+AND c.categoria = 'VIP';
+
+-- Atualização múltipla
+UPDATE produtos p
+SET 
+    preco = p.preco * t.fator_ajuste,
+    atualizado_em = CURRENT_TIMESTAMP
+FROM tabela_ajustes t
+WHERE p.categoria = t.categoria;
+</div></section><section class="chapter"><h3 id="3-atualiza-es-condicionais" data-toc="3-atualiza-es-condicionais">3. Atualiza&ccedil;&otilde;es Condicionais</h3><div class="code-block" data-lang="sql">
+-- Usando CASE
+UPDATE funcionarios
+SET salario = CASE
+    WHEN tempo_servico &lt; 2 THEN salario * 1.05
+    WHEN tempo_servico &lt; 5 THEN salario * 1.07
+    ELSE salario * 1.10
+END;
+
+-- Com COALESCE
+UPDATE clientes
+SET 
+    telefone = COALESCE(novo_telefone, telefone),
+    email = COALESCE(novo_email, email)
+FROM atualizacoes_clientes
+WHERE clientes.id = atualizacoes_clientes.cliente_id;
+</div></section></section><section class="chapter"><h2 id="tratamento-de-erros" data-toc="tratamento-de-erros">Tratamento de Erros</h2><p id="-6ugx2y_22">ERROR_HANDLER apresenta: &quot;Lidando com atualiza&ccedil;&otilde;es seguras&quot;</p><div class="code-block" data-lang="sql">
+-- Com validação
+UPDATE produtos
+SET preco = novo_preco
+WHERE id = produto_id
+AND novo_preco &gt; 0
+RETURNING id, nome, preco as novo_preco;
+
+-- Dentro de transação
+BEGIN;
+    UPDATE contas
+    SET saldo = saldo - 100
+    WHERE id = 1;
+    
+    UPDATE contas
+    SET saldo = saldo + 100
+    WHERE id = 2;
+    
+    -- Verificação
+    IF EXISTS (SELECT 1 FROM contas WHERE saldo &lt; 0) THEN
+        ROLLBACK;
+    ELSE
+        COMMIT;
+    END IF;
+</div></section><section class="chapter"><h2 id="atualiza-es-em-massa" data-toc="atualiza-es-em-massa">Atualiza&ccedil;&otilde;es em Massa</h2><p id="-6ugx2y_24">BULK_UPDATE_MASTER compartilha: &quot;Otimize atualiza&ccedil;&otilde;es grandes!&quot;</p><div class="code-block" data-lang="sql">
+-- Atualização em lotes
+UPDATE produtos
+SET status = 'inativo'
+WHERE id IN (
+    SELECT id 
+    FROM produtos
+    WHERE ultima_venda &lt; CURRENT_DATE - INTERVAL '1 year'
+    LIMIT 1000
+);
+
+-- Com tabela temporária
+CREATE TEMP TABLE updates_temp AS
+SELECT id, novo_preco
+FROM calculos_precos;
+
+UPDATE produtos p
+SET preco = t.novo_preco
+FROM updates_temp t
+WHERE p.id = t.id;
+</div></section><section class="chapter"><h2 id="boas-pr-ticas" data-toc="boas-pr-ticas">Boas Pr&aacute;ticas</h2><p id="-6ugx2y_26">BEST_PRACTICES_SAGE recomenda:</p><section class="chapter"><h3 id="1-performance" data-toc="1-performance">1. Performance</h3><ul class="list _bullet" id="-6ugx2y_30"><li class="list__item" id="-6ugx2y_31"><p id="-6ugx2y_35">Use &iacute;ndices adequadamente</p></li><li class="list__item" id="-6ugx2y_32"><p id="-6ugx2y_36">Atualize em lotes quando poss&iacute;vel</p></li><li class="list__item" id="-6ugx2y_33"><p id="-6ugx2y_37">Evite triggers desnecess&aacute;rios</p></li><li class="list__item" id="-6ugx2y_34"><p id="-6ugx2y_38">Monitore locks e deadlocks</p></li></ul></section><section class="chapter"><h3 id="2-integridade" data-toc="2-integridade">2. Integridade</h3><ul class="list _bullet" id="-6ugx2y_39"><li class="list__item" id="-6ugx2y_40"><p id="-6ugx2y_44">Valide dados antes da atualiza&ccedil;&atilde;o</p></li><li class="list__item" id="-6ugx2y_41"><p id="-6ugx2y_45">Use transa&ccedil;&otilde;es quando necess&aacute;rio</p></li><li class="list__item" id="-6ugx2y_42"><p id="-6ugx2y_46">Mantenha consist&ecirc;ncia referencial</p></li><li class="list__item" id="-6ugx2y_43"><p id="-6ugx2y_47">Considere impacto em constraints</p></li></ul></section><section class="chapter"><h3 id="3-manuten-o" data-toc="3-manuten-o">3. Manuten&ccedil;&atilde;o</h3><ul class="list _bullet" id="-6ugx2y_48"><li class="list__item" id="-6ugx2y_50"><p id="-6ugx2y_54">Mantenha logs de altera&ccedil;&otilde;es</p></li><li class="list__item" id="-6ugx2y_51"><p id="-6ugx2y_55">Documente atualiza&ccedil;&otilde;es cr&iacute;ticas</p></li><li class="list__item" id="-6ugx2y_52"><p id="-6ugx2y_56">Implemente rollback strategy</p></li><li class="list__item" id="-6ugx2y_53"><p id="-6ugx2y_57">Monitore impacto em &iacute;ndices</p></li></ul><div class="code-block" data-lang="none">
+╔════════════════════════════════════════════╗
+║  CHECKLIST UPDATE:                        ║
+║  □ WHERE adequado?                       ║
+║  □ Dados validados?                      ║
+║  □ Transação necessária?                 ║
+║  □ Índices considerados?                 ║
+║  □ Backup realizado?                     ║
+╚════════════════════════════════════════════╝
+</div></section></section><section class="chapter"><h2 id="exemplos-pr-ticos" data-toc="exemplos-pr-ticos">Exemplos Pr&aacute;ticos</h2><section class="chapter"><h3 id="sistema-de-e-commerce" data-toc="sistema-de-e-commerce">Sistema de E-commerce</h3><div class="code-block" data-lang="sql">
+-- Atualização de estoque após venda
+UPDATE produtos p
+SET 
+    estoque = p.estoque - v.quantidade,
+    ultima_venda = CURRENT_TIMESTAMP,
+    total_vendas = p.total_vendas + 1
+FROM vendas v
+WHERE p.id = v.produto_id
+AND v.status = 'confirmado';
+
+-- Atualização de status de pedidos
+UPDATE pedidos p
+SET 
+    status = 'em_transito',
+    atualizado_em = CURRENT_TIMESTAMP,
+    tracking_code = e.codigo_rastreio
+FROM entregas e
+WHERE p.id = e.pedido_id
+AND p.status = 'aprovado'
+AND e.status = 'coletado';
+</div></section></section><section class="chapter"><h2 id="troubleshooting-comum" data-toc="troubleshooting-comum">Troubleshooting Comum</h2><p id="-6ugx2y_60">PROBLEM_SOLVER apresenta solu&ccedil;&otilde;es para problemas frequentes:</p><ol class="list _decimal" id="-6ugx2y_61" type="1"><li class="list__item" id="-6ugx2y_65"><p id="-6ugx2y_66"><span class="control" id="-6ugx2y_67">Deadlocks em Atualiza&ccedil;&otilde;es</span></p></li></ol><div class="code-block" data-lang="sql">
+-- Identificando locks
+SELECT relation::regclass, mode, granted
+FROM pg_locks
+WHERE NOT granted;
+
+-- Atualizando com timeout
+SET lock_timeout = '10s';
+UPDATE tabela_concorrida
+SET status = 'processado'
+WHERE id = 1001;
+</div><ol class="list _decimal" id="-6ugx2y_63" type="1" start="2"><li class="list__item" id="-6ugx2y_68"><p id="-6ugx2y_69"><span class="control" id="-6ugx2y_70">Atualiza&ccedil;&otilde;es &Oacute;rf&atilde;s</span></p></li></ol><div class="code-block" data-lang="sql">
+-- Verificando integridade
+UPDATE pedidos p
+SET status = 'cancelado'
+WHERE EXISTS (
+    SELECT 1 
+    FROM clientes c
+    WHERE p.cliente_id = c.id
+    AND c.status = 'inativo'
+);
+</div></section><section class="chapter"><h2 id="conclus-o" data-toc="conclus-o">Conclus&atilde;o</h2><p id="-6ugx2y_71">UPDATE_SPECIALIST conclui: &quot;O UPDATE &eacute; uma opera&ccedil;&atilde;o poderosa que requer aten&ccedil;&atilde;o aos detalhes. Sempre valide suas condi&ccedil;&otilde;es e considere o impacto das altera&ccedil;&otilde;es.&quot;</p><aside class="prompt" data-type="tip" data-title="" id="-6ugx2y_72"><p id="-6ugx2y_73"><span class="control" id="-6ugx2y_74">Dica Final</span>: Sempre teste suas atualiza&ccedil;&otilde;es com SELECT primeiro para confirmar o conjunto de registros afetados.</p></aside></section><div class="last-modified">26 abril 2025</div><div data-feedback-placeholder="true"></div><div class="navigation-links _bottom"><a href="insert-statements.html" class="navigation-links__prev">INSERT: Inserindo Dados</a><a href="delete-statements.html" class="navigation-links__next">DELETE: Removendo Dados com Precis&atilde;o</a></div></article><div id="disqus_thread"></div></div></section></main></div><script src="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.js"></script></body></html>
